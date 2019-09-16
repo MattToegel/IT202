@@ -19,6 +19,7 @@ $username="";
 $password="";
 ?>
 ```
+
 	3. Save and close the file.
 3. Config git properties (once per git location)
 	1. __git config --global user.name "YouGithubUsername"__
