@@ -1,7 +1,7 @@
 #Section 1 - Hello World
 
 1. Login to AFS
-	1. ssh yourucid@afsconnect1.njit.edu
+	1. __ssh yourucid@afsconnect1.njit.edu__
 2. Run __pwd__
 	1. You should be the last folder as your ucid
 3. Move into your public_html
@@ -16,3 +16,4 @@
 	echo "Hello World";
 ?>
 ```
+6. Navigate to web.njit.edu/~yourucid/index.php (you need to specify it directly since the default apache config favors .html over .php)
