@@ -10,7 +10,7 @@ Assumes you're already connected to AFS or VM.
 	3. Save and close the file
 2. Create your config file
 	1. __nano config.php__
-	2. Insert the template below
+	2. Insert the template below, then save and close the file
 ```
 <?php
 $host="";
@@ -19,8 +19,6 @@ $username="";
 $password="";
 ?>
 ```
-
-	3. Save and close the file.
 3. Config git properties (once per git location)
 	1. __git config --global user.name "YouGithubUsername"__
 	2. __git config --global user.email "YourGithubEmail"__
