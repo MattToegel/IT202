@@ -50,5 +50,6 @@ error_reporting(E_ALL);
 	1. Check syntax/typos
 	2. Check tags
 	3. Check __$username__ and __$password__ are the same that log you into web.njit.edu/mysql/phpMyAdmin
+		1. If you need to reset your password: mypassword.njit.edu/db
 	4. Ensure items are under public_html/IT202 (or public_html/YourRepoFolderName)
 6. Resolve errors and run again.
