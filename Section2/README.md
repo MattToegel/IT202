@@ -11,7 +11,7 @@ Assumes you're already connected to AFS or VM.
 2. Create your config file
 	1. __nano config.php__
 	2. Insert the template below, then save and close the file
-```
+```php
 <?php
 $host="";
 $database="";
