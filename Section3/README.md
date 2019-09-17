@@ -3,7 +3,7 @@
 1. Create a new file for running our sample connection
 	1. __nano initDB.php__
 	2. Insert part1 of the test
-```
+```php
 <?php
 //TODO add error handling
 
@@ -19,7 +19,7 @@ echo "Loaded host: " . $host;
 	2. You should see your host echoed if everything was done correctly
 3. Proceed with part2, testing the connection and config details
 
-```
+```php
 //this is the same file but with extra code
 <?php
 //TODO add error handling
@@ -41,8 +41,10 @@ catch(Exception $e){
 ```
 4. Navigate to the same file as step #2.
 	1. You should see "Connected", if not add the following lines under "//TODO add error handling"
-```
-
+```php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 ```
 5. Rerun the file and see what errors are shown.
 	1. Check syntax/typos
