@@ -1,5 +1,5 @@
 #Section 3 - Getting Started with PDO
-
+ 
 1. Create a new file for running our sample connection
 	1. __nano initDB.php__
 	2. Insert part1 of the test
