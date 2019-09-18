@@ -12,6 +12,7 @@ $conn_string = "mysql:host=$host;dbname=$database;charset=utf8mb4";
 try{
 	$db = new PDO($conn_string, $username, $password);
 	echo "Connected";
+	//create table
 	$query = "create table if not exists `TestUsers`(
 		`id` int auto_increment not null,
 		`username` varchar(30) not null unique,
@@ -20,7 +21,18 @@ try{
 		) CHARACTER SET utf8 COLLATE utf8_general_ci";
 	$stmt = $db->prepare($query);
 	$r = $stmt->execute();
-	echo "<br>" . $r . "<br>";
+	echo "<br>" . ($r>0?"Created table or already exists":"Failed to create table") . "<br>";
+	unset($r);
+	//simple insert
+	//TODO/homework make values variables bindable
+	$insert_query = "INSERT INTO `TestUsers`( `username`, `pin`) VALUES ('JohnDoe', 1234)";
+	$stmt = $db->prepare($insert_query);
+	$r = $stmt->execute();
+	//TODO catch error from DB
+	echo "<br>" . ($r>0?"Insert successful":"Insert failed") . "<br>";
+	
+	//TODO select query using bindable :username is where clause
+	//select * from TestUsers where username = 
 }
 catch(Exception $e){
 	echo $e->getMessage();

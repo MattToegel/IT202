@@ -41,14 +41,31 @@ echo "<br>" . $r . "<br>";
 	1. You may use the UI from phpMyAdmin to craft your insert statement
 ```php
 //Note backticks ` for table/column names and single-quotes ' for string value
-$insert_query = "INSERT INTO `TestUsers`(`username`, `pin`) VALUES ('Bob', 3)";
+$insert_query = "INSERT INTO `TestUsers`(`username`, `pin`) VALUES ('JohnDoe', 1234)";
 $stmt = $db->prepare($insert_query);
 $r = $stmt->execute();
 ```
-2. Replace values with :username and :pin
-3. Use PDO binding to dynamically set these values
-4. Create a new query to select and use binding for the where clause
+2. Run the script, record should be inserted.
+3. Run the script again, due to unique constraint a duplicate username shouldn't be inserted
+4. Replace values with :username and :pin
+5. Use PDO binding to dynamically set these values to predefined $user, $pin vars
+```php
+$user = "JohnDoe";
+$pin = 1234;
+//DB Insert query
+//Bind values
+$r = $stmt->execute(...);//hint: something is required here
+```
+6. Create a new query to select and use binding for the where clause
 ```
 $select_query = "select * from `TestUsers` where username = :username"
 ```
-[TBD/TBC]
+7. Output result
+```php
+//previous connection/query prep/etc
+$result = $stmt->fetch();
+echo "<br><pre>" . var_export($result, true) . "</pre><br>";
+```
+
+###Solutions:
+Coming soon!
