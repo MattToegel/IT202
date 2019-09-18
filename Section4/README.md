@@ -20,7 +20,7 @@ create table if not exists `TestUsers`(
 ```php
 $stmt = $db->prepare($query);
 ```
-5. In the future some may have an extra step, but for now we can immediate execute the query and get the response from the action.
+5. In the future some may have an extra step, but for now we can immediately execute the query and get the response from the action.
 ```php
 $r = $stmt->execute();
 //just to see the value (should be 1)
@@ -36,11 +36,12 @@ echo "<br>" . $r . "<br>";
 12. Rerun the script by visiting its link from step #6
 13. Refresh phpMyAdmin and you should see the table again.
 
-##To DO
+##To Do (Classwork/Homework)
 1. Create another variable with insert SQL
 	1. You may use the UI from phpMyAdmin to craft your insert statement
 ```php
 //Note backticks ` for table/column names and single-quotes ' for string value
+//hint: we don't need to specify `id` since it's auto increment (note this in the next steps)
 $insert_query = "INSERT INTO `TestUsers`(`username`, `pin`) VALUES ('JohnDoe', 1234)";
 $stmt = $db->prepare($insert_query);
 $r = $stmt->execute();
