@@ -30,7 +30,7 @@ echo "Loaded host: " . $host;
 
 //new lines below
 try{
-	$conn_string = "mysql:host=$host;dbname=$databasename;charset=utf8mb4";
+	$conn_string = "mysql:host=$host;dbname=$database;charset=utf8mb4";
 	$db = new PDO($conn_string, $username, $password);
 	echo "Connected";
 }
