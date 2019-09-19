@@ -59,7 +59,7 @@ $r = $stmt->execute(...);//hint: something is required here
 ```
 6. Create a new query to select and use binding for the where clause
 ```
-$select_query = "select * from `TestUsers` where username = :username"
+$select_query = "select * from `TestUsers` where username = :username";
 ```
 7. Output result
 ```php
