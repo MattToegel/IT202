@@ -43,5 +43,5 @@ if(isset($_GET['number'])){
 ##Homework
 1. Implement adding two or more query parametes together. (i.e., Number1 and Number2) Do proper checks/handling in case the passed values aren't actually numbers.
 2. Concatenate two or more parameter's values and echo them.
-3. Try passing two parameters with the same name but different values, note and record the results.
+3. Try passing two parameters with the same name/key but different values, note and record the results.
 4. Try passing a parameter with a value containg various special characters, note and record the results.
