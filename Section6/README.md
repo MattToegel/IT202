@@ -28,7 +28,7 @@ if(isset($_GET['name'])){
 }
 ```  
 	1. Here we're checking if a key 'name' exists in the $_GET array. If it does, we're saying hello to the value it refers to.
-7. Save and navigate to the url but have the url contain handleRequestData.php__?name=John__ then have that url load. Note the output. You should see the array contents plus "Hello, John".
+7. Save and navigate to the url but have the url contain handleRequestData.php**?name=John** then have that url load. Note the output. You should see the array contents plus "Hello, John".
 8. After the previous snippet insert the following snippet.
 ```php
 if(isset($_GET['number'])){
