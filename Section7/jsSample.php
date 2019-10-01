@@ -38,6 +38,6 @@
 <?php
 
 if(isset($_GET['name'])){
-	echo "You're GET name is " . $_GET['name'];
+	echo "Your GET name is " . $_GET['name'];
 }
 ?>
