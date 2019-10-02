@@ -2,7 +2,7 @@
 <head>
 	<script>
 	//Alert sample showing it blocks page loaded until user clicks
-	alert("Hello world";
+	alert("Hello world");
 	</script>
 </head>
 <body>

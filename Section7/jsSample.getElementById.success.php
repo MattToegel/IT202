@@ -3,7 +3,7 @@
 	<script>
 		function pageLoaded(){
 			//showing order of execution
-			var myPara = document.getElementbyId("myPara");
+			var myPara = document.getElementById("myPara");
 			console.log(myPara);//what value do you get?
 			//unlike the failure version of this, you should
 			//see data about your paragraph element
