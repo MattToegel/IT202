@@ -2,7 +2,7 @@
 <head>
 	<script>
 		//showing order of execution
-		var myPara = document.getElementbyId("myPara");
+		var myPara = document.getElementById("myPara");
 		console.log(myPara);//what value do you get?
 		//value should be null since the script runs before
 		//the html tag has been applied to the DOM, so the script doesn't find it

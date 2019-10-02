@@ -3,7 +3,7 @@
 	<script>
 		function pageLoaded(){
 			//showing order of execution
-			var myPara = document.getElementbyId("myPara");
+			var myPara = document.getElementById("myPara");
 			myPara.innerText = "I was updated by javascript";
 		}
 	</script>
