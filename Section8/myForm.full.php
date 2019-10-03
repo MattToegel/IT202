@@ -8,7 +8,7 @@ function getName(){
 <html>
 <head></head>
 <body><?php getName();?>
-<form mode="GET" action="#">
+<form method="GET" action="#">
 <input name="name" type="text" placeholder="Enter your name"/>
 <!--new content-->
 <input name="number" type="number" placeholder="Enter a number"/>
