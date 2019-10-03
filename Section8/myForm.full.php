@@ -29,6 +29,7 @@ function getName(){
 <input type="date" name="date"/>
 <!--end new content-->
 <input type="submit" value="Try it"/>
+<input type="reset" value="Clear Form"/>
 </form>
 </body>
 </html>
