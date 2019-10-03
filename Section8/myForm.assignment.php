@@ -11,7 +11,7 @@ function getName(){
 <html>
 <head></head>
 <body><?php getName();?>
-<form mode="GET" action="#">
+<form method="GET" action="#">
 <input name="name" type="text" placeholder="Enter your name"/>
 <!-- add password field-->
 <!-- add confirm password field-->
