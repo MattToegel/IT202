@@ -35,10 +35,13 @@ function validate(){
 		pv.innerText = "Passwords don't match";
 		//form.confirm.focus();
 		form.confirm.className = "error";
+		//form.confirm.style = "border: 1px solid red;";
 		succeeded = false;
 	}
 	var email = form.email.value;
 	var ev = document.getElementById("validation.email");
+	//this won't show if type="email" since browser handles
+	//better validation. Change to type="text" to test
 	if(email.indexOf('@') > -1){
 		ev.style.display = "none";
 	}
@@ -65,11 +68,14 @@ input { border: 1px solid black; }
 <div style="margin-left: 50%; margin-right:50%;">
 <form method="POST" action="#" onsubmit="return validate();">
 <input name="name" type="text" placeholder="Enter your name"/>
-<input name="email" type="emai" placeholder="name@example.com"/>
+
+<input name="email" type="email" placeholder="name@example.com"/>
 <span id="validation.email" style="display:none;"></span>
+
 <input type="password" name="password" placeholder="Enter password"/>
 <input type="password" name="confirm" placeholder="Re-Enter password"/>
 <span style="display:none;" id="validation.password"></span>
+
 <!-- Add dropdown element (something specific to your project) -->
 <input type="submit" value="Try it"/>
 </form>
