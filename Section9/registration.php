@@ -40,6 +40,8 @@ function validate(){
 	}
 	var email = form.email.value;
 	var ev = document.getElementById("validation.email");
+	//this won't show if type="email" since browser handles
+	//better validation. Change to type="text" to test
 	if(email.indexOf('@') > -1){
 		ev.style.display = "none";
 	}
