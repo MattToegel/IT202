@@ -6,7 +6,7 @@ function myValidation(inputEle, checkValue){
 	let vid = "validation." + name;
 	let vele = document.getElementById(vid);
 	let value = inputEle.value;
-	if(value === checkValue){
+	if(value == checkValue){
 		if(vele){
 			vele.remove();
 		}
@@ -28,6 +28,11 @@ function myValidation(inputEle, checkValue){
 <form onsubmit="return false;">
 <input type="text" name="test" placeholder="Trying it out" 
 	onchange="myValidation(this, 'hi');"/>
+<input type="number" name="number" onchange="console.log('onchange');myValidation(this, 15);"
+onblur="console.log('blur');"
+oninput="console.log('oninput');"
+
+/>
 </form>
 </body>
 </html>
