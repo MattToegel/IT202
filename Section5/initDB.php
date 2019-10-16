@@ -16,8 +16,11 @@ try{
 		//echo $sql[$filename];
 	}
 	ksort($sql);
-
+	echo "<br><pre>" . var_export($sql, true) . "</pre><br>";
 	//connect to DB
+	//please don't copy this
+	//if(1==1){die();}
+	//end please don't copy this
 	$db = new PDO($conn_string, $username, $password);
 	//$db->setAttribute(PDO::ATTR_ERRMODE);
 	foreach($sql as $key => $value){
@@ -30,7 +33,7 @@ try{
 		}
 		echo "<br>$key result: " . ($result>0?"Success":"Fail") . "<br>";
 	}
-	
+	$db = null;
 
 }
 catch(Exception $e){

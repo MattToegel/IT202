@@ -50,7 +50,7 @@ function validate(){
 		ev.innerText = "Please enter a valid email address";
 		succeeded = false;
 	}
-	
+	debugger;
 	/*
 	add validation for a proper selection from dropdown.
 	First element should be "Select One", and it should require that
