@@ -163,9 +163,6 @@ function movePaddle() {
     if (keys.DOWN) {
         leftPaddle.y += leftPaddle.s;
     }
-    if (paddle.y < 0) {
-        paddle.y = 0;
-    }
     clampToCanvas(leftPaddle);
 }
 function clampToCanvas(paddle) {
