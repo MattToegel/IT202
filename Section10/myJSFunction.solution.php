@@ -71,7 +71,7 @@ function myValidation(inputEle, inputName){
 	onchange="myValidation(this, '');"
 />
 <input type="email" name="confirmemail" placeholder="Confirm Email"
-	onchange="myValidation(this,'email');"/>
+	onblur="myValidation(this,'email');"/>
 <input type="password" name="password"
 	onchange="myValidation(this, '');" />
 <input type="password" name="confirmpassword"
@@ -86,7 +86,7 @@ function myValidation(inputEle, inputName){
 	<option value="0">0</option>
 	<option value="1">1</option>
 </select>
-<input type="submit" value"Try it"/>
+<input type="submit" value="Try it"/>
 </form>
 </body>
 </html>
