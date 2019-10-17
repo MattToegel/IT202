@@ -5,10 +5,15 @@ function isEmpty(v){
  return (v.trim().length == 0);
 }
 function isEmail(inputEle){
+	//just noting, this is a bad way to do this function
+	//it should only be consider at answering the question "is the value an email address?"
+	//however since we're adding the input field and checking type, we needed to return true for any other
+	//input type which goes against the "is the value an email address?" question and causes confusion.
+	//this was done quickly live without much forward thinking, so please keep that in mind.
 	if(inputEle.type == "email"){
 		return inputEle.value.indexOf('@') > -1;
 	}
-	
+	//this down here is mostly what adds confusion.
 	return true;
 	
 	
