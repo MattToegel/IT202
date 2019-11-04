@@ -52,18 +52,6 @@ function checkPasswords(form){
 			print_r($stmt->errorInfo());
 			
 			echo var_export($result, true);
-			/*if($results && count($results) > 0){
-				if($results["password"] == $pass){
-					echo "Welcome, " . $results["username"];
-					echo "[" . $results["id"] . "]";
-				}
-				else{
-					echo "Invalid password";
-				}
-			}
-			else{
-					echo "Invalid username";
-			}*/
 		}
 		catch(Exception $e){
 			echo $e->getMessage();
