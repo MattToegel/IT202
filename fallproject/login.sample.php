@@ -1,9 +1,7 @@
 <?php
-session_start();
 ini_set('display_errors',1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-
 ?>
 
 <html>
@@ -36,14 +34,7 @@ error_reporting(E_ALL);
 				if(password_verify($pass, $results['password'])){
 					echo "Welcome, " . $results["username"];
 					echo "[" . $results["id"] . "]";
-					$user = array("id"=> $results['id'],
-								"name"=> $results['username']
-								);
-					$_SESSION['user'] = $user;
-					echo var_export($user, true);
-					echo var_export($_SESSION, true);
-					header("Location: samplelandingpage.php");
-					
+					header("Location: samplelandingpage.html");
 				}
 				else{
 					echo "Invalid password";
