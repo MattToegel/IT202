@@ -6,16 +6,29 @@ error_reporting(E_ALL);
 
 <html>
 <head>
+<script
+  src="https://code.jquery.com/jquery-3.4.1.js"
+  integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+  crossorigin="anonymous"></script>
 <script>
-function checkPasswords(form){
-	let isOk = form.password.value == form.confirm.value;
-	if(!isOk){ alert("Passwords don't match");}
-	return isOk;
-}
+$(document).ready(function(){
+	$('#register_form').submit(function(event){
+		if(this.password.value.length == 0 || this.confirm.value.length == 0){
+			alert("Please enter a password and confirm it");
+			return false;
+		}
+		let isOk = this.password.value == this.confirm.value;
+		if(!isOk){
+			alert("Password and Confirm password don't match");
+		}
+		return isOk;
+	});
+});
+
 </script>
 </head>
 <body>
-	<form method="POST" onsubmit="return checkPasswords(this);"/>
+	<form id="register_form" method="POST"/>
 		<input type="text" name="username"/>
 		<input type="password" name="password"/>
 		<input type="password" name="confirm"/>
