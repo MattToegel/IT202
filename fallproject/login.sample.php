@@ -34,7 +34,7 @@ error_reporting(E_ALL);
 				if(password_verify($pass, $results['password'])){
 					echo "Welcome, " . $results["username"];
 					echo "[" . $results["id"] . "]";
-					header("Location: samplelandingpage.html");
+					//header("Location: samplelandingpage.html");
 				}
 				else{
 					echo "Invalid password";
