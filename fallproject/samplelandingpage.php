@@ -10,14 +10,16 @@ session_start();
 <script>
 $(document).ready(function(){
 	var nav = ["Home", "About", "Logout"];
+	let ul = $("<ul>");
+	$("body").append(ul);
 	nav.forEach(function(item, index){
 			let ele = $("<a>");
-			ele.attr("href", item + ".php");
+			ele.attr("href", "?page="+item);
 			ele.text(item);
-			$("body").append(ele[0]);
+			ul.append($("<li>").append(ele[0]));
 	});
 	
-	 $.ajax({
+	 /*$.ajax({
 			url: "ajax/get.php", 
 			method: "POST", 
 			data: {"type":"login", "username":"bob", "password":"1234"}, 
@@ -30,7 +32,7 @@ $(document).ready(function(){
 			fail: function(jqXHR, textStatus){
 				console.log(jqXHR, textStatus);
 			}
-		});
+		});*/
 });
 </script>
 </head>
