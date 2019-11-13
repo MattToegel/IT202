@@ -1,0 +1,83 @@
+<html>
+<head>
+<script
+  src="https://code.jquery.com/jquery-3.4.1.js"
+  integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+  crossorigin="anonymous">
+</script>
+<script>
+function createTable(){
+	let name = ["John", "Bill", "Sue", "Mary", "Chris", "Jack", "Anne", "Rob"];
+	let classes = ["IT202", "IT114", "IT490"];
+	let headers = ["Name", "Class", "Grade"];
+	let $table = $("<table>");
+	let $tr = $("<tr>");
+	$table.append($tr);
+	headers.forEach(function(item, index){
+		let $th = $("<th>");
+		$th.text(item);
+		$tr.append($th);
+	});
+	//reusing list to generate columns for generated data
+	headers.forEach(function(item, index){
+		let $tr = $("<tr>");
+		let $tdName = $("<td>");
+		let $tdClass = $("<td>");
+		let $tdGrade = $("<td>");
+		$tr.append($tdName);
+		$tr.append($tdClass);
+		$tr.append($tdGrade);
+		$tdName.text(name[Math.floor(Math.random()*name.length)]);
+		$tdClass.text(classes[Math.floor(Math.random()*classes.length)]);
+		$tdGrade.text(Math.floor((Math.floor(1+(Math.random()*10))*10)));
+		$table.append($tr);
+		
+	});
+	$("body").append($table);
+}
+function destroyTable(){
+	$("table").remove();
+}
+function applyZebra(){
+	$("table > tr:odd").css("background-color", "gray");
+}
+function removeZebra(){
+	$("table > tr:odd").css("background-color", "");
+}
+function addAverageGrade(){
+	let $trAvg = $("<tr>");
+	let $tdAvg = $("<td>");
+	$tdAvg.attr("colspan", 3);
+	$trAvg.append($tdAvg);
+	let $avg = 0;
+	let $count = 0;
+	$("table").each(function(index, table){
+		$(table).find("tr").each(function(rowIndex, row){
+			let $grade = $(row).find("td:last").text();
+			console.log($grade);
+			let value = parseInt($grade);
+			if(!isNaN(value)){
+				$avg += value;
+				$count++;
+			}
+			
+		});
+		console.log($avg);
+		console.log($count);
+		$avg /= $count;
+		$avg = Math.floor($avg);
+		let $clone = $trAvg.clone();
+		$clone.find("td").text($avg);
+		$clone.appendTo($(table));
+	});
+}
+</script>
+</head>
+<body onload="createTable();">
+<button onclick="createTable();">Create Table</button>
+<button onclick="destroyTable();">Destroy Table</button>
+<button onclick="applyZebra();">Apply Zebra</button>
+<button onclick="removeZebra();">Remove Zebra</button>
+<button onclick="addAverageGrade();">Calc and Add Average</button>
+</body>
+</html>
