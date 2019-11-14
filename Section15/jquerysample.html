@@ -39,37 +39,50 @@ function destroyTable(){
 	$("table").remove();
 }
 function applyZebra(){
-	$("table > tr:odd").css("background-color", "gray");
+	$("table").find("tr:odd").css("background-color", "gray");
+	$("table").data("appliedZebra", true);
 }
 function removeZebra(){
-	$("table > tr:odd").css("background-color", "");
+	//$("table tr:odd");
+	console.log($("table").find("tr:odd"));
+	$("table").find("tr:odd").css("background-color", "");
+	$("table").data("appliedZebra", false);
 }
 function addAverageGrade(){
 	let $trAvg = $("<tr>");
 	let $tdAvg = $("<td>");
 	$tdAvg.attr("colspan", 3);
 	$trAvg.append($tdAvg);
-	let $avg = 0;
-	let $count = 0;
+	let avg = 0;
+	let count = 0;
+	let appliedZebra = $("table").data("appliedZebra");
+	if(appliedZebra)
+		removeZebra();
 	$("table").each(function(index, table){
+		//reset avg/count
+		avg = 0;
+		count = 0;
 		$(table).find("tr").each(function(rowIndex, row){
-			let $grade = $(row).find("td:last").text();
-			console.log($grade);
-			let value = parseInt($grade);
+			let grade = $(row).find("td:last").text();
+			console.log(grade);
+			let value = parseInt(grade);
 			if(!isNaN(value)){
-				$avg += value;
-				$count++;
+				avg += value;
+				count++;
 			}
 			
 		});
-		console.log($avg);
-		console.log($count);
-		$avg /= $count;
-		$avg = Math.floor($avg);
+		console.log(avg);
+		console.log(count);
+		avg /= count;
+		avg = Math.floor(avg);
 		let $clone = $trAvg.clone();
-		$clone.find("td").text($avg);
+		$clone.find("td").text(avg);
 		$clone.appendTo($(table));
 	});
+	//TODO check if zebra was previously applied
+	if(appliedZebra)
+		applyZebra();
 }
 </script>
 </head>
