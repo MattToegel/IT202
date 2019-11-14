@@ -42,7 +42,7 @@ error_reporting(E_ALL);
 					$_SESSION['user'] = $user;
 					echo var_export($user, true);
 					echo var_export($_SESSION, true);
-					header("Location: samplelandingpage.php");
+					header("Location: dashboard.php");
 					
 				}
 				else{
