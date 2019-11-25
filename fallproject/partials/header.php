@@ -11,7 +11,7 @@ error_reporting(E_ALL);
 </script>
 <script>
 $(document).ready(function(){
-	var nav = ["My Courses", "Settings", "Logout"];
+	var nav = ["My Courses", "Attendance", "Settings", "Logout"];
 	let n = $("<nav>");
 	$("body").prepend(n);
 	nav.forEach(function(item, index){
@@ -19,7 +19,7 @@ $(document).ready(function(){
 			//?page   <- GET variable
 			//#page   <-inline link/scroll to
 			//page.php <-relative link to separate page
-			ele.attr("href", "?page="+item);
+			ele.attr("href", item.toLowerCase() + ".php");
 			ele.text(item);
 			n.append($("<span class='nav'>").append(ele[0]));
 	});
