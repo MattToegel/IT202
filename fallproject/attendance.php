@@ -1,6 +1,6 @@
 <?php
-include_once("partials/header.php");
-include_once("helpers/functions.php");
+require_once("partials/header.php");
+require_once("helpers/functions.php");
 ?>
 
 <html>
@@ -8,7 +8,7 @@ include_once("helpers/functions.php");
 </head>
 <body>
 	<form method="POST">
-		<input type="hidden" name="id" value="<?php get_user_id();?>"/>
+		<input type="hidden" name="id" value="<?php echo get_user_id();?>"/>
 		<input type="text" name="confirm"/>
 		<input type="submit" value="Check In"/>
 	</form>
