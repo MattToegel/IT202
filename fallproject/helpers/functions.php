@@ -8,4 +8,13 @@ function get_username(){
 		echo "[Session missing]";
 	}
 }
+
+function get_user_id(){
+	if(isset($_SESSION['user']['id'])){
+		return $_SESSION['user']['id'];
+	}
+	else{
+		return -1;
+	}
+}
 ?>
