@@ -4,6 +4,9 @@ ini_set('display_errors',1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 ?>
+<style>
+.nav{padding:1%;}
+</style>
 <script
   src="https://code.jquery.com/jquery-3.4.1.js"
   integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
@@ -11,7 +14,7 @@ error_reporting(E_ALL);
 </script>
 <script>
 $(document).ready(function(){
-	var nav = ["My Courses", "Attendance", "CreateCourse", "Settings", "Logout"];
+	var nav = ["My Courses", "Attendance", "CreateCourse","CourseList", "Settings", "Logout"];
 
 	let n = $("<nav>");
 	$("body").prepend(n);
