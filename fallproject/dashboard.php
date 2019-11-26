@@ -1,8 +1,5 @@
 <html>
 <head>
-<style>
-.nav{padding:1%;}
-</style>
 </head>
 <body>
 <?php
