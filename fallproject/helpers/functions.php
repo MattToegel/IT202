@@ -17,4 +17,11 @@ function get_user_id(){
 		return -1;
 	}
 }
+
+function is_admin(){
+	if(isset($_SESSION['user']['isAdmin'])){
+		return $_SESSION['user']['isAdmin'];
+	}
+	return false;
+}
 ?>

@@ -11,7 +11,8 @@ error_reporting(E_ALL);
 </script>
 <script>
 $(document).ready(function(){
-	var nav = ["My Courses", "Attendance", "Settings", "Logout"];
+	var nav = ["My Courses", "Attendance", "CreateCourse", "Settings", "Logout"];
+
 	let n = $("<nav>");
 	$("body").prepend(n);
 	nav.forEach(function(item, index){

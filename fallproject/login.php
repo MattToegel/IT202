@@ -39,6 +39,22 @@ error_reporting(E_ALL);
 					$user = array("id"=> $results['id'],
 								"name"=> $results['username']
 								);
+					//TODO refactor
+					$sql = "select value from `System_Properties` where `key` = :key";
+					$stmt = $db->prepare($sql);
+					$r = $stmt->execute(array(":key"=>"admins"));
+					$result = $stmt->fetch(PDO::FETCH_ASSOC);
+					$user["isAdmin"] = false;
+					echo var_export($result, true);
+					if($result){
+						if(strpos($result['value'], ($user["id"]."")) !== false){
+							$user["isAdmin"] = true;
+						}
+					}
+					else{
+						echo $stmt->errorInfo();
+					}
+					
 					$_SESSION['user'] = $user;
 					echo var_export($user, true);
 					echo var_export($_SESSION, true);
