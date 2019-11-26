@@ -3,7 +3,7 @@ function get_top_level_results(){
 	require("config.php");
 	$conn_string = "";
 	$db = new PDO($conn_string, $username, $password);
-	$query = "select title, text, parent, primary, secondary, third from `Posts` where id is null OR id == -1";
+	$query = "select title, text, parent, primary, secondary, third from `Posts` where parent is null OR parent == -1";
 	$stmt = $db->prepare($query);
 	$r = $stmt->execute();
 	$results = $stmt->fetchAll();
