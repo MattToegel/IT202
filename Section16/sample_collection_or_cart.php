@@ -50,7 +50,7 @@ function handle_add_to_cart(){
 		$stmt->bindValue(":prod", $id);
 		$stmt->bindValue(":user", $user_id);//todo get from session
 		$stmt->bindValue(":cart", $cart_id);//todo determine cart id
-		$r = $stmt->execute(array(":prod"=>$id, ":user"=>$user_id, etc));
+		$r = $stmt->execute();//sample using execute to bind vs bindValue: array(":prod"=>$id, ":user"=>$user_id, etc));
 		echo ($r > 0)"Successfully added $id to cart":"Failed to add $id to cart";
 	}
 }
