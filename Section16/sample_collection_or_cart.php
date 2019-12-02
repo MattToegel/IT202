@@ -37,6 +37,14 @@ function handle_add_to_cart(){
 		$user_id = $user["id"];
 		$cart_id = $_SESSION["current_collection"];
 		$db = new PDO($conn_string, $username, $password);
+		$sel = "SELECT MAX(cart_id) as cart_id from Cart";
+		$stmt = $db->prepare($sel);
+		$r = $stmt->execute();
+		$result = $stmt->fetch(PDO::FETCH_ASSOC);
+		$card_id = 1;
+		if($result){
+			$card_id = $result['cart_id'] + 1;
+		}
 		$query = "INSERT INTO Cart (product_id, user_id, cart_id) VALUES (:prod, :user, :cart)";
 		$stmt = $db->prepare($query);
 		$stmt->bindValue(":prod", $id);
