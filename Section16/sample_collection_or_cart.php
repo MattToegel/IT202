@@ -41,7 +41,7 @@ function handle_add_to_cart(){
 		$stmt = $db->prepare($sel);
 		$r = $stmt->execute();
 		$result = $stmt->fetch(PDO::FETCH_ASSOC);
-		$card_id = 1;
+		$cart_id = 1;
 		if($result){
 			$card_id = $result['cart_id'] + 1;
 		}
