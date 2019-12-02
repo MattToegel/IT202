@@ -4,14 +4,17 @@ function create_quiz(){
 	if(isset($_POST["question"])){
 		$questions = $_POST["question"];//should be an array/list for each input element with the same name
 		$type = "text";//TODO change/handle different question types
-		$total = count($quesiton);
+		$total = count($questions);
+		require("config.php");
+		$conn_string = "";
+		$db = new PDO($conn_string, $username, $password);
 		$select = "SELECT MAX(quiz_id) as quiz_id from Questions";
 		$stmt = $db->prepare($select);
 		$r = $stmt->execute();
 		$result = $stmt->fetch(PDO::FETCH_ASSOC);
 		$quiz_id = 1;//set a default in case table is empty, could be done in the select query too
 		if($result){
-			$quiz_id = $result["quiz_id"];
+			$quiz_id = $result["quiz_id"] + 1;
 		}
 		//there should be a question_id that's auto increment, this will map to answers later on
 		$query = "INSERT INTO Questions (quiz_id, question, type) VALUES";
@@ -23,9 +26,6 @@ function create_quiz(){
 					$query .= ",";
 				}
 		}
-		require("config.php");
-		$conn_string = "";
-		$db = new PDO($conn_string, $username, $password);
 		$stmt = $db->prepare($query);
 		$stmt->bindValue(":quiz_id", $quiz_id);
 		//binding loop
