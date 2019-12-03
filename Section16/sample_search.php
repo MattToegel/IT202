@@ -8,8 +8,9 @@ if(isset($_GET["search"])){
 	
 	if(count($search_terms) > 0){
 		$query .= "where";
-		for($i = 0; $i < count($search_terms); $++){
-			if($i > 0){
+		$numTerms = count($search_terms);
+		for($i = 0; $i < $numTerms; $++){
+			if($i > 0 && $i != $numTerms){
 				$query .= " OR";
 			}
 			//TODO may need to adjust how %% are handled with placeholders
