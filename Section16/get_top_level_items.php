@@ -20,7 +20,7 @@ function save_child($parent, $title, $text){
 }
 ?>
 
-<?php foreach($get_top_level_results() as $index => $row): ?>
+<?php foreach(get_top_level_results() as $index => $row): ?>
 	<article>
 		<h3><?php echo $row['title'];?></h3>
 		<p><?php echo $row['text']; ?></p>
