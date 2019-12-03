@@ -1,31 +1,38 @@
 <!--Combined samples all together, separate as needed-->
 <?php
+ini_set('display_errors',1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 function create_quiz(){
 	if(isset($_POST["question"])){
 		$questions = $_POST["question"];//should be an array/list for each input element with the same name
+		echo var_export($questions, true);
+		
 		$type = "text";//TODO change/handle different question types
 		$total = count($questions);
 		require("config.php");
-		$conn_string = "";
+		$conn_string = "mysql:host=$host;dbname=$database;charset=utf8mb4";
 		$db = new PDO($conn_string, $username, $password);
-		$select = "SELECT MAX(quiz_id) as quiz_id from Questions";
+		$select = "SELECT MAX(quiz_id) AS quiz_id from Questions;";
 		$stmt = $db->prepare($select);
 		$r = $stmt->execute();
 		$result = $stmt->fetch(PDO::FETCH_ASSOC);
+		//echo "Quiz_id: " . var_export($result, true);
 		$quiz_id = 1;//set a default in case table is empty, could be done in the select query too
 		if($result){
 			$quiz_id = $result["quiz_id"] + 1;
 		}
 		//there should be a question_id that's auto increment, this will map to answers later on
-		$query = "INSERT INTO Questions (quiz_id, question, type) VALUES";
+		$query = "INSERT INTO Questions (quiz_id, question, type, expected_answer) VALUES";
 		//query building loop
 		for($i = 0; $i < $total; $i++){
 				$query .= "(:quiz_id, :question$i, :type$i, :expected_answer$i)";
-				if($i < $total){
+				if($i < $total && ($i+1) != $total){
 					//add a comma for multiple inserts in one
 					$query .= ",";
 				}
 		}
+		//echo "<pre>" . $query . "</pre>";
 		$stmt = $db->prepare($query);
 		$stmt->bindValue(":quiz_id", $quiz_id);
 		//binding loop
@@ -50,23 +57,27 @@ function submit_response(){
 	if(isset($_POST["quiz_id"])){
 		$quiz_id = $_POST["quiz_id"];
 		$answers = $_POST["answer"];//should be an array/list
+		//echo var_export($answers, true);
+		
 		$question_ids = $_POST["question_id"];//should be an array/list
+		//echo var_export($question_ids, true);
 		$total = count($answers);
 		$user_id = 0;//TODO get user id from session
 		$query = "INSERT INTO Answers (quiz_id, question_id, answer, user_id) VALUES";
 		//dynamically prepare our query
 		for($i = 0; $i < $total; $i++){
 			$query .= "(:quiz_id, :question_id$i, :answer$i, :user_id)";
-			if($i < $total){
+			if($i < $total && ($i+1) != $total){
 				//add a comma for multiple inserts in one
 				$query .= ",";
 			}
 		}
+		//echo $query;
 		require("config.php");
-		$conn_string = "";
+		$conn_string = "mysql:host=$host;dbname=$database;charset=utf8mb4";
 		$db = new PDO($conn_string, $username, $password);
 		$stmt = $db->prepare($query);
-		$stmt->bindValue(":quiz_id", $quiz_id);
+		$stmt->bindValue(":quiz_id", (int)$quiz_id);
 		$stmt->bindValue(":user_id", $user_id);
 		//loop again to bind our answer/question mapping
 		for($i = 0; $i < $total; $i++){
@@ -76,7 +87,7 @@ function submit_response(){
 		$r = $stmt->execute();
 		//$r should be the number of rows inserted, 0 if there was an issue
 		if($r == 0){
-			return $stmt->errorInfo();
+			return var_export($stmt->errorInfo(), true);
 		}
 		else{
 			return "Successfully submitted answers!";
@@ -86,10 +97,10 @@ function submit_response(){
 }
 function get_questions($quiz_id){
 	require("config.php");
-	$conn_string = "";
+	$conn_string = "mysql:host=$host;dbname=$database;charset=utf8mb4";
 	$db = new PDO($conn_string, $username, $password);
 	//table: Quiz [id, type, question, quiz_id]
-	$query = "SELECT id, type, question, quiz_id from Quiz where quiz_id = :id";
+	$query = "SELECT id, type, question, quiz_id from Questions where quiz_id = :id";
 	$stmt = $db->prepare($query);
 	$stmt->bindValue(":id", $quiz_id);
 	$r = $stmt->execute();
@@ -106,11 +117,11 @@ echo create_quiz();
 ?>
 <!-- form for creating a quiz-->
 <form id="question_form" method="POST">
-	<input type="text" name="question"/>
-	<input type="text" name="question"/>
-	<input type="text" name="question"/>
-	<input type="text" name="question"/>
-	<input type="text" name="question"/>
+	<input type="text" name="question[]"/>
+	<input type="text" name="question[]"/>
+	<input type="text" name="question[]"/>
+	<input type="text" name="question[]"/>
+	<input type="text" name="question[]"/>
 	<!-- dynamically append more input elements if you want more questions-->
 	<input type="submit" value="Save Questionnaire"/>
 </form>
@@ -125,12 +136,13 @@ i.e., quiz.php?quiz=1-->
 			$quiz_id = $_GET["quiz"];
 		}
 		$questions = get_questions($quiz_id);
+		//echo var_export($questions, true);
 		if($questions):
 	?>
-		<input type="hidden" name="quiz_id" value="<?php echo $question["quiz_id"];?>"/>
+		<input type="hidden" name="quiz_id" value="<?php echo $quiz_id;?>"/>
 		<?php foreach($questions as $index => $question):?>
-			<input name="question_id" type="hidden" value="<?php echo $question["id"]; ?>"/>
-			<input name="answer" type="<?php echo $question["type"];?>" placeholder="<?php echo $question["question"];?>"/>
+			<input name="question_id[]" type="hidden" value="<?php echo $question["id"]; ?>"/>
+			<input name="answer[]" type="<?php echo $question["type"];?>" placeholder="<?php echo $question["question"];?>"/>
 		<?php endforeach; ?>
 	<?php endif ?>
 	<input type="Submit" value="Submit Answers"/>
