@@ -3,9 +3,8 @@ Portfolio_Images[id, portfolio_id, image]
 
 <?php
 function get_portfolio($user_id){
-	$query = "SELECT * from Portfolio as P, Portfolio_Images as PI WHERE
-	P.user_id = :user_id AND
-	P.id = PI.portfolio_id";
+	$query = "SELECT * from Portfolio as P LEFT JOIN Portfolio_Images as PI ON P.user_id = PI.portfolio_id WHERE
+	P.user_id = :user_id";
 	//...
 	return $results;
 	
