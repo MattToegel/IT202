@@ -46,7 +46,7 @@ if(	   isset($_POST['email'])
                         (:email, :password)");
 		$email = $_POST['email'];
         $params = array(":email"=> $email, 
-		":password"=> $pass);
+					":password"=> $pass);
         $stmt->execute($params);
         echo "<pre>" . var_export($stmt->errorInfo(), true) . "</pre>";
 	}
