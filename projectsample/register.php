@@ -1,10 +1,26 @@
 <html>
 	<head>
 		<title>My Project - Register</title>
+		<script>
+			function findFormsOnLoad(){
+				let myForm = document.forms.regform;
+				let mySameForm = document.getElementById("myForm");
+				console.log("Form by name", myForm);
+				console.log("Form by id", mySameForm);
+			}
+			function verifyPasswords(form){
+				if(form.password.value != form.confirm.value){
+					alert("Uhh you made a typo");
+					return false;
+				}
+				return true;
+			}
+		</script>
 	</head>
-	<body>
+	<body onload="findFormsOnLoad();">
 		<!-- This is how you comment -->
-		<form method="POST">
+		<form name="regform" id="myForm" method="POST"
+					onsubmit="return verifyPasswords(this)">
 			<label for="email">Email: </label>
 			<input type="email" id="email" name="email" placeholder="Enter Email"/>
 			<label for="pass">Password: </label>
