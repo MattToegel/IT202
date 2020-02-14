@@ -44,11 +44,19 @@ if(isset($_POST['email']) && isset($_POST['password']) && !empty($_POST['passwor
 			//if($pass == $userpassword)
 			//this is the correct way (please lookup password_verify online)
 			if(password_verify($pass, $userpassword)){
-				echo "You logged in with id of " . $result['id'];
-				echo "<pre>" . var_export($result, true) . "</pre>";
+				$id = $result['id'];
+				echo "You logged in with id of " . $id;
+				//echo "<pre>" . var_export($result, true) . "</pre>";
+				$stmt = $db->prepare("SELECT r.id, r.role_name from `Roles` r JOIN `UserRoles` ur on r.id = ur.role_id where ur.user_id = :id");
+				$stmt->execute(array(":id"=>$id));
+				$roles = $stmt->fetchAll(PDO::FETCH_ASSOC);
+				if(!$roles){
+					$roles = array();
+				}
 				$user = array(
-					"id" => $result['id'],
-					"email"=>$result['email']);
+					"id" => $id,
+					"email"=>$result['email'],
+					"roles"=> $roles);
 				$_SESSION['user'] = $user;
 				echo "Session: <pre>" . var_export($_SESSION, true) . "</pre>";
 			}
