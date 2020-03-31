@@ -32,17 +32,14 @@ For those of you that may not know what LAMP stands for it's Linux, Apache, MySQ
 
 ##Troubleshooting##
 * I forgot my root password
-	* ```bash
-	You'll probably have to redo the install```
-	* ```bash
-	sudo apt-get remove mysql-* phpmyadmin```
-	* ```bash 
-	sudo apt-get purge mysql-* phpmyadmin```
-	* ```bash 
-	sudo ./lamp.sh```
+	* You'll probably have to redo the install
+	* `sudo apt-get remove mysql-* phpmyadmin`
+	* `sudo apt-get purge mysql-* phpmyadmin`
+	* `sudo ./lamp.sh`
 * I forgot my user's password
 	* If you have root DB access (i.e., you remember the root password) you can login and update your user's password 
-		* ```
+		*  
+		```mysql
 		mysql ALTER USER 'user-name'@'localhost' IDENTIFIED BY 'NEW_USER_PASSWORD';
 		FLUSH PRIVILEGES;
 		```
