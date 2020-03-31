@@ -48,6 +48,10 @@
  sudo service apache2 restart  
 
  #Matt's changes
+ function generatePassword()
+ {
+    echo "$(openssl rand -base64 12)"
+ }
  # Install git
  echo "Installing git"
  apt-get install git -y
@@ -70,4 +74,32 @@
  sudo usermod -a -G www-data $sshuser
  echo "Added $sshuser to www-data group"
  echo $(groups $sshuser)
+ #setup MySQL DB and User (non-root)
+ #function modified from https://stackoverflow.com/a/44343801
+ function createMysqlDbUser()
+ {
+    SQL1="CREATE DATABASE IF NOT EXISTS ${DB_NAME};"
+    SQL2="CREATE USER '${DB_USER}'@'%' IDENTIFIED BY '${DB_PASS}';"
+    SQL3="GRANT ALL PRIVILEGES ON ${DB_NAME}.* TO '${DB_USER}'@'%';"
+    SQL4="FLUSH PRIVILEGES;"
+
+    if [ -f /root/.my.cnf ]; then
+        $BIN_MYSQL -e "${SQL1}${SQL2}${SQL3}${SQL4}"
+    else
+        # If /root/.my.cnf doesn't exist then it'll ask for root password
+        #_arrow "Please enter root user MySQL password!"
+        #read rootPassword
+        $BIN_MYSQL -h $DB_HOST -u root -p$db_root_password -e "${SQL1}${SQL2}${SQL3}${SQL4}"
+    fi
+ }
+ #setup mysql vars
+ BIN_MYSQL=$(which mysql)
+
+ DB_HOST='localhost'
+ DB_NAME=$sshuser
+ DB_USER=$sshuser
+ DB_PASS=$(generatePassword)
+ echo "Creating DB and user for $sshuser"
+ createMysqlDbUser
+ echo "New user password is $DB_PASS";
  
