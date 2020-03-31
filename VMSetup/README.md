@@ -1,4 +1,4 @@
-# Setup your own Virtual Machine#
+# Setup your own Virtual Machine
 You may use this script to setup your own virtual machine.
 I have compiled some online resources to get a basic lamp stack configured in a single script.
 For those of you that may not know what LAMP stands for it's Linux, Apache, MySQL, and PHP.
