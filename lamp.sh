@@ -70,7 +70,8 @@
  else
     sshuser=$answer
     echo "Using given user $sshuser"
- fisudo find /var/www/html -type d -exec chmod g+s {} +
+ fi
+ sudo find /var/www/html -type d -exec chmod g+s {} +
  #sudo usermod -a -G www-data $sshuser
  #echo "Added $sshuser to www-data group"
  #echo $(groups $sshuser)
