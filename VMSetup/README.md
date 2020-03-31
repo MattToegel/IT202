@@ -3,7 +3,7 @@ You may use this script to setup your own virtual machine.
 I have compiled some online resources to get a basic lamp stack configured in a single script.
 For those of you that may not know what LAMP stands for it's Linux, Apache, MySQL, and PHP.
 
-## Setup##
+## Setup
 1. You must run the script as sudo
 ```sudo ./lamp.sh```
 2. You'll be prompted for some info along the way
@@ -30,7 +30,7 @@ For those of you that may not know what LAMP stands for it's Linux, Apache, MySQ
 4. Your user should already have access to the /var/www/html folder and subdirectories/files.
 5. Git is already installed for your convience
 
-##Troubleshooting##
+## Troubleshooting
 * I forgot my root password
 	* You'll probably have to redo the install
 	* `sudo apt-get remove mysql-* phpmyadmin`
@@ -38,9 +38,10 @@ For those of you that may not know what LAMP stands for it's Linux, Apache, MySQ
 	* `sudo ./lamp.sh`
 * I forgot my user's password
 	* If you have root DB access (i.e., you remember the root password) you can login and update your user's password 
-		*  
 		```mysql
 		mysql ALTER USER 'user-name'@'localhost' IDENTIFIED BY 'NEW_USER_PASSWORD';
 		FLUSH PRIVILEGES;
 		```
 	* see the first issue if you don't have the password
+* I ran the script twice
+	* It should be ok as long as you didn't give different options when prompted and you'll probably get an SQL exception when it tries to create the user again (so it's safe to ignore the 'new' password that's generated since the update would have failed)
