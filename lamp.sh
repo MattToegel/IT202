@@ -63,17 +63,30 @@
  read -a details <<< "$user"
  sshuser=${details[0]}
  echo "Found user: $sshuser"
- read -p "Is this user correct? Y or desired username" answer
+ read -p "Is this user correct? [Y / desired username]: " answer
  if [[ "$answer" =~ ^([yY][eE][sS]|[yY])$ ]]
  then
     echo "Using fetched user"
  else
     sshuser=$answer
     echo "Using given user $sshuser"
- fi
- sudo usermod -a -G www-data $sshuser
- echo "Added $sshuser to www-data group"
- echo $(groups $sshuser)
+ fisudo find /var/www/html -type d -exec chmod g+s {} +
+ #sudo usermod -a -G www-data $sshuser
+ #echo "Added $sshuser to www-data group"
+ #echo $(groups $sshuser)
+ #update apache permissions and give user access
+ echo "Updating html directory permissions for $sshuser"
+ #from https://askubuntu.com/a/767534
+ #reset apache permissions
+ sudo chgrp -R www-data /var/www/html
+ sudo find /var/www/html -type d -exec chmod g+rx {} +
+ sudo find /var/www/html -type f -exec chmod g+r {} +
+ #set user as owner and give access
+ sudo chown -R USER /var/www/html/
+ sudo find /var/www/html -type d -exec chmod u+rwx {} +
+ sudo find /var/www/html -type f -exec chmod u+rw {} +
+ #set group bit so new files get the proper group applied
+ sudo find /var/www/html -type d -exec chmod g+s {} +
  #setup MySQL DB and User (non-root)
  #function modified from https://stackoverflow.com/a/44343801
  function createMysqlDbUser()
