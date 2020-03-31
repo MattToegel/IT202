@@ -1,9 +1,9 @@
-#Setup your own Virtual Machine#
+# Setup your own Virtual Machine#
 You may use this script to setup your own virtual machine.
 I have compiled some online resources to get a basic lamp stack configured in a single script.
 For those of you that may not know what LAMP stands for it's Linux, Apache, MySQL, and PHP.
 
-##Setup##
+## Setup##
 1. You must run the script as sudo
 ```sudo ./lamp.sh```
 2. You'll be prompted for some info along the way
@@ -32,10 +32,14 @@ For those of you that may not know what LAMP stands for it's Linux, Apache, MySQ
 
 ##Troubleshooting##
 * I forgot my root password
-	* ```bash You'll probably have to redo the install```
-	* ```bash sudo apt-get remove mysql-* phpmyadmin```
-	* ```bash sudo apt-get purge mysql-* phpmyadmin```
-	* ```bash sudo ./lamp.sh```
+	* ```bash
+	You'll probably have to redo the install```
+	* ```bash
+	sudo apt-get remove mysql-* phpmyadmin```
+	* ```bash 
+	sudo apt-get purge mysql-* phpmyadmin```
+	* ```bash 
+	sudo ./lamp.sh```
 * I forgot my user's password
 	* If you have root DB access (i.e., you remember the root password) you can login and update your user's password 
 		* ```
