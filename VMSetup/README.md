@@ -5,7 +5,7 @@ For those of you that may not know what LAMP stands for it's Linux, Apache, MySQ
 
 ##Setup##
 1. You must run the script as sudo
-```bash sudo ./lamp.sh```
+```sudo ./lamp.sh```
 2. You'll be prompted for some info along the way
 	1. Set a root DB password (don't forget it as it's not saved and you won't be using it to login)
 		1. Make sure this is a secure password and do not leave blank
@@ -38,6 +38,8 @@ For those of you that may not know what LAMP stands for it's Linux, Apache, MySQ
 	* ```bash sudo ./lamp.sh```
 * I forgot my user's password
 	* If you have root DB access (i.e., you remember the root password) you can login and update your user's password 
-		* ```mysql ALTER USER 'user-name'@'localhost' IDENTIFIED BY 'NEW_USER_PASSWORD';
-FLUSH PRIVILEGES;```
+		* ```
+		mysql ALTER USER 'user-name'@'localhost' IDENTIFIED BY 'NEW_USER_PASSWORD';
+		FLUSH PRIVILEGES;
+		```
 	* see the first issue if you don't have the password
