@@ -83,7 +83,7 @@
  sudo find /var/www/html -type d -exec chmod g+rx {} +
  sudo find /var/www/html -type f -exec chmod g+r {} +
  #set user as owner and give access
- sudo chown -R USER /var/www/html/
+ sudo chown -R $sshuser /var/www/html/
  sudo find /var/www/html -type d -exec chmod u+rwx {} +
  sudo find /var/www/html -type f -exec chmod u+rw {} +
  #set group bit so new files get the proper group applied
