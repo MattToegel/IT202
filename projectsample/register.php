@@ -47,7 +47,7 @@ if(	   isset($_POST['email'])
 		<style>
 		body{
 			background-color: black;
-			background-image: url('https://media.giphy.com/media/W1Z8qTU2r9DvRis4z0/giphy.gif');
+			//background-image: url('https://media.giphy.com/media/W1Z8qTU2r9DvRis4z0/giphy.gif');
 			color: white;
 		}
 		</style>
