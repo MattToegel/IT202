@@ -12,6 +12,7 @@ require_once __DIR__ . '/lib/model/Story.php';
 require_once __DIR__ . '/lib/service/Container.php';
 require_once __DIR__ . '/lib/service/Users.php';
 require_once __DIR__ . '/lib/service/Stories.php';
+require_once __DIR__ . '/helpers/functions.php';
 session_start();
 
 

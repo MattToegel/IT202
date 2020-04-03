@@ -1,5 +1,5 @@
 <?php
-
+//TODO update this according to new bootstrap/autoloader layout
 	function is_logged_in(){
 		if(isset($_SESSION['user'])){
 			return true;
