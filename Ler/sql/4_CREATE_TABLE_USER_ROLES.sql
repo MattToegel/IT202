@@ -7,6 +7,6 @@ CREATE TABLE IF NOT EXISTS `UserRoles` (
 `is_active` boolean default 1,
 PRIMARY KEY (`id`),
 FOREIGN KEY (`role_id`) REFERENCES Roles(`id`) ON DELETE CASCADE,
-FOREIGN KEY (`user_id`) REFERENCES StoryUSers(`id`) ON DELETE CASCADE
+FOREIGN KEY (`user_id`) REFERENCES StoryUsers(`id`) ON DELETE CASCADE
 ) CHARACTER SET utf8 COLLATE utf8_general_ci
  
