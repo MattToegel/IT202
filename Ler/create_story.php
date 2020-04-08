@@ -4,7 +4,7 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 require("bootstrap.php");
 
-if(isset($_POST['create_story'])){
+if(isset($_POST['save_story'])){
 	//TODO validate other data
 	$title = $_POST['title'];
 	$summary = $_POST['summary'];
@@ -19,14 +19,8 @@ if(isset($_POST['create_story'])){
 }
 
 ?>
-<form method="POST">
-	<div>
-		<label for="title">Title:</label><input type="text" min="1" name="title" id="title"/>
-	</div>
-	<div>
-		<label for="summary">Summary:</label><input type="text" min="1" name="summary" id="summary"/>
-	</div>
-	<div>
-		<input type="Submit" name="create_story" value="Save"/>
-	</div>
-</form>
+<?php
+ //init var to empty
+ $story ="";
+ include("partials/story.form.partial.php");
+ ?>

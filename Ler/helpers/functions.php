@@ -31,4 +31,16 @@
 			exit();
 		}
 	}
+
+    /*** Used to echo out a key of an array where it doesn't matter if it exists or not
+     * @param $ar
+     * @param $key
+     */
+	function show($ar, $key){
+	    if(isset($ar) && isset($ar["$key"])){
+	        echo $ar["$key"];
+	        return;
+	    }
+	    echo "";
+    }
 ?>

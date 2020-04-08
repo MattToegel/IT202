@@ -13,11 +13,9 @@ if(isset($_SESSION['user'])){
 }
 
 ?>
-<?php if (isset($stories)):?>
+<?php if (isset($stories) && isset($stories["stories"])):?>
 <div>stories arrived</div>
 	<?php foreach($stories["stories"] as $story):?>
-		<div>Title: <?php echo $story['title'];?></div>
-		<div>Summary: <?php echo $story['summary'];?></div>
-		<div>Author: <?php echo $story['author'];?></div>
+        <?php include('partials/story.partial.php');?>
 	<?php endforeach; ?>
 <?php endif; ?>
