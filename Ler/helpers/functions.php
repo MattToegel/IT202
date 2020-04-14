@@ -1,46 +1,71 @@
 <?php
+class Utils{
 //TODO update this according to new bootstrap/autoloader layout
-	function is_logged_in(){
-		if(isset($_SESSION['user'])){
-			return true;
-		}
-		return false;
-	}
-	
-	function is_admin(){
-		if(isset($_SESSION['user']) && isset($_SESSION['user']['roles'])){
-			//updated to handle rows and assoc values
-			$rows = $_SESSION['user']['roles'];
-			foreach($rows as $row){
-				foreach($row as $key => $value){
-					if($value == "admin"){
-						return true;
-					}
-				}
-			}
-			/*flat array
-			if(in_array("admin", $_SESSION['user']['roles'])){
-				return true;
-			}*/
-		}
-		return false;
-	}
-	function is_admin_redirect(){
-		if(!is_admin()){
-			header("Location: login.php");
-			exit();
-		}
-	}
+//4-14-20 Updated to boostrap style
+    public static function isLoggedIn($redirect = false){
+        if (isset($_SESSION['user'])) {
+            return true;
+        }
+        if($redirect){
+            header("Location: login.php");
+        }
+        return false;
+    }
 
+    public static function isAdmin($redirect=false){
+        if (isset($_SESSION['user'])){
+            $user = $_SESSION['user'];
+            if($user->hasRoleByName("admin")){
+                return true;
+            }
+        }
+        if($redirect){
+            header("Location: login.php");
+        }
+        return false;
+    }
+    public static function getLoggedInUser($redirect=false){
+        if(Utils::isLoggedIn($redirect)){
+            return $_SESSION['user'];
+        }
+        return false;
+    }
+    public static function login($user){
+        unset($_SESSION['user']);
+        $_SESSION['user'] = $user;
+    }
+    public static function logout(){
+        session_unset();
+        session_destroy();
+        header("Location: logout.php");
+    }
     /*** Used to echo out a key of an array where it doesn't matter if it exists or not
      * @param $ar
      * @param $key
      */
-	function show($ar, $key){
-	    if(isset($ar) && isset($ar["$key"])){
-	        echo $ar["$key"];
-	        return;
-	    }
-	    echo "";
+    public static function show($ar, $key){
+        if (isset($ar) && isset($ar["$key"])) {
+            echo $ar["$key"];
+            return;
+        }
+        echo "";
     }
-?>
+    public static function flash($msg){
+        if(isset($_SESSION['flash'])){
+            array_push($_SESSION['flash'], $msg);
+        }
+        else{
+            $_SESSION['flash'] = array();
+            array_push($_SESSION['flash'], $msg);
+        }
+
+    }
+    public static function getMessages(){
+        if(isset($_SESSION['flash'])){
+            $flashes = $_SESSION['flash'];
+            $_SESSION['flash'] = array();
+            return $flashes;
+        }
+        return array();
+    }
+}

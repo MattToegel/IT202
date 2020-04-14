@@ -28,7 +28,8 @@ if(isset($_POST['email']) && isset($_POST['password']) && !empty($_POST['passwor
 	echo var_export($user,true);
 	echo var_dump($user->hasRoleByName("admin"));
 	if($user){
-		$_SESSION['user'] = $user;
+		//$_SESSION['user'] = $user;
+		Utils::login($user);
 		header("Location: home.php");
 	}
 }

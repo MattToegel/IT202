@@ -4,12 +4,13 @@ class Users{
 	private $query_login;
 	private $query_register;
 	private $query_getroles;
+    private $query_update_profile;
 	public function __construct(PDO $pdo){
 		$this->pdo = $pdo;
 		$this->query_login = file_get_contents(__DIR__ . "/../../queries/login.sql");
 		$this->query_register = file_get_contents(__DIR__ . "/../../queries/register.sql");
 		$this->query_getroles = file_get_contents(__DIR__ . "/../../queries/getroles.sql");
-		
+		$this->query_update_profile = file_get_contents(__DIR__ . "/../../queries/update_profile.sql");
 	}
 	private function getDB(){
 		return $this->pdo;
@@ -84,5 +85,27 @@ class Users{
 		}
 		return null;
 	}
+	public function update_profile($user_id, $email, $username){
+	    //TODO shouldn't be too lax on email since this would be the only way they can recover their password
+        //TODO or get notifications etc
+        //TODO add validation
+        $stmt =  $this->pdo->prepare($this->query_update_profile);
+        $r = $stmt->execute(
+            array(
+                ":email"=>$email,
+                ":username"=>$username,
+                ":id" => $user_id
+            )
+        );
+        $ei = $stmt->errorInfo();
+        if($ei[0] == "00000"){
+            return true;
+        }
+        else{
+            return var_export($ei, true);
+        }
+        return false;
+        //TODO make sure it worked
+    }
 }
 ?>

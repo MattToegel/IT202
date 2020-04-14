@@ -17,7 +17,7 @@ class User{
 		return $this->username;
 	}
 	public function getEmail(){
-		return $this->username;
+		return $this->email;
 	}
 	public function hasRoleByName($roleName){
 		foreach($this->roles as $r){
@@ -35,5 +35,8 @@ class User{
 		return false;
 		//return in_array($role, $roles);
 	}
+	public function getRoles(){
+	    return $this->roles;
+    }
 }
 ?>
