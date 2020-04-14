@@ -46,8 +46,8 @@ if(	   isset($_POST['email'])
 	$confirm = $_POST['confirm'];
 	$username = $_POST['username'];
 	$email = $_POST['email'];
-	require("bootstrap.php");
+	//details are validated in the class method of register
 	$users = $container->getUsers();
-	echo var_export($users->register($username, $email, $pass, $confirm),true);
+	Utils::flash(($users->register($username, $email, $pass, $confirm)['message']));
 }
 ?>
