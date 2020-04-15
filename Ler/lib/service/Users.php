@@ -29,13 +29,12 @@ class Users{
 					if(!$results){
 						$results = array();
 					}
-					$user = new User(
-						$result['id'],
-						$result['username'],
-						$result['email'],
-						$results//roles if any
-					);
-					return $user;
+					return new User(
+                        $result['id'],
+                        $result['username'],
+                        $result['email'],
+                        $results//roles if any
+                    );;
 				}
 			}
 		}
@@ -108,4 +107,3 @@ class Users{
         //TODO make sure it worked
     }
 }
-?>

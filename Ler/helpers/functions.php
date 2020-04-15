@@ -45,10 +45,12 @@ class Utils{
      */
     public static function show($ar, $key){
         if (isset($ar) && isset($ar["$key"])) {
-            echo $ar["$key"];
-            return;
+
+            echo trim($ar["$key"]);
         }
-        echo "";
+        else {
+            echo "";
+        }
     }
     public static function flash($msg){
         if(isset($_SESSION['flash'])){

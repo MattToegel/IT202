@@ -13,4 +13,3 @@ class Role{
 		return $this->name;	
 	}
 }
-?>

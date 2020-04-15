@@ -1,0 +1,1 @@
+UPDATE Stories set title=:title, summary=:summary WHERE id=:story_id

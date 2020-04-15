@@ -2,7 +2,10 @@
 ini_set('display_errors',1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-require("bootstrap.php");
+ //TODO making it dynamically load boostrap if we're not using the routing sample
+ if (!isset($container)) {
+     require("bootstrap.php");
+ }
 
 if(isset($_POST['create_arc'])){
 	//TODO validate other data

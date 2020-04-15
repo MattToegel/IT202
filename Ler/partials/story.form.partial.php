@@ -5,7 +5,12 @@
     </div>
     <div class="form-group">
         <label for="summary">Summary:</label>
-        <textarea class="form-control" min="1" name="summary" id="summary" value="<?php Utils::show($story,"summary");?>"></textarea>
+        <textarea class="form-control" min="1" name="summary" id="summary"><?php
+            //by placing the opening and closing tags immediately after and before the textarea tags
+            //it prevents "mysterious" whitespace from showing up in our prefill
+            //anything between the textarea tags is read as a default value including whitespace
+            Utils::show($story,"summary");
+        ?></textarea>
     </div>
     <div class="">
         <?php

@@ -2,8 +2,7 @@
 class Container{
 	
 	private $config;
-    public function __construct(array $configuration)
-    {
+    public function __construct(array $configuration){
         $this->config = $configuration;
     }
 	
@@ -43,4 +42,3 @@ class Container{
 		return $this->arcs;
 	}
 }
-?>

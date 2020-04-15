@@ -44,4 +44,3 @@ class Story{
 		return $this->is_active;
 	}
 }
-?>
