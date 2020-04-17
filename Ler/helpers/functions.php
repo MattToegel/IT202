@@ -52,6 +52,15 @@ class Utils{
             echo "";
         }
     }
+    public static function get($ar, $key){
+        if (isset($ar) && isset($ar["$key"])) {
+
+            return trim($ar["$key"]);
+        }
+        else {
+            return "";
+        }
+    }
     public static function flash($msg){
         if(isset($_SESSION['flash'])){
             array_push($_SESSION['flash'], $msg);

@@ -1,8 +1,8 @@
 <?php
 //TODO making it dynamically load boostrap if we're not using the routing sample
 if (!isset($container)) {
-    require("bootstrap.php");
+    require(__DIR__ . "/../bootstrap.php");
 }
 
 ?>
-<a href="story.php">Create Story</a>
+<a href="storyform.php">Create Story</a>

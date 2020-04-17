@@ -1,10 +1,7 @@
 <?php
-ini_set('display_errors',1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 //TODO making it dynamically load boostrap if we're not using the routing sample
 if (!isset($container)) {
-    require("bootstrap.php");
+    require(__DIR__ . "/../bootstrap.php");
 }
 
 if(isset($_REQUEST['user'])){

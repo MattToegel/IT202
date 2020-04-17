@@ -23,11 +23,14 @@ require("bootstrap.php");
                     <li class="nav-item">
                         <a class="nav-link" href="index.php?register">Register</a>
                     </li>
+                    <?php endif; ?>
+                    <?php if(Utils::isLoggedIn()):?>
                     <li class="nav-item">
                         <a class="nav-link" href="index.php?story/create">Create Story</a>
                     </li>
-                    <?php endif; ?>
-                    <?php if(Utils::isLoggedIn()):?>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.php?stories">My Stories</a>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="index.php?profile">Profile</a>
                     </li>
