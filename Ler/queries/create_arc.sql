@@ -1,0 +1,1 @@
+INSERT INTO Arcs (title, content, story_id) VALUES(:title, :content, :story_id)
