@@ -36,8 +36,15 @@ if (count($_GET) > 0) {
             case "story/edit":
                 include($BASE . "/storyform.php");
                 break;
+            case "mystories":
+                $mystories = true;
+                include ($BASE . "/stories.php");
+                break;
             case "stories":
                 include ($BASE . "/stories.php");
+                break;
+            case "story/view":
+                include($BASE . "/story.php");
                 break;
             case "arc/edit":
             case "arc/create":
