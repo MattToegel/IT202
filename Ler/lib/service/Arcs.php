@@ -6,6 +6,8 @@ class Arcs{
     private $query_update_decision;
     private $query_get_arc;
     private $query_get_decisions;
+    private $query_remove_decisions;
+    private $query_create_decision;
     public function __construct(PDO $pdo){
         $this->pdo = $pdo;
         $this->query_create_arc = file_get_contents(__DIR__ . "/../../queries/create_arc.sql");
@@ -13,6 +15,9 @@ class Arcs{
         $this->query_update_decision = file_get_contents(__DIR__ . "/../../queries/update_decision.sql");
         $this->query_get_arc = file_get_contents(__DIR__ . "/../../queries/get_arc.sql");
         $this->query_get_decisions = file_get_contents(__DIR__. '/../../queries/get_decisions_for_arc.sql');
+        $this->query_remove_decisions = file_get_contents(__DIR__ . '/../../queries/remove_decisions.sql');
+        $this->query_create_decision = file_get_contents(__DIR__ . "/../../queries/create_decision.sql");
+        $this->query_get_story_arcs = file_get_contents(__DIR__ . '/../../queries/get_story_arcs.sql');
     }
     private function getDB(){
         return $this->pdo;
@@ -70,7 +75,7 @@ class Arcs{
             return $e->getMessage();
         }
     }
-    public function update_arc($arc_id, $title, $content, $decisions = array()){
+    public function update_arc($arc_id, $title, $content, $visibility = Visibility::draft, $decisions = array()){
         //TODO do server side validation for parameters
         try{
             $stmt = $this->pdo->prepare($this->query_update_arc);
@@ -79,6 +84,7 @@ class Arcs{
                     ":title"=>$title,
                     ":content"=>$content,
                     //":author"=>$author_id,
+                    ":visibility"=>$visibility,
                     ":arc_id"=>$arc_id
                 )
             );
@@ -88,15 +94,19 @@ class Arcs{
             /*UPDATE Decisions set next_arc_id = NVL(:next_arc_id, -1)
                  where id in (:list_of_decisions)
             */
+            //Decided to delete all associated decisions and reapply
+            //lazy way to handle adding new, updating existing, and removing removed items
+            $stmt = $this->pdo->prepare($this->query_remove_decisions);
+            $stmt->execute(array(":arc_id"=>$arc_id));
             //TODO improve efficiency, though should really be ok for <5 decisions since
             //TODO the anticipated limit is 3
             foreach ($decisions as $d){
-                $stmt = $this->pdo->prepare($this->query_update_decision);
+                $stmt = $this->pdo->prepare($this->query_create_decision);
                 //echo var_export($d, true);
                 $stmt->execute(array(
                     ":parent_arc_id" => $arc_id,
                     ":next_arc_id"=> $d->getNextArcId(),
-                    ":decision_id"=> $d->getId(),
+                    //":decision_id"=> $d->getId(),
                     ":content" => $d->getContent()
                 ));
                 //echo var_export($stmt->errorInfo(), true);
@@ -114,7 +124,7 @@ class Arcs{
             return $e->getMessage();
         }
     }
-    public function create_arc($title, $content, $story_id, $decisions = array()){
+    public function create_arc($title, $content, $story_id, $visibility = Visibility::draft, $decisions = array()){
         //TODO do server side validation for parameters
         try{
             $stmt = $this->pdo->prepare($this->query_create_arc);
@@ -122,6 +132,7 @@ class Arcs{
                 array(
                     ":title"=>$title,
                     ":content"=>$content,
+                    ":visibility"=>$visibility,
                     ":story_id"=>$story_id
                 )
             );
@@ -130,15 +141,16 @@ class Arcs{
             //TODO improve efficiency, though should really be ok for <5 decisions since
             //TODO the anticipated limit is 3
             foreach ($decisions as $d){
-                $stmt = $this->pdo->prepare($this->query_update_decision);
+                $stmt = $this->pdo->prepare($this->query_create_decision);
                 $stmt->execute(array(
                     ":parent_arc_id" => $arc_id,
                     ":next_arc_id"=> $d->getNextArcId(),
-                    ":decision_id"=> $d->getId(),
+                   // ":decision_id"=> $d->getId(),
                     ":content" => $d->getContent()
                 ));
 
             }
+
             if($ei[0] == "00000"){
                 return array("status"=>"success", "message"=>"Created arc");
             }
@@ -164,6 +176,27 @@ class Arcs{
             $ei = $stmt->errorInfo();
             if ($ei[0] == "00000") {
                 return array("status" => "success", "arc" => $result);
+            } else {
+                return array("status" => "error", "message" => "An unknown error occurred, please try again later",
+                    "errorInfo" => $ei);
+            }
+        }
+        catch(Exception $e){
+            return $e->getMessage();
+        }
+    }
+    public function get_story_arcs($story_id){
+        try{
+            $stmt = $this->pdo->prepare($this->query_get_story_arcs);
+            $r = $stmt->execute(
+                array(
+                    ":story_id"=>$story_id
+                )
+            );
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $ei = $stmt->errorInfo();
+            if ($ei[0] == "00000") {
+                return array("status" => "success", "arcs" => $results);
             } else {
                 return array("status" => "error", "message" => "An unknown error occurred, please try again later",
                     "errorInfo" => $ei);

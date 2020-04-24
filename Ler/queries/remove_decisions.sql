@@ -1,0 +1,1 @@
+DELETE FROM Decisions where parent_id = :arc_id

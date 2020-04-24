@@ -16,7 +16,7 @@ if (count($_GET) > 0) {
     $BASE = "templates";
     $path = array_key_first($_GET);
     if (isset($path)) {
-        Utils::flash($path);
+        //Utils::flash($path);
         switch ($path) {
             case "home":
                 include($BASE . "/home.php");
@@ -42,6 +42,9 @@ if (count($_GET) > 0) {
             case "arc/edit":
             case "arc/create":
                 include ($BASE . "/arcform.php");
+                break;
+            case "arc/view":
+                include ($BASE . "/arc.php");
                 break;
             default:
                 break;

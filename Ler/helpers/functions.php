@@ -80,3 +80,8 @@ class Utils{
         return array();
     }
 }
+abstract class Visibility{
+    const draft = 0;
+    const private = 1;
+    const public = 2;
+}
