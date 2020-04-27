@@ -1,1 +1,1 @@
-SELECT * from Stories where author = :author 
+SELECT s.id as story_id,s.* from Stories s where author = :author

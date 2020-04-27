@@ -7,6 +7,7 @@ class Stories{
 	private $query_update_story;
 	private $query_get_story;
 	private $query_get_stories;
+	private $query_set_starting_arc;
 	public function __construct(PDO $pdo){
 		$this->pdo = $pdo;
 		$this->query_create_story = file_get_contents(__DIR__ . "/../../queries/create_story.sql");
@@ -15,6 +16,7 @@ class Stories{
 		$this->query_update_story = file_get_contents(__DIR__  . "/../../queries/update_story.sql");
         $this->query_get_story = file_get_contents(__DIR__ . "/../../queries/get_story.sql");
         $this->query_get_stories = file_get_contents(__DIR__ . '/../../queries/get_stories.sql');
+        $this->query_set_starting_arc = file_get_contents(__DIR__ . '/../../queries/set_starting_arc.sql');
 	}
 	private function getDB(){
 		return $this->pdo;
@@ -122,7 +124,30 @@ class Stories{
 			return $e->getMessage();
 		}
 	}
-	public function update_story($story_id, $title, $summary){
+	public function set_starting_arc($story_id, $arc_id){
+        //TODO do server side validation for parameters
+        try{
+            $stmt = $this->pdo->prepare($this->query_set_starting_arc);
+            $r = $stmt->execute(
+                array(
+                    ":story_id"=>$story_id,
+                    ":arc_id"=>$arc_id
+                )
+            );
+            $ei = $stmt->errorInfo();
+            if($ei[0] == "00000"){
+                return array("status"=>"success", "message"=>"Assigned starting arc");
+            }
+            else{
+                return array("status"=>"error","message"=>"An unknown error occurred, please try again later",
+                    "errorInfo"=>$ei);
+            }
+        }
+        catch(Exception $e){
+            return $e->getMessage();
+        }
+    }
+	public function update_story($story_id, $title, $summary, $visibility){
         //TODO do server side validation for parameters
         try{
             $stmt = $this->pdo->prepare($this->query_update_story);
@@ -131,7 +156,8 @@ class Stories{
                     ":title"=>$title,
                     ":summary"=>$summary,
                     //":author"=>$author_id,
-                    ":story_id"=>$story_id
+                    ":story_id"=>$story_id,
+                    ":visibility"=>$visibility
                 )
             );
             $ei = $stmt->errorInfo();
@@ -147,7 +173,7 @@ class Stories{
             return $e->getMessage();
         }
     }
-	public function create_story($title, $summary, $author_id){
+	public function create_story($title, $summary, $author_id, $visibility){
 		//TODO do server side validation for parameters
 		try{
 			$stmt = $this->pdo->prepare($this->query_create_story);
@@ -155,12 +181,13 @@ class Stories{
 						array(
 							":title"=>$title, 
 							":summary"=>$summary, 
-							":author"=>$author_id
+							":author"=>$author_id,
+                            ":visibility"=>$visibility
 							)
 			);
 			$ei = $stmt->errorInfo();
 			if($ei[0] == "00000"){
-				return array("status"=>"success", "message"=>"Created story");
+				return array("status"=>"success", "message"=>"Created story", "story_id" => $this->pdo->lastInsertId());
 			}
 			else{
 				return array("status"=>"error","message"=>"An unknown error occurred, please try again later",

@@ -11,10 +11,13 @@ require("bootstrap.php");
     <body>
         <div class="container-fluid">
         <header>
-            <nav>
-                <ul class="nav">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <ul class="navbar-nav mr-auto">
                     <li class="nav-item">
-                        <a class="nav-link active" href="index.php?home">Home</a>
+                        <a class="nav-link" href="index.php?home">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.php?stories">Stories</a>
                     </li>
                     <?php if(!Utils::isLoggedIn()):?>
                     <li class="nav-item">
@@ -29,7 +32,7 @@ require("bootstrap.php");
                         <a class="nav-link" href="index.php?story/create">Create Story</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="index.php?stories">My Stories</a>
+                        <a class="nav-link" href="index.php?mystories">My Stories</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="index.php?profile">Profile</a>

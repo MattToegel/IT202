@@ -8,6 +8,8 @@ class Arcs{
     private $query_get_decisions;
     private $query_remove_decisions;
     private $query_create_decision;
+    private $query_get_story_arcs;
+    private $query_delete_arc;
     public function __construct(PDO $pdo){
         $this->pdo = $pdo;
         $this->query_create_arc = file_get_contents(__DIR__ . "/../../queries/create_arc.sql");
@@ -18,6 +20,7 @@ class Arcs{
         $this->query_remove_decisions = file_get_contents(__DIR__ . '/../../queries/remove_decisions.sql');
         $this->query_create_decision = file_get_contents(__DIR__ . "/../../queries/create_decision.sql");
         $this->query_get_story_arcs = file_get_contents(__DIR__ . '/../../queries/get_story_arcs.sql');
+        $this->query_delete_arc = file_get_contents(__DIR__.'/../../queries/delete_arc.sql');
     }
     private function getDB(){
         return $this->pdo;
@@ -152,13 +155,38 @@ class Arcs{
             }
 
             if($ei[0] == "00000"){
-                return array("status"=>"success", "message"=>"Created arc");
+                return array("status"=>"success", "message"=>"Created arc", "arc_id"=>$arc_id);
             }
             else{
+                Utils::flash(var_export($ei, true));
                 return array("status"=>"error","message"=>"An unknown error occurred, please try again later",
                     "errorInfo"=>$ei);
             }
             //return $stmt->errorInfo();
+        }
+        catch(Exception $e){
+            return $e->getMessage();
+        }
+    }
+    public function delete_arc($arc_id){
+        try{
+            //delete decisions
+            $stmt = $this->pdo->prepare($this->query_remove_decisions);
+            $stmt->execute(array(":arc_id"=>$arc_id));
+            //delete arc
+            $stmt = $this->pdo->prepare($this->query_delete_arc);
+            $r = $stmt->execute(
+                array(
+                    ":arc_id"=>$arc_id
+                )
+            );
+            $ei = $stmt->errorInfo();
+            if ($ei[0] == "00000") {
+                return array("status" => "success", "message" => "Arc successfully deleted");
+            } else {
+                return array("status" => "error", "message" => "An unknown error occurred, please try again later",
+                    "errorInfo" => $ei);
+            }
         }
         catch(Exception $e){
             return $e->getMessage();

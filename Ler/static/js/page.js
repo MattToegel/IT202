@@ -10,9 +10,9 @@ $(function() {
             if(limit > -1){
                 let count = target.find("[data-toggle=fieldset-entry]").length;
                 if(count >= limit){
-                    return;
-                }
+                return;
             }
+        }
             console.log(target);
             let oldrow = target.find("[data-toggle=fieldset-entry]:last");
             let row = oldrow.clone(true, true);
@@ -20,10 +20,12 @@ $(function() {
             let elem_id = row.find(":input")[0].id;
             let elem_num = parseInt(elem_id.replace(/.*-(\d{1,4})-.*/m, '$1')) + 1;
             row.attr('data-id', elem_num);
-            row.find(":button").each(function() {
+            row.find(":input").each(function() {
                 console.log(this);
-                let id = $(this).attr('id').replace('-' + (elem_num - 1) + '-', '-' + (elem_num) + '-');
-                $(this).attr('name', id).attr('id', id).val('').removeAttr("checked");
+                if($(this).attr('id') !== undefined) {
+                    let id = $(this).attr('id').replace('-' + (elem_num - 1) + '-', '-' + (elem_num) + '-');
+                    $(this).attr('data-name', id).attr('id', id).val('').removeAttr("checked");
+                }
             });
             oldrow.after(row);
         }); //End add new entry

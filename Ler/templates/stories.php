@@ -14,48 +14,53 @@ if(isset($mystories) && Utils::isLoggedIn()){
 	$author_id = $user->getId();
 
 	$result = $stories_service->get_all_user_stories($author_id);
-	if($result['status'] == 'success'){
-		$stories = $result['stories'];
-	}
-	else{
-		Utils::flash($result['message']);
+    if(Utils::get($result, "status","error") == 'success'){
+        $stories = Utils::get($result, "stories");
+    }
+    else{
+        Utils::flash(Utils::get($result, "message"));
 	}
 	//echo var_export($stories, true);
 }
 else{
-	$title = "";
-	$author_name = "";
-	if(isset($_POST['title'])){
-		$title = $_POST['title'];
-	}
-	if(isset($_POST['author'])){
-		$author_name = $_POST['author'];
-	}
+	$title = Utils::get($_POST, "title");
+	$author_name = Utils::get($_POST, "author");
 	$result = $stories_service->get_stories($title, $author_name);
-	if($result['status'] == 'success'){
-		$stories = $result['stories'];
+	if(Utils::get($result, "status","error") == 'success'){
+		$stories = Utils::get($result, "stories");
 	}
 	else{
-		Utils::flash($result['message']);
+		Utils::flash(Utils::get($result, "message"));
 	}
 }
 
 ?>
 <?php if(!isset($mystories)):?>
- <form method="POST">
-	 <div class="form-group">
-		 <label>Title</label>
-		 <input class="form-control" type="text" name="title" value="<?php Utils::show($_POST, "title");?>"/>
+ <form class="form-inline" method="POST">
+	 <div class="form-group m-1">
+		 <label class="mr-1" for="title">Title</label>
+		 <input id="title" class="form-control" type="text" name="title" value="<?php Utils::show($_POST, "title");?>"/>
 	 </div>
-	 <div class="form-group">
-		 <label>Title</label>
-		 <input class="form-control" type="text" name="author" <?php Utils::show($_POST, "author");?>/>
+	 <div for="author" class="form-group m-1">
+		 <label class="mr-1">Author Name</label>
+		 <input id="author" class="form-control" type="text" name="author" <?php Utils::show($_POST, "author");?>/>
 	 </div>
-	 <input class="btn btn-primary" type="submit" value="Filter"/>
+	 <input class="btn btn-primary" type="submit" value="Search"/>
  </form>
 <?php endif;?>
-<?php if (isset($stories)):?>
+<?php if (isset($stories) && count($stories) > 0 ):?>
 	<?php foreach($stories as $story):?>
+        <?php
+        //used for my stories since there's no join on user table to get name
+        //we'll cheatsy it here
+        if(isset($user) && !isset($story['username'])){
+            if(Utils::get($story, 'author') == $user->getId()){
+                $story['username'] = $user->getUsername();
+            }
+        }
+        ?>
         <?php include(__DIR__.'/../partials/story.partial.php');?>
 	<?php endforeach; ?>
+<?php else:?>
+<p class="alert alert-secondary">No stories found, try broadening your search.</p>
 <?php endif; ?>

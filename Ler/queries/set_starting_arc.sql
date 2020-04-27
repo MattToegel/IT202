@@ -1,0 +1,1 @@
+UPDATE Stories set starting_arc = :arc_id where id = :story_id

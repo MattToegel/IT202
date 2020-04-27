@@ -17,9 +17,9 @@ if(!isset($arc_id)){
             ?></textarea>
         <select name="nextarc[]">
             <option value="-1">Select a target Arc</option>
-            <?php if (isset($myarcs)):?>
-                <?php foreach($myarcs as $_arc):?>
-                    <?php if($_arc["id"] != $arc_id):?>
+            <?php if (isset($arcs)):?>
+                <?php foreach($arcs as $_arc):?>
+                    <?php if(Utils::get($_arc, "id") != $arc_id):?>
                         <option
                                 <?php if(Utils::get($_arc, "id") == Utils::get($decision,"next_arc_id"))echo"selected";?>
                                 value="<?php Utils::show($_arc, "id");?>"><?php

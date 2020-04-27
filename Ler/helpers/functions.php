@@ -7,7 +7,7 @@ class Utils{
             return true;
         }
         if($redirect){
-            header("Location: login.php");
+            die(header("Location: index.php?login"));
         }
         return false;
     }
@@ -39,26 +39,34 @@ class Utils{
         session_destroy();
         header("Location: logout.php");
     }
+
     /*** Used to echo out a key of an array where it doesn't matter if it exists or not
      * @param $ar
      * @param $key
+     * @param string $default
      */
-    public static function show($ar, $key){
+    public static function show($ar, $key, $default = ""){
         if (isset($ar) && isset($ar["$key"])) {
-
-            echo trim($ar["$key"]);
+            $v = $ar["$key"];
+            if(is_string($v)){
+                $v = trim($ar["$key"]);
+            }
+            echo $v;
         }
         else {
-            echo "";
+            echo $default;
         }
     }
-    public static function get($ar, $key){
+    public static function get($ar, $key, $default = ""){
         if (isset($ar) && isset($ar["$key"])) {
-
-            return trim($ar["$key"]);
+            $v = $ar["$key"];
+            if(is_string($v)){
+               $v = trim($ar["$key"]);
+            }
+            return $v;
         }
         else {
-            return "";
+            return $default;
         }
     }
     public static function flash($msg){

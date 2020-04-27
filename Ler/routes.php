@@ -32,7 +32,7 @@ if (count($_GET) > 0) {
                 break;
             case "story/create": //for now, fall down to next case since it's the same
                 //include("storyform.php");
-                //break;
+                //                //break;
             case "story/edit":
                 include($BASE . "/storyform.php");
                 break;
@@ -52,6 +52,9 @@ if (count($_GET) > 0) {
                 break;
             case "arc/view":
                 include ($BASE . "/arc.php");
+                break;
+            case "arc/delete":
+                include ($BASE . "/delete_arc.php");
                 break;
             default:
                 break;

@@ -1,1 +1,1 @@
-INSERT INTO Stories (title, summary, author) VALUES(:title, :summary, :author) 
+INSERT INTO Stories (title, summary, author, visibility) VALUES(:title, :summary, :author, :visibility)
