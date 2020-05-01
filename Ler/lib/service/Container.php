@@ -41,4 +41,12 @@ class Container{
 		}
 		return $this->arcs;
 	}
+
+	private $history;
+	public function getHistory(){
+	    if($this->history === null){
+	        $this->history = new History($this->getDB());
+        }
+	    return $this->history;
+    }
 }
