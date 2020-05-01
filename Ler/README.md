@@ -33,8 +33,8 @@
         - [x] Will be able to edit/revise previously posted arcs
         - [x] Will be able to edit/revise previously set choices
         - [x] Will be able to mark a story as public, private, draft
-        - [ ] Will be able to delete their stories
-        - [ ] Will be able to delete their choice (deleted via Deleting Arcs)
+        - [x] Will be able to delete their stories
+        - [x] Will be able to delete their choice (deleted via Deleting Arcs)
         - [x] Stories will have visibility options (this is same as public/private/draft)
             - [x] Public will show in searches
             - [x] Private will not show in searches but direct links will have access

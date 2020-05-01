@@ -22,6 +22,10 @@ if(!isset($author_id)){
         <?php endif; ?>
         <a class="btn btn-success"
             href="<?php echo "index.php?story/view&story=" . Utils::get($story, "story_id");?>">Start Reading</a>
+        <?php if($author_id == Utils::get($story, "author")):?>
+            <a class="btn btn-danger"
+               href="<?php echo "index.php?story/delete&story=" . Utils::get($story, "story_id");?>">Delete</a>
+        <?php endif;?>
     </div>
     </div>
 </div>

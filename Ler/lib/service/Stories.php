@@ -8,6 +8,7 @@ class Stories{
 	private $query_get_story;
 	private $query_get_stories;
 	private $query_set_starting_arc;
+	private $query_delete_story;
 	public function __construct(PDO $pdo){
 		$this->pdo = $pdo;
 		$this->query_create_story = file_get_contents(__DIR__ . "/../../queries/create_story.sql");
@@ -17,6 +18,7 @@ class Stories{
         $this->query_get_story = file_get_contents(__DIR__ . "/../../queries/get_story.sql");
         $this->query_get_stories = file_get_contents(__DIR__ . '/../../queries/get_stories.sql');
         $this->query_set_starting_arc = file_get_contents(__DIR__ . '/../../queries/set_starting_arc.sql');
+	    $this->query_delete_story = file_get_contents(__DIR__ . '/../../queries/delete_story.sql');
 	}
 	private function getDB(){
 		return $this->pdo;
@@ -198,5 +200,28 @@ class Stories{
 		catch(Exception $e){
 			return $e->getMessage();
 		}
+	}
+	public function delete_story($story_id, $author_id){
+        try{
+            $stmt = $this->pdo->prepare($this->query_delete_story);
+            $r = $stmt->execute(
+                array(
+                    ":story_id"=>$story_id,
+                    ":author"=>$author_id,
+                )
+            );
+            $ei = $stmt->errorInfo();
+            if($ei[0] == "00000"){
+                return array("status"=>"success", "message"=>"Deleted story");
+            }
+            else{
+                return array("status"=>"error","message"=>"An unknown error occurred, please try again later",
+                    "errorInfo"=>$ei);
+            }
+            //return $stmt->errorInfo();
+        }
+        catch(Exception $e){
+            return $e->getMessage();
+        }
 	}
 }
