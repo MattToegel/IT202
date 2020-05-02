@@ -1,0 +1,1 @@
+DELETE from History where user_id = :user_id AND story_id = :story_id

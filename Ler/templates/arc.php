@@ -46,6 +46,39 @@ if(isset($_GET['arc'])){
         }
     }
 }
+
+//we need to do it here since we have to make sure we have story id either from the arc lookup
+//Used to determine if we can view this arc (trying to prevent back button)
+if($story_id > -1 && $user_id > -1) {
+    $history_service = $container->getHistory();
+    $last_arc_id = Utils::get($history_service->get_last_arc($user_id, $story_id), "last_arc_id", -1);
+    $decision_key = "last_decisions_$story_id";
+    if($last_arc_id > -1) {
+        $last_decisions = Utils::get($arcs_service->get_decisions($last_arc_id), "decisions", array());
+        $isValidNextArc = false;
+        foreach ($last_decisions as $d) {
+            $check = Utils::get($d, "next_arc_id", -1) ;
+            /*if($check == -1){
+                $isValidNextArc = true;
+            }*/
+            if ($check == $arc_id) {
+                $isValidNextArc = true;
+                break;
+            }
+        }
+        //echo "<pre>" . var_export($last_arc_id, true) . "</pre>";
+        //echo "<pre>" . var_export($last_decisions, true) . "</pre>";
+        if(!$isValidNextArc){
+            if($last_arc_id != $arc_id) {
+                Utils::flash("Reloading last bookmark");
+                die(header("Location: index.php?arc/view&arc=$last_arc_id"));
+            }
+        }
+
+    }
+    $history_service->update_last_arc_id($user_id, $story_id, $arc_id);
+
+}
 ?>
 <div class="container-fluid text-center">
     <h3><?php Utils::show($arc, "title");?></h3>
@@ -55,21 +88,29 @@ if(isset($_GET['arc'])){
     <div class="container justify-content-center text-center bg-light p-1 mt-3">
         <?php if(isset($decisions) && count($decisions) > 0 && Utils::get($decisions[0], "next_arc_id", -1) > -1):?>
             <h5>Pick your path</h5>
+            <ul class="navbar-nav">
+
+                <?php foreach($decisions as $d):?>
+                    <?php if(Utils::get($d, "next_arc_id") > 0):?>
+
+                        <li class="nav-item m-2">
+                            <a class="btn btn-primary" href="index.php?arc/view&arc=<?php Utils::show($d, "next_arc_id");?>">
+                                <?php Utils::show($d, "content");?>
+                            </a>
+                        </li>
+                    <?php endif; ?>
+                <?php endforeach;?>
+            </ul>
         <?php else:?>
             <h5>The End</h5>
+            <ul class="navbar-nav">
+                <li>
+                    <a class="btn btn-success" href="index.php?story/view&story=<?php echo $story_id;?>&restart">
+                        Restart?
+                    </a>
+                </li>
+            </ul>
         <?php endif; ?>
-        <ul class="navbar-nav">
 
-            <?php foreach($decisions as $d):?>
-                <?php if(Utils::get($d, "next_arc_id") > 0):?>
-
-            <li class="nav-item m-2">
-                <a class="btn btn-primary" href="index.php?arc/view&arc=<?php Utils::show($d, "next_arc_id");?>">
-                    <?php Utils::show($d, "content");?>
-                </a>
-            </li>
-                <?php endif; ?>
-            <?php endforeach;?>
-        </ul>
     </div>
 </div>

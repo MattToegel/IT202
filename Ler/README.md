@@ -17,8 +17,10 @@
     - [x] Will be able to search for stories by title and/or author
     - [x] Will be able to load a story (to begin reading)
     - [x] Will be able to pick a choice to progress to the next outcome
-    - [ ] Will be able to reset their progress for a story back to the beginning
-    - [ ] Will be able to bookmark their progress so they can come back to where they left off
+    - [x] Will be able to reset their progress for a story back to the beginning
+        - Currently only when they reach an end do they get the decision, but the url can be navigated to manually to reset if known.
+    - [x] Will be able to bookmark their progress so they can come back to where they left off
+        - This is done automatically to prevent going back and trying other paths.
     - [ ] Will be able to see a list of stories they have progress in
     - [ ] Will be able to favorite/mark for later stories
     - [ ] Will be able to see a list of marked stories
@@ -45,9 +47,9 @@
         - [ ] Stories will show number of people interacting with it
             - Where a user made at least 1 choice
         - [ ] Stories will show title, summary, author, created, updated timestamp, genre
-        - [ ] Readers will not be able to go back once a choice is made
+        - [x] Readers will not be able to go back once a choice is made
             -Exception is if they reach an end, then based on the writer they can either link back to the previous stage or start over
-        - [ ]Main page will show stories in various categories
+        - [ ] Main page will show stories in various categories
             - [ ] Top 10 Stories
             - [ ] 10 Newest Stories
             - [ ] 10 Most recently updated

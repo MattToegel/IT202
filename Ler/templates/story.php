@@ -14,6 +14,18 @@ if(isset($_GET['story'])){
         Utils::flash(Utils::get($result, "message") . ": " . Utils::get($result, "errorInfo"));
     }
 }
+if(isset($_GET["restart"])){
+    $user = Utils::getLoggedInUser();
+    $user_id = -1;//anonymous user
+    if($user) {
+        $user_id = $user->getId();
+    }
+    if($user_id > -1) {
+        $history_service = $container->getHistory();
+        $result = $history_service->delete_story_progress($user_id, $story_id);
+        Utils::flash(Utils::get($result, "message"));
+    }
+}
 ?>
 <?php if(isset($story) && !empty($story)):?>
 <div class="card">

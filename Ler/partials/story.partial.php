@@ -2,7 +2,7 @@
 if(!isset($story)){
     $story = array();
 }
-if(!isset($author_id)){
+if(!isset($user_id)){
     $author_id = -1;
 }
 ?>

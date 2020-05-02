@@ -9,7 +9,7 @@ error_reporting(E_ALL);
  //make sure we're logged in
  Utils::isLoggedIn(true);
  $user = Utils::getLoggedInUser();
- $author_id = $user->getId();
+ $user_id = $user->getId();
  $arcs_service = $container->getArcs();
  $arc_id = Utils::get($_GET, "arc", -1);
  //this will be populated if it's an arc/create
@@ -30,7 +30,7 @@ error_reporting(E_ALL);
          }
          //gotta grab story so we can make sure we're the author
          $story_service = $container->getStories();
-         $story_result = $story_service->get_user_story($author_id, $story_id);
+         $story_result = $story_service->get_user_story($user_id, $story_id);
          if(Utils::get($story_result, "status") != "success"){
              Utils::flash("Only the author can edit this");
              header("Location: index.php?arc/view&arc=$arc_id");
@@ -46,6 +46,7 @@ error_reporting(E_ALL);
      //prevent create form from having problem
      $arc = array();
  }
+
  //populate my arcs
  if(count($arcs) == 0){
      $result = $arcs_service->get_story_arcs($story_id);

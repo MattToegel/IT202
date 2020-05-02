@@ -1,0 +1,1 @@
+UPDATE History set last_arc_id = :last_arc_id where user_id = :user_id and story_id = :story_id
