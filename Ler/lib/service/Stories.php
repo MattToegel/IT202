@@ -9,6 +9,7 @@ class Stories{
 	private $query_get_stories;
 	private $query_set_starting_arc;
 	private $query_delete_story;
+	private $query_get_my_stories_with_progress;
 	public function __construct(PDO $pdo){
 		$this->pdo = $pdo;
 		$this->query_create_story = file_get_contents(__DIR__ . "/../../queries/create_story.sql");
@@ -19,6 +20,7 @@ class Stories{
         $this->query_get_stories = file_get_contents(__DIR__ . '/../../queries/get_stories.sql');
         $this->query_set_starting_arc = file_get_contents(__DIR__ . '/../../queries/set_starting_arc.sql');
 	    $this->query_delete_story = file_get_contents(__DIR__ . '/../../queries/delete_story.sql');
+	    $this->query_get_my_stories_with_progress = file_get_contents(__DIR__ . '/../../queries/get_all_my_stories_with_progress.sql');
 	}
 	private function getDB(){
 		return $this->pdo;
@@ -126,6 +128,31 @@ class Stories{
 			return $e->getMessage();
 		}
 	}
+    public function get_my_stories_with_progress($author_id){
+        try{
+            $stmt = $this->pdo->prepare($this->query_get_my_stories_with_progress);
+            $r = $stmt->execute(
+                array(
+                    ":user_id"=>$author_id
+                )
+            );
+            $stories = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            /*PDO::FETCH_CLASS, 'Story', ['id','title','summary','author','created',
+                                                'modified', 'visibility','isactive']);*/
+            $ei = $stmt->errorInfo();
+            if($ei[0] == "00000"){
+                return array("status"=>"success", "stories"=> $stories);
+            }
+            else{
+                return array("status"=>"error","message"=>"An unknown error occurred, please try again later",
+                    "errorInfo"=>$ei);
+            }
+            //return $stmt->errorInfo();
+        }
+        catch(Exception $e){
+            return $e->getMessage();
+        }
+    }
 	public function set_starting_arc($story_id, $arc_id){
         //TODO do server side validation for parameters
         try{

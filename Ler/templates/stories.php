@@ -6,23 +6,33 @@ error_reporting(E_ALL);
  if (!isset($container)) {
      require(__DIR__ . "/../bootstrap.php");
  }
-//TODO check if we have a GET variable so we can pull specific user
  $stories_service = $container->getStories();
-//otherwise default to logged in user
-if(isset($mystories) && Utils::isLoggedIn()){
-	$user = Utils::getLoggedInUser();
-	$author_id = $user->getId();
-
-	$result = $stories_service->get_all_user_stories($author_id);
-    if(Utils::get($result, "status","error") == 'success'){
-        $stories = Utils::get($result, "stories");
-    }
-    else{
-        Utils::flash(Utils::get($result, "message"));
-	}
-	//echo var_export($stories, true);
-}
-else{
+ $showSpecificList = false;
+ //determine if we need to fetch a specific list of stories for logged in user
+ if(Utils::isLoggedIn()){
+     $user = Utils::getLoggedInUser();
+     $author_id = $user->getId();
+     if(isset($mystories)){
+         $result = $stories_service->get_all_user_stories($author_id);
+         $showSpecificList = true;
+     }
+     else if(isset($myprogress)){
+         $result = $stories_service->get_my_stories_with_progress($author_id);
+         $showSpecificList = true;
+     }
+     else if(isset($mybookmarks)){
+         $showSpecificList = true;
+     }
+     if($showSpecificList) {
+         if (Utils::get($result, "status", "error") == 'success') {
+             $stories = Utils::get($result, "stories");
+         } else {
+             Utils::flash(Utils::get($result, "message"));
+         }
+     }
+ }
+ //default to show all stories for filter
+if(!$showSpecificList){
 	$title = Utils::get($_POST, "title");
 	$author_name = Utils::get($_POST, "author");
 	$result = $stories_service->get_stories($title, $author_name);
@@ -35,7 +45,7 @@ else{
 }
 
 ?>
-<?php if(!isset($mystories)):?>
+<?php if(!$showSpecificList):?>
  <form class="form-inline" method="POST">
 	 <div class="form-group m-1">
 		 <label class="mr-1" for="title">Title</label>

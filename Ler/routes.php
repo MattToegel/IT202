@@ -43,6 +43,10 @@ if (count($_GET) > 0) {
                 $mystories = true;
                 include ($BASE . "/stories.php");
                 break;
+            case "stories/progress":
+                $myprogress = true;
+                include ($BASE . "/stories.php");
+                break;
             case "stories":
                 include ($BASE . "/stories.php");
                 break;
