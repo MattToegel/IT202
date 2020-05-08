@@ -32,7 +32,9 @@ if(isset($_GET["restart"])){
     <div class="card-body">
         <h4 class="card-title">
             <?php Utils::show($story, "title");?>
+
         </h4>
+        <?php include(__DIR__."/../partials/favorite.story.partial.php");?>
         <h6>by <?php Utils::show($story, "username");?></h6>
         <pre class="card-body" style="overflow: auto;">
             <?php echo htmlspecialchars_decode(Utils::get($story,"summary"));?>

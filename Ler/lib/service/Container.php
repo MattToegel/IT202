@@ -49,4 +49,12 @@ class Container{
         }
 	    return $this->history;
     }
+
+    private $favorites;
+	public function getFavorites(){
+        if($this->favorites === null){
+            $this->favorites = new Favorites($this->getDB());
+        }
+        return $this->favorites;
+    }
 }

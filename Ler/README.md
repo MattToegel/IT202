@@ -22,9 +22,9 @@
     - [x] Will be able to bookmark their progress so they can come back to where they left off
         - This is done automatically to prevent going back and trying other paths.
                                       - [x] Will be able to see a list of stories they have progress in
-                                      - [ ] Will be able to favorite/mark for later stories
-                                      - [ ] Will be able to see a list of marked stories
-                                      - [ ] Will be able to remove stories from either list
+                                      - [x] Will be able to favorite~~/mark for later stories~~
+                                      - [ ] Will be able to see a list of ~~marked~~ favorited stories
+                                      - [ ] Will be able to remove stories from ~~either list~~ favorites
                                   - [x] Users with the writer role (Edit: see viewer role note)
                                       - [x] Will be able to create a new story under their ownership
                                           - [x] First page requires title, description
@@ -41,7 +41,7 @@
             - [x] Public will show in searches
             - [x] Private will not show in searches but direct links will have access
             - [x] Draft will not be viewable to anyone other than the original author
-        - [ ] Stories will have a number of pages that will be linked to via the given choices
+        - [x] Stories will have a number of pages that will be linked to via the given choices
         - [x] Pages(Arcs) will have a title, story text, and choices
         - [ ] Stories will show how many people favorited it
         - [ ] Stories will show number of people interacting with it

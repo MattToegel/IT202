@@ -1,0 +1,1 @@
+DELETE FROM Favorites where story_id = :story_id and user_id = :user_id

@@ -39,6 +39,9 @@ if (count($_GET) > 0) {
             case "story/delete":
                 include ($BASE . "/delete_story.php");
                 break;
+            case "story/favorite":
+                include ($BASE . "/favorite.php");
+                break;
             case "mystories":
                 $mystories = true;
                 include ($BASE . "/stories.php");
