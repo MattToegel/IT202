@@ -21,21 +21,21 @@
         - Currently only when they reach an end do they get the decision, but the url can be navigated to manually to reset if known.
     - [x] Will be able to bookmark their progress so they can come back to where they left off
         - This is done automatically to prevent going back and trying other paths.
-                                      - [x] Will be able to see a list of stories they have progress in
-                                      - [x] Will be able to favorite ~~/mark for later stories~~
-                                      - [x] Will be able to see a list of ~~marked~~ favorited stories
-                                      - [x] Will be able to remove stories from ~~either list~~ favorites
-                                  - [x] Users with the writer role (Edit: see viewer role note)
-                                      - [x] Will be able to create a new story under their ownership
-                                          - [x] First page requires title, description
-                                          - See section about what attributes a story will have (down below)
-                                          - [x] Will be able to add choices to each story arc
-                                          - [x] End paths can be set to either go back to the previous stage or strictly force the reader to start over (if they choose)
-                                          - [x] Will be able to reassign which choice targets which next arc
-                                          - [x] Will be able to edit/revise previously posted arcs
-                                          - [x] Will be able to edit/revise previously set choices
-                                          - [x] Will be able to mark a story as public, private, draft
-                                          - [x] Will be able to delete their stories
+    - [x] Will be able to see a list of stories they have progress in
+    - [x] Will be able to favorite ~~/mark for later stories~~
+    - [x] Will be able to see a list of ~~marked~~ favorited stories
+    - [x] Will be able to remove stories from ~~either list~~ favorites
+    - [x] Users with the writer role (Edit: see viewer role note)
+        - [x] Will be able to create a new story under their ownership
+            - [x] First page requires title, description
+            - See section about what attributes a story will have (down below)
+        - [x] Will be able to add choices to each story arc
+        - [x] End paths can be set to either go back to the previous stage or strictly force the reader to start over (if they choose)
+        - [x] Will be able to reassign which choice targets which next arc
+        - [x] Will be able to edit/revise previously posted arcs
+        - [x] Will be able to edit/revise previously set choices
+        - [x] Will be able to mark a story as public, private, draft
+        - [x] Will be able to delete their stories
         - [x] Will be able to delete their choice (deleted via Deleting Arcs)
         - [x] Stories will have visibility options (this is same as public/private/draft)
             - [x] Public will show in searches
