@@ -22,7 +22,7 @@
     - [x] Will be able to bookmark their progress so they can come back to where they left off
         - This is done automatically to prevent going back and trying other paths.
                                       - [x] Will be able to see a list of stories they have progress in
-                                      - [x] Will be able to favorite~~/mark for later stories~~
+                                      - [x] Will be able to favorite ~~/mark for later stories~~
                                       - [x] Will be able to see a list of ~~marked~~ favorited stories
                                       - [x] Will be able to remove stories from ~~either list~~ favorites
                                   - [x] Users with the writer role (Edit: see viewer role note)
