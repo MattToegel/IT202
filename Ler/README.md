@@ -43,8 +43,8 @@
             - [x] Draft will not be viewable to anyone other than the original author
         - [x] Stories will have a number of pages that will be linked to via the given choices
         - [x] Pages(Arcs) will have a title, story text, and choices
-        - [ ] Stories will show how many people favorited it
-        - [ ] Stories will show number of people interacting with it
+        - [x] Stories will show how many people favorited it
+        - [x] Stories will show number of people interacting with it
             - Where a user made at least 1 choice
         - [ ] Stories will show title, summary, author, created, updated timestamp, genre
         - [x] Readers will not be able to go back once a choice is made

@@ -85,12 +85,11 @@ class Favorites{
                 "errorInfo"=>$ei);
         }
     }
-    public function get_story_stats($user_id, $story_id){
+    public function get_story_stats($story_id){
         try{
             $stmt = $this->pdo->prepare($this->query_get_story_stats);
             $r = $stmt->execute(
                 array(
-                    ":user_id" => $user_id,
                     ":story_id" => $story_id
                 )
             );

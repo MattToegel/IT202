@@ -32,10 +32,19 @@ if(isset($_GET["restart"])){
     <div class="card-body">
         <h4 class="card-title">
             <?php Utils::show($story, "title");?>
-
         </h4>
         <?php include(__DIR__."/../partials/favorite.story.partial.php");?>
         <h6>by <?php Utils::show($story, "username");?></h6>
+        <?php
+            if(!isset($favorites_service)){
+                $favorites_service = $container->getFavorites();
+            }
+            $result = $favorites_service->get_story_stats($story_id);
+            $favs = Utils::get($result, "favorites", 0);
+            $act = Utils::get($result, "progress", 0);
+        ?>
+        <div><i class="fas fa-heart"></i></i>&nbsp;<?php echo $favs;?>&nbsp;
+            <i class="fab fa-readme"></i>&nbsp;<?php echo $act;?></div>
         <pre class="card-body" style="overflow: auto;">
             <?php echo htmlspecialchars_decode(Utils::get($story,"summary"));?>
         </pre>
