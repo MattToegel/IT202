@@ -50,6 +50,10 @@ if (count($_GET) > 0) {
                 $myprogress = true;
                 include ($BASE . "/stories.php");
                 break;
+            case "stories/favorites":
+                $mybookmarks = true;
+                include ($BASE . "/stories.php");
+                break;
             case "stories":
                 include ($BASE . "/stories.php");
                 break;

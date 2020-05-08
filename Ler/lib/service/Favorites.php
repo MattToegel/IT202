@@ -5,12 +5,14 @@ class Favorites{
     private $query_delete_favorite;
     private $query_get_story_stats;
     private $query_get_favorite;
+    private $query_get_favorites;
     public function __construct(PDO $pdo){
         $this->pdo = $pdo;
         $this->query_create_favorite = file_get_contents(__DIR__ . "/../../queries/create_favorite.sql");
         $this->query_delete_favorite = file_get_contents(__DIR__. "/../../queries/delete_favorite.sql");
         $this->query_get_story_stats = file_get_contents(__DIR__. "/../../queries/get_story_stats.sql");
         $this->query_get_favorite = file_get_contents(__DIR__."/../../queries/get_favorite.sql");
+        $this->query_get_favorites = file_get_contents(__DIR__."/../../queries/get_favorites.sql");
     }
     private function getDB(){
         return $this->pdo;
@@ -104,6 +106,28 @@ class Favorites{
         else{
             return array("status"=>"error","message"=>"An unknown error occurred, please try again later",
                 "errorInfo"=>$ei);
+        }
+    }
+    public function get_user_favorites($user_id){
+        try{
+            $stmt = $this->pdo->prepare($this->query_get_favorites);
+            $r = $stmt->execute(
+                array(
+                    ":user_id" => $user_id
+                )
+            );
+            $stories = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $ei = $stmt->errorInfo();
+            if($ei[0] == "00000"){
+                return array("status"=>"success", "stories"=> $stories);
+            }
+            else{
+                return array("status"=>"error","message"=>"An unknown error occurred, please try again later",
+                    "errorInfo"=>$ei);
+            }
+        }
+        catch(Exception $e){
+            return $e->getMessage();
         }
     }
 }

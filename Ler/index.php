@@ -38,6 +38,9 @@ require("bootstrap.php");
                         <a class="nav-link" href="index.php?stories/progress">My Progress</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="index.php?stories/favorites">My Favorites</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="index.php?profile">Profile</a>
                     </li>
                     <li class="nav-item">

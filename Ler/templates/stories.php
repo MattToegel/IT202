@@ -22,6 +22,8 @@ error_reporting(E_ALL);
      }
      else if(isset($mybookmarks)){
          $showSpecificList = true;
+         $favorites_service = $container->getFavorites();
+         $result = $favorites_service->get_user_favorites($author_id);
      }
      if($showSpecificList) {
          if (Utils::get($result, "status", "error") == 'success') {
