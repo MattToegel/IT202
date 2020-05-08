@@ -10,7 +10,7 @@ if(!isset($user_id)){
     <div class="card-body">
     <h3 class="lead"><?php Utils::show($story, "title");?></h3>
     <h6>By <?php Utils::show($story,"username");?></h6>
-    <div class="card-text">Summary: <?php Utils::show($story,"summary");?></div>
+    <div class="card-text"><i class="fas fa-book-open"></i>&nbsp;<?php Utils::show($story,"summary","", 100);?></div>
     <div>
         <?php if($author_id == Utils::get($story, "author")):?>
             <a class="btn btn-secondary"

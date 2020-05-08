@@ -49,10 +49,10 @@
         - [ ] Stories will show title, summary, author, created, updated timestamp, genre
         - [x] Readers will not be able to go back once a choice is made
             -Exception is if they reach an end, then based on the writer they can either link back to the previous stage or start over
-        - [ ] Main page will show stories in various categories
-            - [ ] Top 10 Stories
-            - [ ] 10 Newest Stories
-            - [ ] 10 Most recently updated
+        - [x] Main page will show stories in various categories
+            - [x] Top 10 Stories
+            - [x] 10 Newest Stories
+            - [x] 10 Most recently updated
         - [x] Anonymous users can participate but their history won’t be tracked and they’ll lose all progress once their session ends
 
 Requirements:

@@ -10,6 +10,9 @@ class Stories{
 	private $query_set_starting_arc;
 	private $query_delete_story;
 	private $query_get_my_stories_with_progress;
+	private $query_get_top_stories;
+	private $query_get_new_stories;
+	private $query_get_updated_stories;
 	public function __construct(PDO $pdo){
 		$this->pdo = $pdo;
 		$this->query_create_story = file_get_contents(__DIR__ . "/../../queries/create_story.sql");
@@ -21,8 +24,69 @@ class Stories{
         $this->query_set_starting_arc = file_get_contents(__DIR__ . '/../../queries/set_starting_arc.sql');
 	    $this->query_delete_story = file_get_contents(__DIR__ . '/../../queries/delete_story.sql');
 	    $this->query_get_my_stories_with_progress = file_get_contents(__DIR__ . '/../../queries/get_all_my_stories_with_progress.sql');
+	    $this->query_get_new_stories = file_get_contents(__DIR__ . '/../../queries/get_new_stories.sql');
+        $this->query_get_top_stories = file_get_contents(__DIR__ . '/../../queries/get_top_stories.sql');
+        $this->query_get_updated_stories = file_get_contents(__DIR__ . '/../../queries/get_updated_stories.sql');
 	}
-	private function getDB(){
+
+    public function get_top_stories(){
+        try{
+            $stmt = $this->pdo->prepare($this->query_get_top_stories);
+            $r = $stmt->execute();
+            $stories = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $ei = $stmt->errorInfo();
+            if($ei[0] == "00000"){
+                return array("status"=>"success", "stories"=> $stories);
+            }
+            else{
+                return array("status"=>"error","message"=>"An unknown error occurred, please try again later",
+                    "errorInfo"=>$ei);
+            }
+        }
+        catch(Exception $e){
+            return $e->getMessage();
+        }
+    }
+
+    public function get_new_stories(){
+        try{
+            $stmt = $this->pdo->prepare($this->query_get_new_stories);
+            $r = $stmt->execute();
+            $stories = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $ei = $stmt->errorInfo();
+            if($ei[0] == "00000"){
+                return array("status"=>"success", "stories"=> $stories);
+            }
+            else{
+                return array("status"=>"error","message"=>"An unknown error occurred, please try again later",
+                    "errorInfo"=>$ei);
+            }
+        }
+        catch(Exception $e){
+            return $e->getMessage();
+        }
+    }
+
+    public function get_updated_stories(){
+        try{
+            $stmt = $this->pdo->prepare($this->query_get_updated_stories);
+            $r = $stmt->execute();
+            $stories = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $ei = $stmt->errorInfo();
+            if($ei[0] == "00000"){
+                return array("status"=>"success", "stories"=> $stories);
+            }
+            else{
+                return array("status"=>"error","message"=>"An unknown error occurred, please try again later",
+                    "errorInfo"=>$ei);
+            }
+        }
+        catch(Exception $e){
+            return $e->getMessage();
+        }
+    }
+
+    private function getDB(){
 		return $this->pdo;
 	}
 	public function get_story($story_id){

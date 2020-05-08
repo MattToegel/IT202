@@ -44,17 +44,24 @@ class Utils{
      * @param $ar
      * @param $key
      * @param string $default
+     * @param null $limit
      */
-    public static function show($ar, $key, $default = ""){
+    public static function show($ar, $key, $default = "", $limit = NULL){
+        $v = $default;
         if (isset($ar) && isset($ar["$key"])) {
             $v = $ar["$key"];
             if(is_string($v)){
                 $v = trim($ar["$key"]);
             }
-            echo $v;
         }
-        else {
-            echo $default;
+        if(isset($limit)){
+            echo substr($v,0, $limit);
+            if(strlen($v) > $limit){
+                echo "...";
+            }
+        }
+        else{
+            echo $v;
         }
     }
     public static function get($ar, $key, $default = ""){
