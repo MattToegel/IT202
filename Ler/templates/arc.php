@@ -82,6 +82,7 @@ if($story_id > -1 && $user_id > -1) {
 ?>
 <div class="container-fluid text-center">
     <h3><?php Utils::show($arc, "title");?></h3>
+    <?php include(__DIR__."/../partials/favorite.story.partial.php");?>
     <div class="content p-3">
         <pre class="text-break" style="overflow: auto; white-space:pre-wrap;"><?php echo htmlspecialchars_decode(Utils::get($arc,"content"));?></pre>
     </div>
