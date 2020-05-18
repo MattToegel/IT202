@@ -1,1 +1,1 @@
-web: vendor/bin/heroku-php-apache2 /public_html
+web: vendor/bin/heroku-php-apache2 phpmyadmin/public_html
