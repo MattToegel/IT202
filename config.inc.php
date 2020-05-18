@@ -14,6 +14,7 @@
  * This is needed for cookie based authentication to encrypt password in
  * cookie. Needs to be 32 chars long.
  */
+//Set this up under Heroku Config Vars using the name below and your desired value
 $cfg['blowfish_secret'] = $_ENV['PHPMYADMIN_BLOWFISH_SECRET']; /* YOU MUST FILL IN THIS FOR COOKIE AUTH! */
 
 /**
@@ -28,6 +29,7 @@ $i++;
 /* Authentication type */
 $cfg['Servers'][$i]['auth_type'] = 'cookie';
 /* Server parameters */
+//The DB Dyno should create this entry for you, if not add a Config Var to Heroku with this name and pass the DB connection string
 $cleardb_url      = parse_url(getenv("CLEARDB_DATABASE_URL"));
 $cleardb_server   = $cleardb_url["host"];
 $cleardb_username = $cleardb_url["user"];
