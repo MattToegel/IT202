@@ -8,7 +8,7 @@ RewriteCond %{HTTPS} !=on
 
 RewriteRule ^/?(.*) https://%{SERVER_NAME}/$1 [R,L]
 # This rule will redirect users from their original location, to the same 
-location but using HTTPS.
+#location but using HTTPS.
 # i.e.  http://www.example.com/foo/ to https://www.example.com/foo/
 # The leading slash is made optional so that this will work either in
 # httpd.conf or .htaccess context
