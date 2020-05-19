@@ -3,6 +3,16 @@ RewriteEngine On
 #RewriteCond %{HTTPS} off
 #RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [PT,QSA]
 
+RewriteCond %{HTTPS} !=on
+# This checks to make sure the connection is not already HTTPS
+
+RewriteRule ^/?(.*) https://%{SERVER_NAME}/$1 [R,L]
+# This rule will redirect users from their original location, to the same 
+location but using HTTPS.
+# i.e.  http://www.example.com/foo/ to https://www.example.com/foo/
+# The leading slash is made optional so that this will work either in
+# httpd.conf or .htaccess context
+
 RewriteCond %{REQUEST_URI} !phpmyadmin/
 RewriteCond %{REQUEST_URI} !public_html/
-RewriteRule (.*) https://%{HTTP_HOST}/public_html/$1 [L]
+RewriteRule (.*) public_html/$1 [L]
