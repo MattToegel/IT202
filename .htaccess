@@ -3,7 +3,8 @@ RewriteEngine On
 #RewriteCond %{HTTPS} off
 #RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [PT,QSA]
 
-RewriteCond %{HTTPS} !=on
+#RewriteCond %{HTTPS} !=on
+RewriteCond %{ENV:HTTPS} !on
 # This checks to make sure the connection is not already HTTPS
 
 RewriteRule ^/?(.*) https://%{SERVER_NAME}/$1 [R,L]
