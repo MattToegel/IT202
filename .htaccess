@@ -7,7 +7,7 @@ RewriteCond %{https} off
 #RewriteCond %{SERVER_PORT} 80 
 # This checks to make sure the connection is not already HTTPS
 
-RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI}/$1 [R,L]
+RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R,L]
 # This rule will redirect users from their original location, to the same 
 #location but using HTTPS.
 # i.e.  http://www.example.com/foo/ to https://www.example.com/foo/
