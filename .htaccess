@@ -1,7 +1,7 @@
 RewriteEngine On
 
 RewriteCond %{HTTPS} off
-RewriteCond %{REQUEST_URO} phpmyadmin/
+RewriteCond %{REQUEST_URI} phpmyadmin/
 RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI}
 
 RewriteCond %{REQUEST_URI} !phpmyadmin/
