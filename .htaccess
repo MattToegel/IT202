@@ -4,4 +4,5 @@ RewriteCond %{REQUEST_URI} !public_html/
 RewriteRule (.*) public_html/$1 [L]
 
 RewriteCond %{HTTPS} off 
+RewriteCond %{REQUEST_URI} phpmyadmin/
 RewriteRule ^(phpmyadmin) https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
