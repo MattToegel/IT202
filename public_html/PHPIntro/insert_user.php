@@ -1,5 +1,5 @@
 <?php
-require("config.php");
+require(__DIR__ . "/config.php");
 
 $connection_string = "mysql:host=$dbhost;dbname=$dbdatabase;charset=utf8mb4";
 try{
