@@ -1,0 +1,12 @@
+RewriteEngine On
+
+# Below condition is strictly for Heroku https://help.heroku.com/VKLSBMJS/why-am-i-getting-a-message-too-many-redirects
+# Basically, the request to Heroku Router is HTTPS but internal requests are HTTP, using the standard RewriteCond for HTTPS creates infinite redirects 
+# This checks to make sure the connection is not already HTTPS
+RewriteCond %{HTTP:X-Forwarded-Proto} !https
+RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R,L]
+
+# Redirects non-phpmyadmin requests to public_html so it becomes the root directory to server your work
+RewriteCond %{REQUEST_URI} !phpmyadmin/
+RewriteCond %{REQUEST_URI} !public_html/
+RewriteRule (.*) public_html/$1 [L]
