@@ -16,7 +16,7 @@
 //echo var_export($_POST, true);
 //echo var_export($_REQUEST, true);
 if(isset($_POST["register"])){
-	if(isset($_POST["password") && isset($_POST["cpassword"])){
+	if(isset($_POST["password"]) && isset($_POST["cpassword"])){
 		$password = $_POST["password"];
 		$cpassword = $_POST["cpassword"];
 		if($password == $cpassword){
