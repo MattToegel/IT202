@@ -4,7 +4,7 @@ RewriteEngine On
 # Basically, the request to Heroku Router is HTTPS but internal requests are HTTP, using the standard RewriteCond for HTTPS creates infinite redirects 
 # This checks to make sure the connection is not already HTTPS
 RewriteCond %{HTTP:X-Forwarded-Proto} !https
-RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R,L]
+RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R]
 
 # Redirects non-phpmyadmin requests to public_html so it becomes the root directory to server your work
 RewriteCond %{REQUEST_URI} !phpmyadmin/
