@@ -26,10 +26,11 @@ if(isset($_POST["register"])){
 			$connection_string = "mysql:host=$dbhost;dbname=$dbdatabase;charset=utf8mb4";
 			try{
 				$db = new PDO($connection_string, $dbuser, $dbpass);
+				$hash = password_hash($password, PASSWORD_BCRYPT);
 				$stmt = $db->prepare("INSERT INTO Users (email, password) VALUES(:email, :password)");
 				$stmt->execute(array(
 					":email" => $email,
-					":password" => $password
+					":password" => $hash//Don't save the raw password $password
 				));
 				$e = $stmt->errorInfo();
 				if($e[0] != "00000"){
