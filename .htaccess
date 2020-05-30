@@ -9,4 +9,4 @@ RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R]
 # Redirects non-phpmyadmin requests to public_html so it becomes the root directory to server your work
 RewriteCond %{REQUEST_URI} !phpmyadmin/
 RewriteCond %{REQUEST_URI} !public_html/
-RewriteRule (.*) public_html/$1 [L]
+RewriteRule ^(.*)$ public_html/$1 [L]
