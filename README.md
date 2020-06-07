@@ -16,3 +16,4 @@ To see this in action, go to https://phpmyadmin-heroku.herokuapp.com which is
 built from the `sample_cleardb` branch. That `config.inc.php` has been
 configured to bypass login and give complete access. Please be friendly.
 
+Test
