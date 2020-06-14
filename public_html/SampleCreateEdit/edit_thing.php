@@ -50,10 +50,10 @@ if(isset($_POST["updated"])){
             else{
                 echo var_export($result, true);
                 if ($result){
-                    echo "Successfully inserted new thing: " . $name;
+                    echo "Successfully updated thing: " . $name;
                 }
                 else{
-                    echo "Error inserting record";
+                    echo "Error updating record";
                 }
             }
         }
