@@ -27,7 +27,7 @@ if(isset($_POST["created"])){
                 echo var_export($e, true);
             }
             else{
-                echo var_exmport($result, true);
+                echo var_export($result, true);
                 if ($result){
                     echo "Successfully inserted new thing: " . $name;
                 }
