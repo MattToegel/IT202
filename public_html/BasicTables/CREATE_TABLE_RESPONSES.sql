@@ -1,4 +1,4 @@
-CREATE TABLE Responses{
+CREATE TABLE Responses(
     id int auto_increment,
     question_id int,
     answer_id int,
@@ -7,4 +7,4 @@ CREATE TABLE Responses{
     foreign key(question_id) REFERENCES Questions.id,
     foreign key(answer_id) REFERENCES Answers.id,
     foreign key(user_id) REFERENCES Users.id,
-}
+)

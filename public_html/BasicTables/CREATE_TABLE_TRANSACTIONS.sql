@@ -1,4 +1,4 @@
-CREATE TABLE Transactions{
+CREATE TABLE Transactions(
     id int auto_increment,
     act_src_id int not null,
     act_dest_id int null,
@@ -10,4 +10,4 @@ CREATE TABLE Transactions{
     primary key (id),
     foreign key (act_src_id) references Accounts.id,
     foreign key (act_dest_id) references Accounts.id
-}
+)
