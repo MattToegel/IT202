@@ -1,0 +1,1 @@
+SELECT * FROM Things where id = :id LIMIT 1
