@@ -1,5 +1,8 @@
 <?php
 $thingId = -1;
+if(isset($_GET["thingId"]) && !empty($_GET["thingId"])){
+    $thingId = $_GET["thingId"];
+}
 $result = array();
 require("common.inc.php");
 ?>
@@ -54,8 +57,7 @@ if(isset($_POST["updated"])){
 
 <?php
 //moved the content down here so it pulls the update from the table without having to refresh the page or redirect
-if(isset($_GET["thingId"]) && !empty($_GET["thingId"])){
-    $thingId = $_GET["thingId"];
+if($thingId > -1){
     $query = file_get_contents(__DIR__ . "/SELECT_ONE_TABLE_THINGS.sql");
     if(isset($query) && !empty($query)) {
         //Note: SQL File contains a "LIMIT 1" although it's not necessary since ID should be unique (i.e., one record)
