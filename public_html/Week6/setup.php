@@ -1,7 +1,7 @@
 <?php
 require("common.inc.php");
 try{
-    $query = file_get_contents(__DIR__ . "/CREATE_TABLE_THINGS.sql");
+    $query = file_get_contents(__DIR__ . "/queries/CREATE_TABLE_THINGS.sql");
     if(isset($query) && !empty($query)) {
         $stmt = getDB()->prepare($query);
         $r = $stmt->execute();

@@ -1,4 +1,4 @@
-<script src="script.js"></script>
+<script src="js/script.js"></script>
 <!-- note although <script> tag "can" be self terminating some browsers require the
 full closing tag-->
 <form method="POST" onsubmit="return validate(this);">
@@ -29,7 +29,7 @@ if(isset($_POST["created"])) {
     }
     try {
         require("common.inc.php");
-        $query = file_get_contents(__DIR__ . "/INSERT_TABLE_THINGS.sql");
+        $query = file_get_contents(__DIR__ . "/queries/INSERT_TABLE_THINGS.sql");
         if(isset($query) && !empty($query)) {
             $stmt = getDB()->prepare($query);
             $result = $stmt->execute(array(

@@ -1,0 +1,28 @@
+<script>
+    function fetchThings(){
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                document.getElementById("raw").innerHTML = "<pre>" + this.responseText + "</pre>";
+                let json = JSON.parse(this.responseText);
+                if(json.status == 200){
+                    let ul = document.createElement("ul");
+                    json.results.forEach(function(item, index){
+                        let li = document.createElement("li");
+                        li.innerText = item.name + ": " + item.quantity;
+                        ul.appendChild(li);
+                    });
+                    let content = document.getElementById("content");
+                    content.innerHTML = "";
+                    content.appendChild(ul);
+                }
+            }
+        };
+        xhttp.open("GET", "ajax_list.php", true);
+        xhttp.send();
+    }
+</script>
+<body onload="fetchThings();">
+<div id="raw"></div>
+<div id="content">Loading...</div>
+</body>
