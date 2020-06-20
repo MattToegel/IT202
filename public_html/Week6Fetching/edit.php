@@ -18,6 +18,7 @@ if(isset($_POST["updated"])){
     if(!empty($name) && $quantity > -1){
         try{
             $query = NULL;
+            echo "[Quantity" . $quantity . "]";
             $query = file_get_contents(__DIR__ . "/UPDATE_TABLE_THINGS.sql");
             if(isset($query) && !empty($query)) {
                 $stmt = getDB()->prepare($query);
