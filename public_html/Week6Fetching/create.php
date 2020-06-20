@@ -3,10 +3,10 @@
 full closing tag-->
 <form method="POST" onsubmit="return validate(this);">
     <label for="thing">Thing Name
-        <input type="text" id="thing" name="name" />
+        <input type="text" id="thing" name="name" required />
     </label>
     <label for="q">Quantity
-        <input type="number" id="q" name="quantity" />
+        <input type="number" id="q" name="quantity" required min="0" />
     </label>
     <input type="submit" name="created" value="Create Thing"/>
 </form>
@@ -40,7 +40,6 @@ if(isset($_POST["created"])) {
             if ($e[0] != "00000") {
                 echo var_export($e, true);
             } else {
-                echo var_export($result, true);
                 if ($result) {
                     echo "Successfully inserted new thing: " . $name;
                 } else {

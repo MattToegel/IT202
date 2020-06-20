@@ -2,38 +2,7 @@
 $thingId = -1;
 $result = array();
 require("common.inc.php");
-if(isset($_GET["thingId"]) && !empty($_GET["thingId"])){
-    $thingId = $_GET["thingId"];
-    $query = file_get_contents(__DIR__ . "/SELECT_ONE_TABLE_THINGS.sql");
-    if(isset($query) && !empty($query)) {
-        //Note: SQL File contains a "LIMIT 1" although it's not necessary since ID should be unique (i.e., one record)
-        $stmt = getDB()->prepare($query);
-        $stmt->execute([":id" => $thingId]);
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-    }
-    else{
-        echo "Failed to find SELECT_ONE_TABLE_THINGS.sql file";
-    }
-}
-else{
-    echo "No thingId provided in url, don't forget this or sample won't work.";
-}
 ?>
-<script src="script.js"></script>
-<!-- note although <script> tag "can" be self terminating some browsers require the
-full closing tag-->
-<form method="POST" onsubmit="">
-    <label for="thing">Thing Name
-        <!-- since the last assignment we added a required attribute to the form elements-->
-        <input type="text" id="thing" name="name" value="<?php echo get($result, "name");?>" required />
-    </label>
-    <label for="q">Quantity
-        <!-- We also added a minimum value for our number field-->
-        <input type="number" id="q" name="quantity" value="<?php echo get($result, "quantity");?>" required min="0"/>
-    </label>
-    <input type="submit" name="updated" value="Update Thing"/>
-</form>
-
 <?php
 if(isset($_POST["updated"])){
     $name = "";
@@ -81,3 +50,37 @@ if(isset($_POST["updated"])){
     }
 }
 ?>
+
+<?php
+//moved the content down here so it pulls the update from the table without having to refresh the page or redirect
+if(isset($_GET["thingId"]) && !empty($_GET["thingId"])){
+    $thingId = $_GET["thingId"];
+    $query = file_get_contents(__DIR__ . "/SELECT_ONE_TABLE_THINGS.sql");
+    if(isset($query) && !empty($query)) {
+        //Note: SQL File contains a "LIMIT 1" although it's not necessary since ID should be unique (i.e., one record)
+        $stmt = getDB()->prepare($query);
+        $stmt->execute([":id" => $thingId]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+    else{
+        echo "Failed to find SELECT_ONE_TABLE_THINGS.sql file";
+    }
+}
+else{
+    echo "No thingId provided in url, don't forget this or sample won't work.";
+}
+?>
+<script src="script.js"></script>
+<!-- note although <script> tag "can" be self terminating some browsers require the
+full closing tag-->
+<form method="POST" onsubmit="return validate(this);">
+    <label for="thing">Thing Name
+        <!-- since the last assignment we added a required attribute to the form elements-->
+        <input type="text" id="thing" name="name" value="<?php echo get($result, "name");?>" required />
+    </label>
+    <label for="q">Quantity
+        <!-- We also added a minimum value for our number field-->
+        <input type="number" id="q" name="quantity" value="<?php echo get($result, "quantity");?>" required min="0"/>
+    </label>
+    <input type="submit" name="updated" value="Update Thing"/>
+</form>
