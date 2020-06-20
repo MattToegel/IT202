@@ -1,8 +1,8 @@
 <?php
 require("common.inc.php");
-$query = file_get_contents(__DIR__ . "/SELECT_ALL_TABLE_THINGS.sql");
+$query = file_get_contents(__DIR__ . "/queries/SELECT_ALL_TABLE_THINGS.sql");
 //prep our response object
-$result = array("message"=>"Nothing happened");
+$result = array("status"=>"200");
 if(isset($query) && !empty($query)){
     try {
         $stmt = getDB()->prepare($query);
@@ -12,9 +12,11 @@ if(isset($query) && !empty($query)){
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
         //Note: Whatever is echo'd or sent to the output buffer will be what's returned to an ajax call
         //This is important if we're sending JSON we don't want any other garbage data otherwise json parsing will fail
+        $result["status"] = 200;
         $result["results"] = $results;
     }
     catch (Exception $e){
+        $result["status"] = 500;
         $result["error"] = $e->getMessage();
     }
 }
