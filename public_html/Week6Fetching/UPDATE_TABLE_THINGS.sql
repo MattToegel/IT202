@@ -1,0 +1,1 @@
+UPDATE Things set name = :name, quantity=:quantity where id=:id
