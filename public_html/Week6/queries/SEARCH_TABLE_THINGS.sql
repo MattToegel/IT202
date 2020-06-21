@@ -1,0 +1,1 @@
+SELECT * FROM Things where name like :thing
