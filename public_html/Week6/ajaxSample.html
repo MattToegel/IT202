@@ -31,7 +31,7 @@
                             this.parent.parent.removeChild(this.parent);
                             deleteThing(item.id);
                         };
-
+                        li.appendChild(deleteButton);
                         ul.appendChild(li);
                     });
                     let content = document.getElementById("content");
