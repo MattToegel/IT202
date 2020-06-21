@@ -1,10 +1,17 @@
+<?php
+$search = "";
+if(isset($_POST["search"])){
+    $search = $_POST["search"];
+}
+?>
 <form method="POST">
-    <input type="text" name="search" placeholder="Search for Thing"/>
+    <input type="text" name="search" placeholder="Search for Thing"
+    value="<?php echo $search;?>"/>
     <input type="submit" value="Search"/>
 </form>
 <?php
-if(isset($_POST["search"])) {
-    $search = $_POST["search"];
+if(isset($search)) {
+
     require("common.inc.php");
     $query = file_get_contents(__DIR__ . "/queries/SEARCH_TABLE_THINGS.sql");
     if (isset($query) && !empty($query)) {
