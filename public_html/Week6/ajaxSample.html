@@ -27,6 +27,7 @@
                         let li = document.createElement("li");
                         li.innerText = item.name + ": " + item.quantity;
                         let deleteButton = document.createElement("a");
+                        deleteButton.href = "#";
                         deleteButton.onclick = function(){
                             //path is <a> / <li> / <ul>
                             this.parentNode.parentNode.removeChild(this.parentNode);
