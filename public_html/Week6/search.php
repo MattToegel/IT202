@@ -10,8 +10,8 @@ if(isset($_POST["search"])) {
     if (isset($query) && !empty($query)) {
         try {
             $stmt = getDB()->prepare($query);
-            //we don't need to pass any arguments since we're not filtering the results
-            $stmt->execute([":thing"=>"%" . $search . "%"]);
+            //Note: With a LIKE query, we must pass the % during the mapping
+            $stmt->execute([":thing"=>$search]);
             //Note the fetchAll(), we need to use it over fetch() if we expect >1 record
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (Exception $e) {
