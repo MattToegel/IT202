@@ -28,7 +28,8 @@
                         li.innerText = item.name + ": " + item.quantity;
                         let deleteButton = document.createElement("a");
                         deleteButton.onclick = function(){
-                            this.parent.parent.removeChild(this.parent);
+                            //path is <a> / <li> / <ul>
+                            this.parentNode.parentNode.removeChild(this.parent);
                             deleteThing(item.id);
                         };
                         deleteButton.innerText = "Delete";
