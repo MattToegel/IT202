@@ -9,16 +9,16 @@ if (isset($_GET["thingId"]) && !empty($_GET["thingId"])){
             $stmt = getDB()->prepare($query);
             $stmt->execute([":id"=>$thingId]);
             $e = $stmt->errorInfo();
-            if($e[0] == "00000"){
-                //we're just going to redirect back to the list
-                //it'll reflect the delete on reload
-                //also wrap it in a die() to prevent the script from any continued execution
-                $result["message"] = "Successfully deleted thing";
-            }
-            else{
-                $result["message"] = "Error deleting thing";
-                $result["error"] = var_export($e,true);
-                $result["status"] = 400;
+                if($e[0] == "00000"){
+                    //we're just going to redirect back to the list
+                    //it'll reflect the delete on reload
+                    //also wrap it in a die() to prevent the script from any continued execution
+                    $result["message"] = "Successfully deleted thing";
+                }
+                else{
+                    $result["message"] = "Error deleting thing";
+                    $result["error"] = var_export($e,true);
+                    $result["status"] = 400;
             }
         }
     }

@@ -82,14 +82,14 @@ else{
 <script src="js/script.js"></script>
 <!-- note although <script> tag "can" be self terminating some browsers require the
 full closing tag-->
-<form method="POST" onsubmit="return validate(this);">
-    <label for="thing">Thing Name
-        <!-- since the last assignment we added a required attribute to the form elements-->
-        <input type="text" id="thing" name="name" value="<?php echo get($result, "name");?>" required />
-    </label>
-    <label for="q">Quantity
-        <!-- We also added a minimum value for our number field-->
-        <input type="number" id="q" name="quantity" value="<?php echo get($result, "quantity");?>" required min="0"/>
-    </label>
-    <input type="submit" name="updated" value="Update Thing"/>
+<form method="POST"onsubmit="return validate(this);">
+<label for="thing">Thing Name
+    <!-- since the last assignment we added a required attribute to the form elements-->
+    <input type="text" id="thing" name="name" value="<?php echo get($result, "name");?>" required />
+</label>
+<label for="q">Quantity
+    <!-- We also added a minimum value for our number field-->
+    <input type="number" id="q" name="quantity" value="<?php echo get($result, "quantity");?>" required min="0"/>
+</label>
+<input type="submit" name="updated" value="Update Thing"/>
 </form>
