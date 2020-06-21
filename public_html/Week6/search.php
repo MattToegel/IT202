@@ -30,7 +30,7 @@ if(isset($search)) {
 <!--This part will introduce us to PHP templating,
 note the structure and the ":" -->
 <!-- note how we must close each check we're doing as well-->
-<?php if(isset($results)):?>
+<?php if(isset($results) && count($results) > 0):?>
     <p>This shows when we have results</p>
     <ul>
         <!-- Here we'll loop over all our results and reuse a specific template for each iteration,
