@@ -16,7 +16,7 @@ if(isset($query) && !empty($query)){
         $result["results"] = $results;
     }
     catch (Exception $e){
-        $result["status"] = 500;
+        $result["status"] = 400;
         $result["error"] = $e->getMessage();
     }
 }
