@@ -1,1 +1,1 @@
-SELECT * FROM Things where name like :thing
+SELECT * FROM Things where name like CONCAT('%', :thing, '%')
