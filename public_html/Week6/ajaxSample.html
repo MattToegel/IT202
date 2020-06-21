@@ -29,7 +29,7 @@
                         let deleteButton = document.createElement("a");
                         deleteButton.onclick = function(){
                             //path is <a> / <li> / <ul>
-                            this.parentNode.parentNode.removeChild(this.parent);
+                            this.parentNode.parentNode.removeChild(this.parentNode);
                             deleteThing(item.id);
                         };
                         deleteButton.innerText = "Delete";
