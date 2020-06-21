@@ -5,14 +5,14 @@
             if (this.readyState == 4 && this.status == 200) {
                 let json = JSON.parse(this.responseText);
                 if(json.status == 200){
-                    alert("deleted item");
+                    alert(json.message);
                 }
                 else{
-                    alert("error deleting item");
+                    alert(json.message +"\n" + json.error);
                 }
             }
         };
-        xhttp.open("GET", "ajax_delete.php", true);
+        xhttp.open("GET", "ajax_delete.php?thingId=" + id, true);
         xhttp.send();
     }
     function fetchThings(){
