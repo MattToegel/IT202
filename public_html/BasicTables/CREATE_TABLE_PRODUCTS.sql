@@ -8,5 +8,5 @@ CREATE TABLE Products(
     created datetime default  current_timestamp,
     user_id int,
     primary key (id),
-    foreign key(user_id) references Users.id --manager role for example
+    foreign key(user_id) references Users(id)
 )
