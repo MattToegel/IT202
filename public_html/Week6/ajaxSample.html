@@ -1,4 +1,20 @@
 <script>
+    function deleteThing(id){
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                let json = JSON.parse(this.responseText);
+                if(json.status == 200){
+                    alert("deleted item");
+                }
+                else{
+                    alert("error deleting item");
+                }
+            }
+        };
+        xhttp.open("GET", "ajax_delete.php", true);
+        xhttp.send();
+    }
     function fetchThings(){
         var xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function() {
@@ -10,6 +26,12 @@
                     json.results.forEach(function(item, index){
                         let li = document.createElement("li");
                         li.innerText = item.name + ": " + item.quantity;
+                        let deleteButton = document.createElement("a");
+                        deleteButton.onclick = function(){
+                            this.parent.parent.removeChild(this.parent);
+                            deleteThing(item.id);
+                        };
+
                         ul.appendChild(li);
                     });
                     let content = document.getElementById("content");
@@ -23,6 +45,8 @@
     }
 </script>
 <body onload="fetchThings();">
+<h4>Raw Data:</h4>
 <div id="raw"></div>
+<h4>Parsed Data:</h4>
 <div id="content">Loading...</div>
 </body>
