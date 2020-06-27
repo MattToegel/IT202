@@ -39,7 +39,6 @@ try{
                 array_push($t, $value);
             }
         }
-        echo var_export($tables, true);
         foreach($sql as $key => $value){
             echo "<br>Running: " . $key;
             $lines = explode("(", $value, 2);
