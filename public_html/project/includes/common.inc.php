@@ -79,7 +79,7 @@ class Common {
         if (!isset($_SESSION["messages"])) {
             $_SESSION["messages"] = [];
         }
-        array_push($_SESSION["messages"], [$message, $type]);
+        array_push($_SESSION["messages"], ["message"=>$message, "type"=>$type]);
         error_log(var_export($_SESSION["messages"], true));
     }
 
