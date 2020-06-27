@@ -2,10 +2,11 @@
 
 class DBH{
     private static function getDB(){
+        global $common;
         if(isset($common)){
             return $common->getDB();
         }
-        return NULL;
+        throw new Exception("Failed to find reference to common");
     }
     private static function response($data, $status = 200, $message = ""){
         return array("status"=>$status, "message"=>$message, "data"=>$data);
