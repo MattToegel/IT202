@@ -23,7 +23,7 @@ class Common {
      * @return mixed|string
      */
     public static function get($arr, $key, $default = "") {
-        if (isset($arr[$key])) {
+        if (is_array($arr) && isset($arr[$key])) {
             return $arr[$key];
         }
         return $default;
@@ -69,4 +69,5 @@ class Common {
         return $messages;
     }
 }
+require_once (__DIR__."/db_helper.php");
 $common = new Common();
