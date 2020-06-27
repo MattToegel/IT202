@@ -26,6 +26,9 @@ if (Common::get($_POST, "submit", false)){
             $_SESSION["user"] = Common::get($result, "data", NULL);
             die(header("Location: " . Common::url_for("home")));
         }
+        else{
+            Common::flash(Common::get($result, "message", "Error logging in"));
+        }
     }
     else{
         Common::flash("Email and password must not be empty", "warning");
