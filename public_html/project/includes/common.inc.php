@@ -5,7 +5,16 @@ class Common {
     private $db;
 
     public static function url_for($lookup){
-        return __DIR__ . "/../$lookup.php";
+        $path = __DIR__. "/../$lookup.php";
+        //Heroku is deployed under an app folder and __DIR pulls full path
+        //so we want to split the path on our doc root, then just grab
+        //the contents after it
+        $r = explode("public_html", $path, 2);
+        if(count($r) > 1){
+            return $r[1];
+        }
+        Common::flash("Error finding path", "danger");
+        return "/project/index.php";
     }
     /*** Attempts to safely retrieve a key from an array, otherwise returns the default
      * @param $arr
