@@ -80,6 +80,7 @@ class Common {
             $_SESSION["messages"] = [];
         }
         array_push($_SESSION["messages"], [$message, $type]);
+        error_log(var_export($_SESSION["messages"], true));
     }
 
     /*** Returns all messaged stored on the session.
