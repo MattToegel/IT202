@@ -4,6 +4,9 @@ session_start();
 class Common {
     private $db;
 
+    public static function url_for($lookup){
+        return __DIR__ . "/../$lookup.php";
+    }
     /*** Attempts to safely retrieve a key from an array, otherwise returns the default
      * @param $arr
      * @param $key
