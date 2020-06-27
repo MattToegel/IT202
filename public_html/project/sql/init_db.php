@@ -33,7 +33,7 @@ try{
         echo var_export($tables, true);
         foreach($sql as $key => $value){
             echo "<br>Running: " . $key;
-            $lines = explode(PHP_EOL, $value);
+            $lines = explode("(", $value, 2);
             if(count($lines) > 0){
                 $line = $lines[0];
                 //piecing this out in case there's extra whitespace in the SQL
