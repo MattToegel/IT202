@@ -1,16 +1,16 @@
 <?php
 session_start();
-class Common
-{
+
+class Common {
     private $db;
+
     /*** Attempts to safely retrieve a key from an array, otherwise returns the default
      * @param $arr
      * @param $key
      * @param string $default
      * @return mixed|string
      */
-    public function get($arr, $key, $default = "")
-    {
+    public static function get($arr, $key, $default = "") {
         if (isset($arr[$key])) {
             return $arr[$key];
         }
@@ -20,13 +20,18 @@ class Common
     /*** Returns a shared instance of our PDO connection
      * @return PDO
      */
-    public function getDB()
-    {
+    public function getDB() {
         if (!isset($this->db)) {
+            //Initialize all of these at once just to make the IDE happy
+            $dbdatabase = $dbuser = $dbpass = $dbhost = NULL;
             require_once(__DIR__ . "/config.php");
-            //TODO ignore the editor errors for the variables, they'll be pulled from config.php
-            $connection_string = "mysql:host=$dbhost;dbname=$dbdatabase;charset=utf8mb4";
-            $this->db = new PDO($connection_string, $dbuser, $dbpass);
+            if (isset($dbhost) && isset($dbdatabase) && isset($dbpass) && isset($dbuser)) {
+                $connection_string = "mysql:host=$dbhost;dbname=$dbdatabase;charset=utf8mb4";
+                $this->db = new PDO($connection_string, $dbuser, $dbpass);
+            } else {
+                //https://www.w3schools.com/php/func_error_log.asp
+                error_log("Missing db config details");
+            }
         }
         return $this->db;
     }
@@ -35,8 +40,8 @@ class Common
      * @param $message String of the message
      * @param string $type Type used for styling (should match your css classes)
      */
-    public function flash($message, $type="info"){
-        if(!isset($_SESSION["messages"])){
+    public static function flash($message, $type = "info") {
+        if (!isset($_SESSION["messages"])) {
             $_SESSION["messages"] = [];
         }
         array_push($_SESSION["messages"], [$message, $type]);
@@ -46,7 +51,7 @@ class Common
      *  Calling this clears the messages from the session.
      * @return mixed
      */
-    public function getFlashMessages(){
+    public static function getFlashMessages() {
         $messages = $_SESSION["messages"];
         $_SESSION["messages"] = [];
         return $messages;
