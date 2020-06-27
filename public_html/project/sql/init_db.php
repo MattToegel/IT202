@@ -30,6 +30,10 @@ try{
         $stmt = $db->prepare("show tables");
         $stmt->execute();
         $tables = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $t = [];
+        foreach($tables as $key => $value){
+            array_push($t, $value);
+        }
         echo var_export($tables, true);
         foreach($sql as $key => $value){
             echo "<br>Running: " . $key;
@@ -47,7 +51,7 @@ try{
                 //trim whitespace in front and back
                 $line = trim($line);
                 echo "filtered line: $line";
-                if (in_array($line, $tables)){
+                if (in_array($line, $t)){
                     echo "Filtered from array";
                     continue;
                 }
