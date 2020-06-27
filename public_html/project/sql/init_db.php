@@ -5,7 +5,6 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 //pull in config.php so we can access the variables from it
 require_once (__DIR__ . "/../includes/common.inc.php");
-$conn_string = "mysql:host=$dbhost;dbname=$dbdatabase;charset=utf8mb4";
 try{
     //name each sql file in a way that it'll sort correctly to run in the correct order
     //my samples prefix filenames with #_
@@ -24,7 +23,7 @@ try{
         ksort($sql);
         echo "<br><pre>" . var_export($sql, true) . "</pre><br>";
         //connect to DB
-        $db = getDB();
+        $db = $common->getDB();
         foreach($sql as $key => $value){
             echo "<br>Running: " . $key;
             $stmt = $db->prepare($value);
