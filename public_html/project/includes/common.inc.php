@@ -57,3 +57,4 @@ class Common {
         return $messages;
     }
 }
+$common = new Common();
