@@ -16,9 +16,9 @@ include(__DIR__."/partials/header.partial.php");
     </form>
 </div>
 <?php
-if (Common::get("submit", false)){
-    $email = Common::get("email", false);
-    $password = Common::get("password", false);
+if (Common::get($_POST, "submit", false)){
+    $email = Common::get($_POST, "email", false);
+    $password = Common::get($_POST, "password", false);
     if(!empty($email) && !empty($password)){
         $result = DBH::login($email, $password);
         echo var_export($result, true);
