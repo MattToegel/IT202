@@ -69,5 +69,7 @@ class Common {
         return $messages;
     }
 }
-require_once (__DIR__."/db_helper.php");
+
 $common = new Common();
+//make sure this is after we init common so it has access to it
+require_once (__DIR__."/db_helper.php");
