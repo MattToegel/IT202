@@ -24,8 +24,30 @@ try{
         echo "<br><pre>" . var_export($sql, true) . "</pre><br>";
         //connect to DB
         $db = $common->getDB();
+        /***
+         * Let's make this function a bit smarter to save DB calls for small dev plans
+         */
+        $stmt = $db->prepare("show tables");
+        $stmt->execute();
+        $tables = $stmt->fetch(PDO::FETCH_ASSOC);
+        echo var_export($tables, true);
         foreach($sql as $key => $value){
             echo "<br>Running: " . $key;
+            $lines = explode(PHP_EOL, $value);
+            if(count($lines) > 0){
+                $line = $lines[0];
+                //piecing this out in case there's extra whitespace in the SQL
+                $line = str_ireplace(" create ", "", $line);
+                $line = str_ireplace(" table ", "", $line);
+                $line = str_ireplace("if not exists", "", $line);
+                $line = str_ireplace("`", "", $line);
+                $line = str_ireplace(" ", "", $line);
+                echo "filtered line: $line";
+                if (in_array($line, $tables)){
+                    echo "Filtered from array";
+                    continue;
+                }
+            }
             $stmt = $db->prepare($value);
             $result = $stmt->execute();
             $error = $stmt->errorInfo();
