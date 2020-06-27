@@ -22,6 +22,10 @@ if (Common::get($_POST, "submit", false)){
     if(!empty($email) && !empty($password)){
         $result = DBH::login($email, $password);
         echo var_export($result, true);
+        if(Common::get($result, "status", 400) == 200){
+            $_SESSION["user"] = Common::get($result, "data", NULL);
+            die(header("Location: " . Common::url_for("home")));
+        }
     }
     else{
         Common::flash("Email and password must not be empty", "warning");

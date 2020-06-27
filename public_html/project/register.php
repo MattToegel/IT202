@@ -31,6 +31,10 @@ if (Common::get($_POST, "submit", false)){
     if(!empty($email) && !empty($password)){
         $result = DBH::register($email, $password);
         echo var_export($result, true);
+        if(Common::get($result, "status", 400) == 200){
+            Common::flash("Successfully registered, please login", "success");
+            die(header("Location: " . Common::url_for("login")));
+        }
     }
     else{
         Common::flash("Email and password must not be empty", "warning");
