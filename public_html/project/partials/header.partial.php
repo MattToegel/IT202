@@ -31,8 +31,8 @@ $logged_in = Common::is_logged_in(false);
     <?php if(isset($flash_messages) && count($flash_messages) > 0):?>
         <?php foreach($flash_messages as $msg):?>
         <?php echo var_export($msg);?>
-        <div class="<?php echo Common::get($msg, 0);?>"><?php
-            echo Common::get($msg, 1);
+        <div class="<?php echo Common::get($msg, 1);?>"><?php
+            echo Common::get($msg, 0);
             //We have the opening and closing tags right after/before the div tags to remove any whitespace characters
         ?></div>
         <?php endforeach;?>
