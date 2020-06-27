@@ -32,6 +32,11 @@ try{
         $tables = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $t = [];
         foreach($tables as $key => $value){
+            echo "<br>";
+            echo $key;
+            echo "<br>";
+            echo $value;
+            echo "<br>";
             array_push($t, $value);
         }
         echo var_export($tables, true);
