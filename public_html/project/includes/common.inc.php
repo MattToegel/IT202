@@ -3,7 +3,30 @@ session_start();
 
 class Common {
     private $db;
-
+    public static function is_logged_in($redirect = true){
+        if(Common::get($_SESSION, "user", false)){
+            return true;
+        }
+        if($redirect){
+            Common::flash("You must be logged in to access this page", "warning");
+            die(header("Location: " . Common::url_for("login")));
+        }
+        else{
+            return false;
+        }
+    }
+    public static function get_username(){
+        $user = Common::get($_SESSION, "user", false);
+        $name = "";
+        if($user){
+            $name = Common::get($user, "first_name", false);
+            if(!$name){
+                $name = Common::get($user, "email", false);//if this is false we have a bigger problem
+                //or we didn't check if the user is logged in first
+            }
+        }
+        return $name;
+    }
     public static function url_for($lookup){
         $path = __DIR__. "/../$lookup.php";
         //Heroku is deployed under an app folder and __DIR pulls full path
