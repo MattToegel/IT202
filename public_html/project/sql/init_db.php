@@ -29,19 +29,23 @@ try{
          */
         $stmt = $db->prepare("show tables");
         $stmt->execute();
-        $tables = $stmt->fetch(PDO::FETCH_ASSOC);
+        $tables = $stmt->fetchAll(PDO::FETCH_ASSOC);
         echo var_export($tables, true);
         foreach($sql as $key => $value){
             echo "<br>Running: " . $key;
             $lines = explode("(", $value, 2);
             if(count($lines) > 0){
                 $line = $lines[0];
-                //piecing this out in case there's extra whitespace in the SQL
-                $line = str_ireplace(" create ", "", $line);
-                $line = str_ireplace(" table ", "", $line);
+                //clear out duplicate whitespace
+                $line = preg_replace('!\s+!', ' ', $line);
+                //remove create table command
+                $line = str_ireplace("create table", "", $line);
+                //remove if not exists command
                 $line = str_ireplace("if not exists", "", $line);
-                $line = str_ireplace("`", "", $line);
-                $line = str_ireplace(" ", "", $line);
+                //remove backticks
+                $line = str_ireplace("`","",$line);
+                //trim whitespace in front and back
+                $line = trim($line);
                 echo "filtered line: $line";
                 if (in_array($line, $tables)){
                     echo "Filtered from array";
