@@ -5,6 +5,7 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 //pull in config.php so we can access the variables from it
 require_once (__DIR__ . "/../includes/common.inc.php");
+$count = 0;
 try{
     //name each sql file in a way that it'll sort correctly to run in the correct order
     //my samples prefix filenames with #_
@@ -29,15 +30,12 @@ try{
          */
         $stmt = $db->prepare("show tables");
         $stmt->execute();
+        $count++;
         $tables = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $t = [];
+        //convert it to a flat array
         foreach($tables as $row){
             foreach($row as $key => $value) {
-                echo "<br>";
-                echo $key;
-                echo "<br>";
-                echo $value;
-                echo "<br>";
                 array_push($t, $value);
             }
         }
@@ -57,20 +55,21 @@ try{
                 $line = str_ireplace("`","",$line);
                 //trim whitespace in front and back
                 $line = trim($line);
-                echo "filtered line: $line";
                 if (in_array($line, $t)){
-                    echo "Filtered from array";
+                    echo "<br>Blocked from running, table found in 'show tables' results.<br>";
                     continue;
                 }
             }
             $stmt = $db->prepare($value);
             $result = $stmt->execute();
+            $count++;
             $error = $stmt->errorInfo();
             if($error && $error[0] !== '00000'){
                 echo "<br>Error:<pre>" . var_export($error,true) . "</pre><br>";
             }
             echo "<br>$key result: " . ($result>0?"Success":"Fail") . "<br>";
         }
+        echo "<br> Init complete, used approximately $count db calls.<br>";
     }
     else{
         echo "Didn't find any files, please check the directory/directory contents/permissions";
