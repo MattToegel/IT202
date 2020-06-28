@@ -80,7 +80,7 @@ class Common {
             $_SESSION["messages"] = [];
         }
         array_push($_SESSION["messages"], ["message"=>$message, "type"=>$type]);
-        error_log(var_export($_SESSION["messages"], true));
+        //error_log(var_export($_SESSION["messages"], true));
     }
 
     /*** Returns all messaged stored on the session.
@@ -89,7 +89,7 @@ class Common {
      */
     public static function getFlashMessages() {
         $messages = $_SESSION["messages"];
-        error_log("Get Flash Messages(): " . var_export($messages, true));
+       //error_log("Get Flash Messages(): " . var_export($messages, true));
         $_SESSION["messages"] = [];
         return $messages;
     }
