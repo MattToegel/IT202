@@ -30,7 +30,7 @@ if(isset($search)) {
         //Potential Solutions
         //https://stackoverflow.com/questions/2542410/how-do-i-set-order-by-params-using-prepared-pdo-statement
         $query = "SELECT * FROM Things where name like CONCAT('%', :thing, '%') ORDER BY :col";
-        if($order){//should translate to true or false by converting 1 or 0 accordingly
+        if((bool)$order){//should translate to true or false by converting 1 or 0 accordingly
             $query .= " ASC";
         }
         else{
