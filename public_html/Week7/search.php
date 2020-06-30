@@ -41,6 +41,7 @@ if(isset($search)) {
         $stmt = getDB()->prepare($query);
         //Note: With a LIKE query, we must pass the % during the mapping
         $stmt->execute([":thing"=>$search, ":col"=>$col]);
+        echo var_export($stmt->queryString);
         echo var_export($stmt->errorInfo());
         //Note the fetchAll(), we need to use it over fetch() if we expect >1 record
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
