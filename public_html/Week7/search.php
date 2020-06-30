@@ -27,6 +27,7 @@ if(isset($search)) {
         //this is ok since we're in a try/catch block
         $order = $_POST["order"];
         $col = $_POST["col"];
+        echo var_dump($order);
         //Potential Solutions
         //https://stackoverflow.com/questions/2542410/how-do-i-set-order-by-params-using-prepared-pdo-statement
         $query = "SELECT * FROM Things where name like CONCAT('%', :thing, '%') ORDER BY :col";
@@ -36,6 +37,7 @@ if(isset($search)) {
         else{
             $query .= " DESC";
         }
+        echo $query;
         $stmt = getDB()->prepare($query);
         //Note: With a LIKE query, we must pass the % during the mapping
         $stmt->execute([":thing"=>$search, ":col"=>$col]);
