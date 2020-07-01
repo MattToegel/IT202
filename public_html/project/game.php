@@ -1,10 +1,3 @@
-<?php
-include_once(__DIR__."/partials/header.partial.php");
-
-if(Common::is_logged_in()){
-    //this will auto redirect if user isn't logged in
-}
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,6 +16,11 @@ if(Common::is_logged_in()){
 <small>Heavily based on this tutorial: <a href="https://spicyyoghurt.com/tutorials/html5-javascript-game-development/develop-a-html5-javascript-game">Here</a></small>
 <script>
     "use strict";
+
+    // Declare as variable
+
+
+
     class GameObject{
         constructor (context, x, y, vx, vy, mass,restitution){
             this.context = context;
@@ -157,7 +155,7 @@ if(Common::is_logged_in()){
             this.subDraw();
             this.context.fill();
             this.context.setTransform(1, 0, 0, 1, 0, 0);
-            this.drawHealthbar();
+
 
         }
         drawHealthbar(){
@@ -170,12 +168,14 @@ if(Common::is_logged_in()){
             if(p <= 0){
                 p = 0;
             }
+            console.log("Health Percent: ", p);
             this.context.fillRect(this.x - this.radius, this.y - this.diameter, this.diameter * p, this.halfRadius );
         }
         draw() {
             //Wrapped drawing logic in function for easy of use and later layering
 
             this.lookAtDirection();
+            this.drawHealthbar();
         }
         takeDamage(dmg){
             this.currentHealth -= dmg;
@@ -719,8 +719,8 @@ if(Common::is_logged_in()){
                         }
                         if(obj1 instanceof Tank && obj2 instanceof Tank){
                             //if one of these is a player it'll be destroyed
-                            destroyPlayer(obj1);
-                            destroyPlayer(obj2);
+                            this.destroyPlayer(obj1);
+                            this.destroyPlayer(obj2);
                         }
                     }
                 }
