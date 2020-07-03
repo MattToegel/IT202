@@ -1,1 +1,1 @@
-ALTER TABLE Users ADD COLUMN points BIGINT;
+ALTER TABLE Users ADD COLUMN points BIGINT default 0;

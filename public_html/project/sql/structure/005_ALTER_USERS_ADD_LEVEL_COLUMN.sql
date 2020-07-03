@@ -1,1 +1,1 @@
-ALTER TABLE Users ADD COLUMN level BIGINT;
+ALTER TABLE Users ADD COLUMN level int default 0;
