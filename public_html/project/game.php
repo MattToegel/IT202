@@ -767,8 +767,25 @@
 </script>
 <script>
 
-
+    function getGameData(){
+        var xhttp = new XMLHttpRequest();
+        xhttp.onload = function() {
+            if (xhttp.status != 200) { // analyze HTTP status of the response
+                alert(`Error ${xhttp.status}: ${xhttp.statusText}`); // e.g. 404: Not Found
+            } else { // show the result
+                alert(`Done, got ${xhttp.response.length} bytes`); // response is the server
+            }
+        };
+        xhttp.onerror = function() {
+            alert("Request failed");
+        };
+        xhttp.open("GET", "home.php", true);
+        xhttp.send();
+    }
     window.onload = function(){
+        //ajax call to get game data from server
+        //fetch player tank
+        //fetch enemy tank
         //canvasId, showCollision, showCircles, bounce, gravityAndMass, showAngle, bounceOfEdges
         init('canvas', true, true, true, false, true, true);
         console.log("init");
