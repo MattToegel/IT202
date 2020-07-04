@@ -172,7 +172,7 @@ if(Common::is_logged_in()){
             if(p <= 0){
                 p = 0;
             }
-            console.log("Health Percent: ", p);
+            //console.log("Health Percent: ", p);
             this.context.fillRect(this.x - this.radius, this.y - this.diameter, this.diameter * p, this.halfRadius );
         }
         draw() {
@@ -813,6 +813,8 @@ if(Common::is_logged_in()){
         xhttp.onerror = function() {
             alert("Request failed");
         };
+        //This header is necessary when doing POST
+        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhttp.open("POST", "api/save_score.php", true);
         xhttp.send("score=1&outcome=" + gameState);
     }
