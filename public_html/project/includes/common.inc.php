@@ -7,7 +7,9 @@ class Common {
         $started = Common::get($_SESSION, "started", false);
         if($started){
             try{
-                $started = new DateTime($started);
+                if(is_string($started)) {
+                    $started = new DateTime($started);
+                }
                 $now = new DateTime();
                 if($started < $now) {
                     //https://stackoverflow.com/a/12520198
