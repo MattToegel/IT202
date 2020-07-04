@@ -4,10 +4,27 @@ session_start();
 class Common {
     private $db;
 
+    /*** Helper to get seconds between two dates. May only be accurate if $date1 is older than $date2.
+     * @param $date1
+     * @param null $date2 defaults to NOW
+     * @return int
+     * @throws Exception
+     */
+    public static function get_seconds_since_dates($date1, $date2 = NULL){
+        if(!isset($date2)){
+            $date2 = new DateTime();
+        }
+        if(!$date1 instanceof DateTime){
+            //poor check for DT conversion, TODO make more robust.
+            $date1 = new DateTime($date1);
+        }
+        return $date2->getTimestamp() - $date1->getTimestamp();
+    }
     /*** Used as part of game validation to prevent cheating
      * @return int
      */
     public static function get_seconds_since_start(){
+        //TODO update this to use get_seconds_since_dates()
         $started = Common::get($_SESSION, "started", false);
         if($started){
             try{
