@@ -3,7 +3,7 @@ session_start();
 
 class Common {
     private $db;
-    public static function get_minutes_since_start(){
+    public static function get_seconds_since_start(){
         $started = Common::get($_SESSION, "started", false);
         if($started){
             try{
@@ -14,9 +14,11 @@ class Common {
                 if($started < $now) {
                     //https://stackoverflow.com/a/12520198
                     //$started can't be from the future
-                    $diff = $started->diff(new DateTime());
-                    $minutes = ($diff->days * 24 * 60) + ($diff->h * 60) + $diff->i;
-                    return $minutes;
+                    //$diff = $started->diff(new DateTime());
+                    //changed to seconds, helps filter fake requests yet account for poor play
+                    //$minutes = ($diff->days * 24 * 60) + ($diff->h * 60) + $diff->i;
+                    //return $minutes;
+                    return $now->getTimestamp() - $started->getTimestamp();
                 }
             }
             catch(Exception $e){
@@ -26,14 +28,17 @@ class Common {
         }
         return -1;
     }
-    public static function is_valid_game(){
-        $minutes = Common::get_minutes_since_start();
-        $min = 1;//Make sure game has been played a significant amount of time
-        $max = 60;//make sure it has been started within 60 mins
+    public static function is_valid_game($isWin){
+        $seconds = Common::get_seconds_since_start();
+        $min = 60;//Make sure game has been played a significant amount of time
+        if(!$isWin){
+            $min = 5;//hopefully the player survives longer than 5 seconds.
+        }
+        $max = 3600;//make sure it has been started within 60 mins
         //adjust the above constraints as necessary to reduce some basic cheats
-        //a game shouldn't be finished in under a minute and
+        //a game shouldn't be finished in under a set amount of seconds and
         //a game shouldn't take an hour to complete
-        return ($minutes > $min && $minutes <= $max);
+        return ($seconds > $min && $seconds <= $max);
     }
     public static function is_logged_in($redirect = true){
         if(Common::get($_SESSION, "user", false)){
