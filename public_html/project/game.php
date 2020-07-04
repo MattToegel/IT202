@@ -589,7 +589,8 @@ if(Common::is_logged_in()){
         }
         died(isAI){
             if(!this.gameOver){
-                saveScore(!isAI?"win":"loss");
+                //if it's AI that died, we won
+                saveScore(isAI?"win":"loss");
             }
         }
         spawnBullet(x, y, vx, vy, angle){
