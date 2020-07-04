@@ -31,7 +31,7 @@ if (Common::get($_POST, "submit", false)){
             $result = Common::get($result, "data", false);
             if($result) {
                 $_SESSION["system_id"] = Common::get($result, "id", -1);
-                error_log("Got system_id " . $_SESSION["system_id"], "info");
+                error_log("Got system_id " . $_SESSION["system_id"]);
             }
             //end system user fetch
 
