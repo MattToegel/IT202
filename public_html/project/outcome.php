@@ -8,6 +8,8 @@ if(Common::is_logged_in()){
 <div>
     <?php $outcome = Common::get($_SESSION, "outcome", false);?>
     <?php if($outcome):?>
+        <?php unset($_SESSION["outcome"]);?>
+        <?php unset($_SESSION["started"]);?>
         <?php if($outcome == "win"):?>
             <h1>Congrats, you won this round!</h1>
         <?php else:?>
