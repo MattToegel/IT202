@@ -4,6 +4,9 @@ include_once(__DIR__."/partials/header.partial.php");
 if(Common::is_logged_in()){
     //this will auto redirect if user isn't logged in
     $_SESSION["started"] = new DateTime();
+    if(isset($_SESSION["outcome"])){
+        unset($_SESSION["outcome"]);
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -802,6 +805,7 @@ if(Common::is_logged_in()){
                 console.log(`Error ${xhttp.status}: ${xhttp.statusText}`); // e.g. 404: Not Found
                 alert("Something went wrong, the activity of this play may have been lost");
             } else { // show the result
+                console.log(xhttp.responseText);
                 console.log(`Done, got ${xhttp.response.length} bytes`); // response is the server
                 window.location.replace("outcome.php");
             }

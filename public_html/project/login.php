@@ -24,6 +24,9 @@ if (Common::get($_POST, "submit", false)){
         echo var_export($result, true);
         if(Common::get($result, "status", 400) == 200){
             $_SESSION["user"] = Common::get($result, "data", NULL);
+            $result = DBH::get_system_user_id();
+            $_SESSION["system_id"] = Common::get($result, "id", -1);
+
             die(header("Location: " . Common::url_for("home")));
         }
         else{
