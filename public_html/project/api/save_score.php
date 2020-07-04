@@ -20,6 +20,7 @@ if(isset($_POST["score"]) && isset($_POST["outcome"])) {
                 $xp = 1;//You learn from losing, right?
                 $points = 0;//sorry gotta earn these
             }
+            $_SESSION["outcome"] = $gameStatus;
             $user_id = Common::get_user_id();
             //give xp
             $xp_resp = DBH::addXP($user_id, $xp, $gameStatus);
