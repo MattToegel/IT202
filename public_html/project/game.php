@@ -16,11 +16,6 @@
 <small>Heavily based on this tutorial: <a href="https://spicyyoghurt.com/tutorials/html5-javascript-game-development/develop-a-html5-javascript-game">Here</a></small>
 <script>
     "use strict";
-
-    // Declare as variable
-
-
-
     class GameObject{
         constructor (context, x, y, vx, vy, mass,restitution){
             this.context = context;
@@ -182,6 +177,7 @@
             if(this.currentHealth <= 0){
                 console.log(this,"Died");
                 this.disabled = true;
+                this.context.game.died(this.isAI);
             }
 
         }
@@ -491,6 +487,7 @@
             this.gravityAndMass = gravityAndMass;
             this.showAngle = showAngle;
             this.bounceOfEdges = bounceOfEdges;
+            this.gameOver = false;
             //this.contxt. player = null;
         }
         listen(){
@@ -577,7 +574,11 @@
             this.context.player = this.gameObjects[0];
             this.listen();
         }
-
+        died(isAI){
+            if(!this.gameOver){
+                saveScore(!isAI?"win":"loss");
+            }
+        }
         spawnBullet(x, y, vx, vy, angle){
             let bullet;
             for(let i = 0; i < this.gameObjects.length; i++){
@@ -781,6 +782,23 @@
         };
         xhttp.open("GET", "home.php", true);
         xhttp.send();
+    }
+    function saveScore(gameState){
+        var xhttp = new XMLHttpRequest();
+        xhttp.onload = function() {
+            if (xhttp.status != 200) { // analyze HTTP status of the response
+                console.log(`Error ${xhttp.status}: ${xhttp.statusText}`); // e.g. 404: Not Found
+                alert("Something went wrong, the activity of this play may have been lost");
+            } else { // show the result
+                console.log(`Done, got ${xhttp.response.length} bytes`); // response is the server
+                window.location.replace(window.location.origin +"/outcome.php");
+            }
+        };
+        xhttp.onerror = function() {
+            alert("Request failed");
+        };
+        xhttp.open("POST", "/api/save_score.php", true);
+        xhttp.send("score=1&outcome=" + gameState);
     }
     window.onload = function(){
         //ajax call to get game data from server

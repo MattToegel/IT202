@@ -3,6 +3,36 @@ session_start();
 
 class Common {
     private $db;
+    public static function get_minutes_since_start(){
+        $started = Common::get($_SESSION, "started", false);
+        if($started){
+            try{
+                $started = new DateTime($started);
+                $now = new DateTime();
+                if($started < $now) {
+                    //https://stackoverflow.com/a/12520198
+                    //$started can't be from the future
+                    $diff = $started->diff(new DateTime());
+                    $minutes = ($diff->days * 24 * 60) + ($diff->h * 60) + $diff->i;
+                    return $minutes;
+                }
+            }
+            catch(Exception $e){
+                //invalid date
+                error_log($e->getMessage());
+            }
+        }
+        return -1;
+    }
+    public static function is_valid_game(){
+        $minutes = Common::get_minutes_since_start();
+        $min = 1;//Make sure game has been played a significant amount of time
+        $max = 60;//make sure it has been started within 60 mins
+        //adjust the above constraints as necessary to reduce some basic cheats
+        //a game shouldn't be finished in under a minute and
+        //a game shouldn't take an hour to complete
+        return ($minutes > $min && $minutes <= $max);
+    }
     public static function is_logged_in($redirect = true){
         if(Common::get($_SESSION, "user", false)){
             return true;
@@ -14,6 +44,17 @@ class Common {
         else{
             return false;
         }
+    }
+    public static function get_system_id(){
+        return Common::get($_SESSION, "system_id", -1);
+    }
+    public static function get_user_id(){
+        $id = -1;
+        $user = Common::get($_SESSION, "user", false);
+        if($user){
+            $id = Common::get($user,"id", -1);
+        }
+        return $id;
     }
     public static function get_username(){
         $user = Common::get($_SESSION, "user", false);

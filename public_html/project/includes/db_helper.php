@@ -70,4 +70,76 @@ class DBH{
             return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
         }
     }
+    public static function getTotalXP($user_id){
+        try {
+            $query = file_get_contents(__DIR__ . "/../sql/queries/get_total_xp.sql");
+            $stmt = DBH::getDB()->prepare($query);
+            $result = $stmt->execute([":uid" => $user_id]);
+            DBH::verify_sql($stmt);
+            if($result){
+                $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                $total = Common::get($result,"total", 0);
+                $data = ["total"=>$total];
+                return DBH::response($data,200, "success");
+            }
+            else{
+                return DBH::response(NULL, 400, "error");
+            }
+        }
+        catch(Exception $e){
+            error_log($e->getMessage());
+            return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
+        }
+    }
+    public static function changePoints($user_id_src, $change, $user_id_dest = -1, $type="earned", $memo="system"){
+        try {
+            //setup so src should be original player
+
+            //grab system id from session (save a DB call)
+            //commonly points will be from the system user
+            if($user_id_dest <= 0){
+                $user_id_dest = Common::get_system_id();
+            }
+            $query = file_get_contents(__DIR__ . "/../sql/queries/change_points.sql");
+            $stmt = DBH::getDB()->prepare($query);
+            //from System to User (most likely)
+            $change *= -1;//flip it because if we're adding to user it's subtracted from system (or vice versa)
+            $result = $stmt->execute([":src" => $user_id_dest, ":dest"=>$user_id_src,
+                ":change"=>$change, ":type"=>$type, ":memo"=>$memo]);
+            DBH::verify_sql($stmt);
+            $change *= -1;//flip it, now we need the other half of the transaction
+            //swap src/dest since it's the inverse of the previous part of the transaction
+            $result2 = $stmt->execute([":src" => $user_id_src, ":dest"=>$user_id_dest,
+                ":change"=>$change, ":type"=>$type, ":memo"=>$memo]);
+            DBH::verify_sql($stmt);
+            if($result && $result2){
+                return DBH::response(NULL,200, "success");
+            }
+            else{
+                return DBH::response(NULL, 400, "error");
+            }
+        }
+        catch(Exception $e){
+            error_log($e->getMessage());
+            return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
+        }
+    }
+    public static function addXP($user_id, $amount, $type="system", $note=""){
+        try {
+            $query = file_get_contents(__DIR__ . "/../sql/queries/add_xp.sql");
+            $stmt = DBH::getDB()->prepare($query);
+            $result = $stmt->execute([":uid" => $user_id, ":amount"=>$amount, ":type"=>$type, ":note"=>$note]);
+            DBH::verify_sql($stmt);
+            if($result){
+                return DBH::response(NULL,200, "success");
+            }
+            else{
+                return DBH::response(NULL, 400, "error");
+            }
+        }
+        catch(Exception $e){
+            error_log($e->getMessage());
+            return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
+        }
+    }
 }

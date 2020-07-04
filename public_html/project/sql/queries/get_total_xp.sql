@@ -1,0 +1,1 @@
+SELECT SUM(amount) as total from Experience where user_id = :uid
