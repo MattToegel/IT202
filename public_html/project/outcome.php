@@ -6,7 +6,7 @@ if(Common::is_logged_in()){
 }
 ?>
 <div>
-    <?php $outcome = Common::get($_SESSION, "outcome", false);?>
+    <?php $outcome = Common::get($_SESSION, "outcome", false); echo $outcome;?>
     <?php if($outcome):?>
         <?php unset($_SESSION["outcome"]);?>
         <?php unset($_SESSION["started"]);?>
