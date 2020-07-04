@@ -21,10 +21,12 @@ if(Common::is_logged_in()){
         $result = DBH::get_aggregated_stats($user_id);
         $result = Common::get($result, "data", false);
         if($result){
+            error_log(var_export($result, true));
             $xp = Common::get($result, "XP", 0);
             $points = Common::get($result, "Points", 0);
             $level = (int)($xp/100);//TODO implement different leveling system
             $result = DBH::update_user_stats($user_id, $level, $xp, $points);
+            error_log(var_export($result, true));
             $_SESSION["user"]["experience"] = $xp;
             $_SESSION["user"]["level"] = $level;
             $_SESSION["user"]["points"] = $points;
