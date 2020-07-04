@@ -91,6 +91,25 @@ class DBH{
             return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
         }
     }
+    public static function get_system_user_id(){
+        try {
+            $query = file_get_contents(__DIR__ . "/../sql/queries/login.sql");
+            $stmt = DBH::getDB()->prepare($query);
+            $result = $stmt->execute([":email"=>"localhost"]);
+            DBH::verify_sql($stmt);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            if($result){
+                return DBH::response($result,200, "success");
+            }
+            else{
+                return DBH::response(NULL, 400, "error");
+            }
+        }
+        catch(Exception $e){
+            error_log($e->getMessage());
+            return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
+        }
+    }
     public static function changePoints($user_id_src, $change, $user_id_dest = -1, $type="earned", $memo="system"){
         try {
             //setup so src should be original player
