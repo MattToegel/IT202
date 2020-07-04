@@ -813,9 +813,10 @@ if(Common::is_logged_in()){
         xhttp.onerror = function() {
             alert("Request failed");
         };
-        //This header is necessary when doing POST
-        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
         xhttp.open("POST", "api/save_score.php", true);
+        //This header is necessary when doing POST and must come after Open and before Send
+        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhttp.send("score=1&outcome=" + gameState);
     }
     window.onload = function(){
