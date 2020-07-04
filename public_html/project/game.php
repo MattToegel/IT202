@@ -802,7 +802,7 @@ if(Common::is_logged_in()){
                 alert("Something went wrong, the activity of this play may have been lost");
             } else { // show the result
                 console.log(`Done, got ${xhttp.response.length} bytes`); // response is the server
-                window.location.replace("api/outcome.php");
+                window.location.replace("/project/api/outcome.php");
             }
         };
         xhttp.onerror = function() {
