@@ -42,9 +42,7 @@ if(Common::is_logged_in()){
 
             this.isColliding = false;
         }
-        getRandomRange(min, max) {
-            return Math.random() * (max - min) + min;
-        }
+
         getAngle(x1, x2, y1, y2) {
 
             // angle in radians
@@ -569,14 +567,18 @@ if(Common::is_logged_in()){
 
         createWorld() {
             this.context.game = this;
+            let px = getRandomRange(this.canvas.width*.5, this.canvas.width);
+            let py = getRandomRange(0, this.canvas.height);
+            let ax = getRandomRange(0, this.canvas.width*.5);
+            let ay = getRandomRange(0, this.canvas.height);
             this.gameObjects = [
-                new Tank(this.context, 250, 50, 200, 200, false, 200, 100),
-                new Tank(this.context, 150, 50, 200, 200, true, 200, 50),
+                new Tank(this.context, px, py, 200, 200, false, 200, 100),
+                new Tank(this.context, ax, ay, 200, 200, true, 200, 50),
                 //new Tank(this.context, 250, 300, 0, -50, 1, this.showAngle, this.bounceOfEdges),
                 /*new Circle(this.context, 200, 0, 50, 50),*/
                 //new Tank(this.context, 150, 0, 50, 50, 1, this.showAngle, this.bounceOfEdges),
                 //new Tank(this.context, 250, 150, 50, 50, 1, this.showAngle, this.bounceOfEdges),
-                new Bullet(this.context, 300, 75, 50, 50, 5)
+                //new Bullet(this.context, 300, 75, 50, 50, 5)
                 /*new Circle(this.context, 300, 75, -50, 50),*/
                 //new Tank(this.context, 350, 75, -50, 50, 1, this.showAngle, this.bounceOfEdges),
                 //new Tank(this.context, 300, 300, 50, -50, 1, this.showAngle, this.bounceOfEdges)
@@ -778,7 +780,9 @@ if(Common::is_logged_in()){
     }
 </script>
 <script>
-
+    function getRandomRange(min, max) {
+        return Math.random() * (max - min) + min;
+    }
     function getGameData(){
         var xhttp = new XMLHttpRequest();
         xhttp.onload = function() {
