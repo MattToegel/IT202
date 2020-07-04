@@ -105,7 +105,6 @@ if(Common::is_logged_in()){
             this.left = false;
             this.right = false;
             this.nextFire = 0;
-            this.secondsPassed = 0;
             this.shooting = false;
             this.diameter = this.radius * 2;
             this.halfRadius = this.radius / 2;
@@ -127,8 +126,8 @@ if(Common::is_logged_in()){
             console.log("Am I AI", this.isAI);
         }
         shoot(){
-            if(this.secondsPassed >= this.nextFire){
-                this.nextFire = this.secondsPassed + this.fireRate;
+            if(this.context.game.time >= this.nextFire){
+                this.nextFire = this.context.game.time + this.fireRate;
                 console.log("Shoot", this.nextFire);
                 this.context.game.spawnBullet(this.x, this.y, this.vx, this.vy, this.angle);
             }
@@ -262,14 +261,14 @@ if(Common::is_logged_in()){
             }
         }
 
-        update(secondsPassed){
+        update(frameDeltaTime){
             if(this.disabled){
                 return;
 
             }
-            //secondsPassed is a bit of a lie here, it seems to be delta time (tutorial lableed wrong)
-            //so we just add it to our local secondsPassed variable
-            this.secondsPassed += secondsPassed;
+            //frameDeltaTime is a bit of a lie here, it seems to be delta time (tutorial lableed wrong)
+            //so we just add it to our local frameDeltaTime variable
+
             if(this.shooting){
                 this.shoot();
             }
@@ -293,11 +292,11 @@ if(Common::is_logged_in()){
             if(!this.up && !this.down){this.dy = 0;}
 
             if(this.dx > 0){
-                this.angle += this.turnSpeed * secondsPassed;
+                this.angle += this.turnSpeed * frameDeltaTime;
 
             }
             if(this.dx < 0){
-                this.angle -= this.turnSpeed * secondsPassed;
+                this.angle -= this.turnSpeed * frameDeltaTime;
 
             }
             if(this.dy == 0){
@@ -310,8 +309,8 @@ if(Common::is_logged_in()){
             if(isNaN(this.dx) || isNaN(this.dy) || isNaN(this.vx) || isNaN(this.vy)){
                 return;
             }
-            const vx = this.vx * facingx * secondsPassed;
-            const vy = this.vy * facingy * secondsPassed;
+            const vx = this.vx * facingx * frameDeltaTime;
+            const vy = this.vy * facingy * frameDeltaTime;
             //apply the move if we're meant to move
             if (this.dy > 0) {
                 this.x += vx;
@@ -368,7 +367,7 @@ if(Common::is_logged_in()){
         }
 
 
-        update(secondsPassed){
+        update(frameDeltaTime){
             if(this.disabled){
                 return;
             }
@@ -378,12 +377,12 @@ if(Common::is_logged_in()){
 
             if (this.bounceOfEdges){
                 // Apply g acceleration
-                this.vy += g * secondsPassed;
+                this.vy += g * frameDeltaTime;
             }
 
             //Move with velocity x/y
-            this.x += this.vx * secondsPassed;
-            this.y += this.vy * secondsPassed;
+            this.x += this.vx * frameDeltaTime;
+            this.y += this.vy * frameDeltaTime;
 
             if (this.showAngle){
                 let angleRadians = Math.atan2(this.vy, this.vx); //in radians
@@ -459,15 +458,15 @@ if(Common::is_logged_in()){
             this.context.fillRect(this.x, this.y, this.width, this.height);
         }
 
-        update(secondsPassed){
+        update(frameDeltaTime){
 
             /*if (this.gravityAndMass){
-                this.vy += (9.81 * 3) * secondsPassed;
+                this.vy += (9.81 * 3) * frameDeltaTime;
             }*/
 
             //Move with velocity x/y
-            this.x += this.vx * secondsPassed;
-            this.y += this.vy * secondsPassed;
+            this.x += this.vx * frameDeltaTime;
+            this.y += this.vy * frameDeltaTime;
         }
     }
     const Keys = {
@@ -497,6 +496,7 @@ if(Common::is_logged_in()){
             this.showAngle = showAngle;
             this.bounceOfEdges = bounceOfEdges;
             this.gameOver = false;
+            this.time = 0;
             //this.contxt. player = null;
         }
         listen(){
@@ -624,22 +624,23 @@ if(Common::is_logged_in()){
         gameLoop(timeStamp) {
 
             // Calculate how much time has passed
-            let secondsPassed = (timeStamp - this.oldTimeStamp) / 1000;
+            let frameDeltaTime = (timeStamp - this.oldTimeStamp) / 1000;
             this.oldTimeStamp = timeStamp;
 
-            secondsPassed = Math.min(secondsPassed, 0.1);
-            /*this.resetCounter += secondsPassed;
+            frameDeltaTime = Math.min(frameDeltaTime, 0.1);
+            this.time += frameDeltaTime;
+            /*this.resetCounter += frameDeltaTime;
             if (this.resetCounter > (this.bounceOfEdges ? 15 : 5)) {
                 this.resetCounter = 0;
                 this.createWorld();
             }*/
 
             for (let i = 0; i < this.gameObjects.length; i++) {
-                this.gameObjects[i].update(secondsPassed);
+                this.gameObjects[i].update(frameDeltaTime);
             }
 
             if (this.showCollision) {
-                this.detectCollisions(secondsPassed);
+                this.detectCollisions(frameDeltaTime);
             }
 
             this.clearCanvas();
@@ -656,7 +657,7 @@ if(Common::is_logged_in()){
                 obj.takeDamage(obj.totalHealth);
             }
         }
-        detectCollisions(secondsPassed) {
+        detectCollisions(frameDeltaTime) {
             var obj1;
             var obj2;
             for (var i = 0; i < this.gameObjects.length; i++) {
