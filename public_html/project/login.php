@@ -25,7 +25,11 @@ if (Common::get($_POST, "submit", false)){
         if(Common::get($result, "status", 400) == 200){
             $_SESSION["user"] = Common::get($result, "data", NULL);
             $result = DBH::get_system_user_id();
-            $_SESSION["system_id"] = Common::get($result, "id", -1);
+            $result = Common::get($result, "data", false);
+            if($result) {
+                $_SESSION["system_id"] = Common::get($result, "id", -1);
+                error_log("Got system_id " . $_SESSION["system_id"], "info");
+            }
 
             die(header("Location: " . Common::url_for("home")));
         }
