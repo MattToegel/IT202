@@ -20,6 +20,7 @@ if(Common::is_logged_in()){
 <body>
 <h2>Tanks for Playing</h2>
 <p>Objective: Match must last at least 10 seconds. Winner is the last Tank alive.</p>
+<p>Careful not to bump into the enemy tank.</p>
 <!--Your canvas will come here -->
 <canvas id="canvas" width="1024" height="512" style="border:1px solid lightgrey;">
     Your browser does not support the HTML5 canvas tag.
