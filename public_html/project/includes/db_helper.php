@@ -8,9 +8,21 @@ class DBH{
         }
         throw new Exception("Failed to find reference to common");
     }
+
+    /** Wraps all responses in this wrapper as a contract for whoever calls this helper
+     * @param $data
+     * @param int $status
+     * @param string $message
+     * @return array
+     */
     private static function response($data, $status = 200, $message = ""){
         return array("status"=>$status, "message"=>$message, "data"=>$data);
     }
+
+    /*** Basic repetitive STMT check, throws exception
+     * @param $stmt
+     * @throws Exception
+     */
     private static function verify_sql($stmt){
         if(!isset($stmt)){
             throw new Exception("stmt object is undefined");
@@ -71,6 +83,12 @@ class DBH{
             return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
         }
     }
+
+    /*** Logic to fetch a user's current total XP. Should be called seldomly with the result cached on the User's
+     *   User record
+     * @param $user_id
+     * @return array
+     */
     public static function getTotalXP($user_id){
         try {
             $query = file_get_contents(__DIR__ . "/../sql/queries/get_total_xp.sql");
@@ -92,6 +110,10 @@ class DBH{
             return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
         }
     }
+
+    /*** Fetch System user ID, this is used for Points Transactions
+     * @return array
+     */
     public static function get_system_user_id(){
         try {
             $query = file_get_contents(__DIR__ . "/../sql/queries/login.sql");
@@ -111,6 +133,15 @@ class DBH{
             return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
         }
     }
+
+    /*** Used to add/remove points, records a transaction between users or user and system
+     * @param $user_id_src
+     * @param $change
+     * @param int $user_id_dest
+     * @param string $type
+     * @param string $memo
+     * @return array
+     */
     public static function changePoints($user_id_src, $change, $user_id_dest = -1, $type="earned", $memo="system"){
         try {
             //setup so src should be original player
@@ -146,6 +177,15 @@ class DBH{
             return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
         }
     }
+
+    /*** Handles giving player XP, negative value can be used to deduct XP, but not a current features.
+     *   Activity gets saved in a table as a new record similar to transactions.
+     * @param $user_id
+     * @param $amount
+     * @param string $type
+     * @param string $note
+     * @return array
+     */
     public static function addXP($user_id, $amount, $type="system", $note=""){
         try {
             $query = file_get_contents(__DIR__ . "/../sql/queries/add_xp.sql");

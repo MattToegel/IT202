@@ -1,3 +1,13 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tanks for Playing</title>
+    <meta name="description" content="Tanks for Playing">
+    <meta name="author" content="Matt Toegel">
+</head>
+<body>
 <?php
 include_once(__DIR__."/partials/header.partial.php");
 
@@ -9,15 +19,6 @@ if(Common::is_logged_in()){
     }
 }
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Tanks for Playing</title>
-    <meta name="description" content="Tanks for Playing">
-    <meta name="author" content="Matt Toegel">
-</head>
-<body>
 <h2>Tanks for Playing</h2>
 <p>Objective: Match must last at least 10 seconds. Winner is the last Tank alive.</p>
 <p>Careful not to bump into the enemy tank.</p>
