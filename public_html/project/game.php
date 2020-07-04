@@ -802,13 +802,13 @@ if(Common::is_logged_in()){
                 alert("Something went wrong, the activity of this play may have been lost");
             } else { // show the result
                 console.log(`Done, got ${xhttp.response.length} bytes`); // response is the server
-                window.location.replace("/project/api/outcome.php");
+                window.location.replace("outcome.php");
             }
         };
         xhttp.onerror = function() {
             alert("Request failed");
         };
-        xhttp.open("POST", "/api/save_score.php", true);
+        xhttp.open("POST", "api/save_score.php", true);
         xhttp.send("score=1&outcome=" + gameState);
     }
     window.onload = function(){
