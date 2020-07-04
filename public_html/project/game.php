@@ -4,9 +4,6 @@ include_once(__DIR__."/partials/header.partial.php");
 if(Common::is_logged_in()){
     //this will auto redirect if user isn't logged in
     $_SESSION["started"] = new DateTime();
-    if(isset($_SESSION["outcome"])){
-        unset($_SESSION["outcome"]);
-    }
 }
 ?>
 <!DOCTYPE html>
