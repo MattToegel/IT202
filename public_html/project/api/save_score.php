@@ -5,9 +5,11 @@ if(isset($_POST["score"]) && isset($_POST["outcome"])) {
     //TODO fetch game state data to validate to deter cheating
     require(__DIR__ . "/../includes/common.inc.php");
     if (Common::is_logged_in(false)) {
-        if(Common::is_valid_game()){
+        $outcome = Common::get($_POST, "outcome", "loss");
+
+        if(Common::is_valid_game(($outcome=="win"))){
             //TODO based on game state calc XP
-            $outcome = Common::get($_POST, "outcome", "loss");
+
             //don't feed client data directly into our app/db
             //so we check it and assign a hard coded value
             if($outcome == "win"){
