@@ -5,15 +5,17 @@ if(Common::is_logged_in()){
     //this will auto redirect if user isn't logged in
 
     //poor man's cronjob - run commands no sooner than specified delay
+    $first = false;
     if(isset($_SESSION["last_sync"])){
         $last_sync = $_SESSION["last_sync"];
     }
     else{
         $last_sync = new DateTime();
         $_SESSION["last_sync"] = $last_sync;
+        $first = true;
     }
     $seconds = Common::get_seconds_since_dates($last_sync);
-    if($seconds >= 120){//no sooner than every 2 mins
+    if($first || $seconds >= 120){//no sooner than every 2 mins
         //TODO aggregate user XP, Points, and Level
         $user_id = Common::get_user_id();
         $result = DBH::get_aggregated_stats($user_id);
