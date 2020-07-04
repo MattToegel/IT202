@@ -57,4 +57,7 @@ if(isset($_POST["score"]) && isset($_POST["outcome"])) {
         $response["message"] = "Not logged in";
     }
 }
+else{
+    $response["message"] = "Invalid data";
+}
 echo json_encode($response);
