@@ -24,12 +24,16 @@ if (Common::get($_POST, "submit", false)){
         echo var_export($result, true);
         if(Common::get($result, "status", 400) == 200){
             $_SESSION["user"] = Common::get($result, "data", NULL);
+
+            //fetch system user id and put it in session to reduce DB calls to fetch it when we need
+            //to generate points from activity on the app
             $result = DBH::get_system_user_id();
             $result = Common::get($result, "data", false);
             if($result) {
                 $_SESSION["system_id"] = Common::get($result, "id", -1);
                 error_log("Got system_id " . $_SESSION["system_id"], "info");
             }
+            //end system user fetch
 
             die(header("Location: " . Common::url_for("home")));
         }

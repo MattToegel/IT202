@@ -3,6 +3,10 @@ session_start();
 
 class Common {
     private $db;
+
+    /*** Used as part of game validation to prevent cheating
+     * @return int
+     */
     public static function get_seconds_since_start(){
         $started = Common::get($_SESSION, "started", false);
         if($started){
@@ -28,6 +32,11 @@ class Common {
         }
         return -1;
     }
+
+    /*** Basis of anti cheating check, still WIP
+     * @param $isWin
+     * @return bool
+     */
     public static function is_valid_game($isWin){
         $seconds = Common::get_seconds_since_start();
         error_log("Seconds $seconds");
@@ -55,6 +64,11 @@ class Common {
             return false;
         }
     }
+
+    /*** System user ID used mostly as FK for various transactions.
+     *    Cached in Session to reduce DB calls to fetch it. Populates on login.
+     * @return mixed|string
+     */
     public static function get_system_id(){
         return Common::get($_SESSION, "system_id", -1);
     }
@@ -78,6 +92,11 @@ class Common {
         }
         return $name;
     }
+
+    /*** Quick URL tool to get relative urls by passing desired php file name.
+     * @param $lookup
+     * @return mixed|string
+     */
     public static function url_for($lookup){
         $path = __DIR__. "/../$lookup.php";
         //Heroku is deployed under an app folder and __DIR pulls full path
