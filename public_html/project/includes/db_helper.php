@@ -18,6 +18,7 @@ class DBH{
         $e = $stmt->errorInfo();
         if($e[0] != '00000'){
             $error = var_export($e, true);
+            error_log($error);
             throw new Exception("SQL Error: $error");
         }
     }
@@ -119,6 +120,7 @@ class DBH{
             if($user_id_dest <= 0){
                 $user_id_dest = Common::get_system_id();
             }
+            error_log("System user $user_id_dest");
             $query = file_get_contents(__DIR__ . "/../sql/queries/change_points.sql");
             $stmt = DBH::getDB()->prepare($query);
             //from System to User (most likely)
@@ -139,6 +141,7 @@ class DBH{
             }
         }
         catch(Exception $e){
+
             error_log($e->getMessage());
             return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
         }
