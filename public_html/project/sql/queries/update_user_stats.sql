@@ -1,0 +1,1 @@
+UPDATE Users SET level = :level, experience = :xp, points = :points where id = :uid

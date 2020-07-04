@@ -204,4 +204,40 @@ class DBH{
             return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
         }
     }
+    public static function get_aggregated_stats($user_id){
+        try {
+            $query = file_get_contents(__DIR__ . "/../sql/queries/get_aggregated_stats.sql");
+            $stmt = DBH::getDB()->prepare($query);
+            $result = $stmt->execute([":uid" => $user_id]);
+            DBH::verify_sql($stmt);
+            if($result){
+                return DBH::response($result,200, "success");
+            }
+            else{
+                return DBH::response(NULL, 400, "error");
+            }
+        }
+        catch(Exception $e){
+            error_log($e->getMessage());
+            return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
+        }
+    }
+    public static function update_user_stats($user_id, $level, $xp, $points){
+        try {
+            $query = file_get_contents(__DIR__ . "/../sql/queries/update_user_stats.sql");
+            $stmt = DBH::getDB()->prepare($query);
+            $result = $stmt->execute([":uid" => $user_id, ":level"=>$level, ":xp"=>$xp, ":points"=>$points]);
+            DBH::verify_sql($stmt);
+            if($result){
+                return DBH::response(NULL,200, "success");
+            }
+            else{
+                return DBH::response(NULL, 400, "error");
+            }
+        }
+        catch(Exception $e){
+            error_log($e->getMessage());
+            return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
+        }
+    }
 }
