@@ -211,6 +211,7 @@ class DBH{
             $result = $stmt->execute([":uid" => $user_id]);
             DBH::verify_sql($stmt);
             if($result){
+                $result = $stmt->fetch(PDO::FETCH_ASSOC);
                 return DBH::response($result,200, "success");
             }
             else{
