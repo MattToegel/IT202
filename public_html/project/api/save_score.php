@@ -49,6 +49,12 @@ if(isset($_POST["score"]) && isset($_POST["outcome"])) {
                 }
             }
         }
+        else{
+            $response["message"] = "Invalid game";
+        }
+    }
+    else{
+        $response["message"] = "Not logged in";
     }
 }
 echo json_encode($response);
