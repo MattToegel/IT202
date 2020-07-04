@@ -19,6 +19,7 @@ if(Common::is_logged_in()){
 </head>
 <body>
 <h2>Tanks for Playing</h2>
+<p>Objective: Match must last at least 10 seconds. Winner is the last Tank alive.</p>
 <!--Your canvas will come here -->
 <canvas id="canvas" width="1024" height="512" style="border:1px solid lightgrey;">
     Your browser does not support the HTML5 canvas tag.
@@ -648,6 +649,7 @@ if(Common::is_logged_in()){
             for (let i = 0; i < this.gameObjects.length; i++) {
                 this.gameObjects[i].draw();
             }
+            this.drawTime();
             // The loop function has reached it's end
             // Keep requesting new frames
             window.requestAnimationFrame((timeStamp) => this.gameLoop(timeStamp));
@@ -771,6 +773,12 @@ if(Common::is_logged_in()){
         clearCanvas() {
             // Clear the canvas
             this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        }
+
+        drawTime(){
+            this.context.font = "30px Arial";
+            this.context.fillStyle = "#000000";
+            this.context.fillText("Time: " + Math.round(this.time), 10, 50);
         }
     }
 
