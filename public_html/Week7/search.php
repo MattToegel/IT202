@@ -30,7 +30,22 @@ if(isset($search)) {
         echo var_dump($order);
         //Potential Solutions
         //https://stackoverflow.com/questions/2542410/how-do-i-set-order-by-params-using-prepared-pdo-statement
-        $query = "SELECT * FROM Things where name like CONCAT('%', :thing, '%') ORDER BY :col";
+        //Map variable to hard coded values here so we can safely inject them into the raw SQL query.
+        //this is safer than just putting $col blindly in case there's SQL Injection data included.
+        $mapped_col = "name";//default to name
+        if($col == "name"){
+            $mapped_col = "name";
+        }
+        else if($col == "quantity"){
+            $mapped_col = "quantity";
+        }
+        else if($col == "created"){
+            $mapped_col = "created";
+        }
+        else if($col == "modified"){
+            $mapped_col = "modified";
+        }
+        $query = "SELECT * FROM Things where name like CONCAT('%', :thing, '%') ORDER BY $mapped_col";
         if((int)$order == 1){
             $query .= " ASC";
         }
