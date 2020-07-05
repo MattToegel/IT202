@@ -28,7 +28,7 @@ if(isset($search)) {
         $order = $_POST["order"];
         $col = $_POST["col"];
         echo var_dump($order);
-        //Potential Solutions
+        //Potential Solutions since we can't just bindValue or bindParam column names and asc/desc
         //https://stackoverflow.com/questions/2542410/how-do-i-set-order-by-params-using-prepared-pdo-statement
         //Map variable to hard coded values here so we can safely inject them into the raw SQL query.
         //this is safer than just putting $col blindly in case there's SQL Injection data included.
@@ -46,6 +46,7 @@ if(isset($search)) {
             $mapped_col = "modified";
         }
         $query = "SELECT * FROM Things where name like CONCAT('%', :thing, '%') ORDER BY $mapped_col";
+        //same as above, safely map data from client to hard coded value to prevent sql injection
         if((int)$order == 1){
             $query .= " ASC";
         }
@@ -55,8 +56,7 @@ if(isset($search)) {
         echo $query;
         $stmt = getDB()->prepare($query);
         //Note: With a LIKE query, we must pass the % during the mapping
-        $stmt->execute([":thing"=>$search, ":col"=>$col]);
-        echo var_export($stmt->queryString);
+        $stmt->execute([":thing"=>$search]);
         echo var_export($stmt->errorInfo());
         //Note the fetchAll(), we need to use it over fetch() if we expect >1 record
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
