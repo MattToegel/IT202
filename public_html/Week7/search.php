@@ -53,7 +53,7 @@ if(isset($search)) {
         else{
             $query .= " DESC";
         }
-        echo $query;
+
         $stmt = getDB()->prepare($query);
         //Note: With a LIKE query, we must pass the % during the mapping
         $stmt->execute([":thing"=>$search]);
