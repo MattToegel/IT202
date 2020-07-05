@@ -30,6 +30,7 @@ if(isset($search)) {
         echo var_dump($order);
         //Potential Solutions since we can't just bindValue or bindParam column names and asc/desc
         //https://stackoverflow.com/questions/2542410/how-do-i-set-order-by-params-using-prepared-pdo-statement
+        //https://stackoverflow.com/questions/38478654/unable-to-run-named-placeholder-for-order-by-asc-in-php-pdo
         //Map variable to hard coded values here so we can safely inject them into the raw SQL query.
         //this is safer than just putting $col blindly in case there's SQL Injection data included.
         $mapped_col = "name";//default to name
