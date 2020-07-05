@@ -33,7 +33,6 @@ if(isset($_POST["score"]) && isset($_POST["outcome"])) {
                 //give points
                 $p_resp = DBH::changePoints($user_id, $points);
                 $points_response = Common::get($p_resp, "status", 400) == 200;
-                error_log("Adding $points to $user_id");
             }
             else{
                 $points_response = true;//force to true since it's pointless to save a change of 0 to DB

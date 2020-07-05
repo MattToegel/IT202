@@ -129,11 +129,11 @@ if(Common::is_logged_in()){
             console.log("Am I AI", this.isAI);
         }
         shoot(){
-            if(this.context.game.time >= this.nextFire){
-                this.nextFire = this.context.game.time + this.fireRate;
-                console.log("Shoot", this.nextFire);
-                this.context.game.spawnBullet(this.x, this.y, this.vx, this.vy, this.angle);
-            }
+                if(this.context.game.time >= this.nextFire){
+                    this.nextFire = this.context.game.time + this.fireRate;
+                    console.log("Shoot", this.nextFire);
+                    this.context.game.spawnBullet(this.x, this.y, this.vx, this.vy, this.angle);
+                }
         }
         subDraw(){
             //tank body
@@ -289,7 +289,7 @@ if(Common::is_logged_in()){
             if(this.right){this.dx = 1;}
             if(!this.left && !this.right){this.dx = 0;}
 
-            //heal with movement
+            //deal with movement
             if(this.up && !this.down){this.dy = 1;}
             if(this.down && !this.up){this.dy = -1;}
             if(!this.up && !this.down){this.dy = 0;}
@@ -672,31 +672,30 @@ if(Common::is_logged_in()){
                 }
                 //obj1.oldVx = obj1.vx;
                 //obj1.oldVy = obj1.vy;
-                if(true){
-                    const canvasWidth = this.context.canvas.width;
-                    const canvasHeight = this.context.canvas.height;
-                    if (obj1.x < obj1.radius) {
-                        //obj1.vx = Math.abs(obj1.vx) * 0.9;
-                        obj1.x = obj1.radius;
-                        obj1.isColliding = true;
-                    } else if (obj1.x > canvasWidth - obj1.radius) {
-                        //obj1.vx = -Math.abs(obj1.vx) * 0.90;
-                        obj1.x = canvasWidth - obj1.radius;
-                        obj1.isColliding = true;
-                    }
-                    if (obj1.y < obj1.radius) {
-                        //obj1.vy = Math.abs(obj1.vy) * 0.90;
-                        obj1.y = obj1.radius;
-                        obj1.isColliding = true;
-                    } else if (obj1.y > canvasHeight - obj1.radius) {
-                        //obj1.vy = -Math.abs(obj1.vy) * 0.90;
-                        obj1.y = canvasHeight - obj1.radius;
-                        obj1.isColliding = true;
-                    }
-                    if(obj1 instanceof Bullet && obj1.isColliding){
-                        obj1.disabled = true;
-                    }
+                const canvasWidth = this.context.canvas.width;
+                const canvasHeight = this.context.canvas.height;
+                if (obj1.x < obj1.radius) {
+                    //obj1.vx = Math.abs(obj1.vx) * 0.9;
+                    obj1.x = obj1.radius;
+                    obj1.isColliding = true;
+                } else if (obj1.x > canvasWidth - obj1.radius) {
+                    //obj1.vx = -Math.abs(obj1.vx) * 0.90;
+                    obj1.x = canvasWidth - obj1.radius;
+                    obj1.isColliding = true;
                 }
+                if (obj1.y < obj1.radius) {
+                    //obj1.vy = Math.abs(obj1.vy) * 0.90;
+                    obj1.y = obj1.radius;
+                    obj1.isColliding = true;
+                } else if (obj1.y > canvasHeight - obj1.radius) {
+                    //obj1.vy = -Math.abs(obj1.vy) * 0.90;
+                    obj1.y = canvasHeight - obj1.radius;
+                    obj1.isColliding = true;
+                }
+                if(obj1 instanceof Bullet && obj1.isColliding){
+                    obj1.disabled = true;
+                }
+
             }
 
             for (var i = 0; i < this.gameObjects.length; i++) {
