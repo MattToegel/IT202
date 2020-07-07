@@ -463,7 +463,7 @@ if(Common::is_logged_in()){
             const x2 = Math.pow((this.sx - this.x), 2);
             const y2 = Math.pow((this.sy - this.y), 2);
             const squareDistance = (x2 + y2);
-            if(squareDistance <= this.dist){
+            if(squareDistance > this.dist){
                 this.disabled = true;
             }
         }
