@@ -3,7 +3,6 @@ include_once(__DIR__."/partials/header.partial.php");
 
 if(Common::is_logged_in()){
     //this will auto redirect if user isn't logged in
-
     Common::aggregate_stats_and_refresh();
 }
 $last_updated = Common::get($_SESSION, "last_sync", false);
@@ -24,13 +23,13 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
             </tr>
         </thread>
         <tbody>
-            <tr>
-                <td><?php echo Common::get($_SESSION["user"], "level", 0);?></td>
-                <td><?php echo Common::get($_SESSION["user"], "experience", 0);?></td>
-                <td><?php echo Common::get($_SESSION["user"], "points", 0);?></td>
-                <td><?php echo Common::get($_SESSION["user"], "wins", 0);?></td>
-                <td><?php echo Common::get($_SESSION["user"], "losses", 0);?></td>
-            </tr>
+        <tr>
+            <td><?php echo Common::get($_SESSION["user"], "level", 0);?></td>
+            <td><?php echo Common::get($_SESSION["user"], "experience", 0);?></td>
+            <td><?php echo Common::get($_SESSION["user"], "points", 0);?></td>
+            <td><?php echo Common::get($_SESSION["user"], "wins", 0);?></td>
+            <td><?php echo Common::get($_SESSION["user"], "losses", 0);?></td>
+        </tr>
         </tbody>
     </table>
 </div>
