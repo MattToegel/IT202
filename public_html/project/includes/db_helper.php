@@ -223,11 +223,18 @@ class DBH{
             return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
         }
     }
-    public static function update_user_stats($user_id, $level, $xp, $points){
+    public static function update_user_stats($user_id, $level, $xp, $points, $wins, $losses){
         try {
             $query = file_get_contents(__DIR__ . "/../sql/queries/update_user_stats.sql");
             $stmt = DBH::getDB()->prepare($query);
-            $result = $stmt->execute([":uid" => $user_id, ":level"=>$level, ":xp"=>$xp, ":points"=>$points]);
+            $result = $stmt->execute([
+                ":uid" => $user_id,
+                ":level"=>$level,
+                ":xp"=>$xp,
+                ":points"=>$points,
+                ":wins"=>$wins,
+                ":losses"=>$losses
+            ]);
             DBH::verify_sql($stmt);
             if($result){
                 return DBH::response(NULL,200, "success");
