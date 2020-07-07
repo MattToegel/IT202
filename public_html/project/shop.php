@@ -8,6 +8,7 @@ if(Common::is_logged_in()){
     $_items = Common::get($result, "data", false);
     if($_items){
         $items = $_items;
+        echo var_export($items);
     }
 }
 $last_updated = Common::get($_SESSION, "last_sync", false);
@@ -23,12 +24,18 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
         <?php if(count($items) > 0):?>
             <?php
                 $rows = (int)(count($items) / 5);
+                echo "<br>Rows: $rows<br>";
             ?>
         <?php for($i = 0; $i < $rows; $i++):?>
         <tr>
             <?php for($k = 0; $k < 5; $k++):?>
                 <?php $index = (($i) * 5) + ($k+1);
-                $item = $items[$index];?>
+                $item = array();
+                if($index < count($items)){
+                    $item = $items[$index];
+                    var_dump($item);
+                }
+                ?>
                 <td>Name: <?php echo Common::get($item, "name");?></td>
             <?php endfor;?>
         </tr>
