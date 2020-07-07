@@ -23,7 +23,7 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
         <tbody>
         <?php if(count($items) > 0):?>
             <?php
-                $rows = (int)(count($items) / 5);
+                $rows = (int)(count($items) / 5) + 1;
                 echo "<br>Rows: $rows<br>";
             ?>
         <?php for($i = 0; $i < $rows; $i++):?>
