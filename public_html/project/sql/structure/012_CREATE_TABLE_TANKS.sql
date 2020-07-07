@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS  `Tanks`
     `barrelTipColor` varchar(7) default '#023417',
     `treadColor`    varchar(7) default '#000000',
     `hitColor` varchar(7) default '#A2082B',
-    `gun_type` int default 1,
+    `gunType` int default 1,
     `user_id` int,
     `created`    timestamp default current_timestamp,
     `modified`   timestamp default current_timestamp on update current_timestamp,
