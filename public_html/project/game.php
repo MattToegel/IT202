@@ -633,9 +633,10 @@ if(Common::is_logged_in()){
                 }
             }
             if(!bullet){
-                bullet = new Bullet(this.context, 300, 75, 50, 50, 5);
+                bullet = new Bullet(this.context, 300, 75, 50, 50, 5, dist);
                 this.gameObjects.push(bullet);
             }
+            bullet.dist = dist;
             bullet.disabled = false;
             //const vx = x - tx;
             //const vy = y - ty;
