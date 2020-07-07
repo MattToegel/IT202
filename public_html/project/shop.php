@@ -21,22 +21,25 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
     <?php endif;?>
     <table class="table">
         <tbody>
-        <?php if(count($items) > 0):?>
+        <?php $total = count($items);
+        if($total > 0):?>
             <?php
-                $rows = (int)(count($items) / 5) + 1;
+
+                $rows = (int)($total/ 5) + 1;
                 echo "<br>Rows: $rows<br>";
             ?>
         <?php for($i = 0; $i < $rows; $i++):?>
         <tr>
             <?php for($k = 0; $k < 5; $k++):?>
-                <?php $index = (($i) * 5) + ($k+1);
-                $item = array();
-                if($index < count($items)){
+                <?php $index = (($i) * 5) + ($k);
+                $item = null;
+                if($index < $total){
                     $item = $items[$index];
-                    var_dump($item);
                 }
                 ?>
-                <td>Name: <?php echo Common::get($item, "name");?></td>
+                <?php if(isset($item)):?>
+                    <td>Name: <?php echo Common::get($item, "name");?></td>
+                <?php endif;?>
             <?php endfor;?>
         </tr>
         <?php endfor;?>
