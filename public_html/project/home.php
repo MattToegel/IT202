@@ -26,14 +26,16 @@ if(Common::is_logged_in()){
             $points = Common::get($result, "Points", 0);
             $wins = Common::get($result, "Wins", 0);
             $losses = Common::get($result, "Losses", 0);
-            $level = (int)($xp/100);//TODO implement different leveling system
+            $level = (int)($xp/100)+1;//TODO implement different leveling system
             $result = DBH::update_user_stats($user_id, $level, $xp, $points);
             error_log(var_export($result, true));
             $_SESSION["user"]["experience"] = $xp;
             $_SESSION["user"]["level"] = $level;
             $_SESSION["user"]["points"] = $points;
+            $_SESSION["user"]["wins"] = $wins;
+            $_SESSION["user"]["losses"] = $losses;
             if(Common::get($result, "status", 400) == 200){
-                $_SESSION["last_updated"] = new DateTime();
+                $_SESSION["last_sync"] = new DateTime();
             }
 
         }
@@ -42,7 +44,7 @@ if(Common::is_logged_in()){
         $_SESSION["last_sync"] = $last_sync;
     }
 }
-$last_updated = Common::get($_SESSION, "last_update", false);
+$last_updated = Common::get($_SESSION, "last_sync", false);
 ?>
 <div>
     <p>Welcome, <?php echo Common::get_username();?></p>
@@ -55,6 +57,8 @@ $last_updated = Common::get($_SESSION, "last_update", false);
                 <td>Level</td>
                 <td>Experience</td>
                 <td>Points</td>
+                <td>Wins</td>
+                <td>Losses</td>
             </tr>
         </thread>
         <tbody>
@@ -62,6 +66,8 @@ $last_updated = Common::get($_SESSION, "last_update", false);
                 <td><?php echo Common::get($_SESSION["user"], "level", 0);?></td>
                 <td><?php echo Common::get($_SESSION["user"], "experience", 0);?></td>
                 <td><?php echo Common::get($_SESSION["user"], "points", 0);?></td>
+                <td><?php echo Common::get($_SESSION["user"], "wins", 0);?></td>
+                <td><?php echo Common::get($_SESSION["user"], "losses", 0);?></td>
             </tr>
         </tbody>
     </table>
