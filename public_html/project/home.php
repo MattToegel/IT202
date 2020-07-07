@@ -17,7 +17,7 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
         <thread>
             <tr>
                 <td>Level</td>
-                <td>Experience</td>
+                <td>Experience</td
                 <td>Points</td>
                 <td>Wins</td>
                 <td>Losses</td>

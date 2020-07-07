@@ -1,0 +1,1 @@
+SELECT * FROM Items where quantity > 0
