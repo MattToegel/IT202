@@ -589,10 +589,10 @@ if(Common::is_logged_in()){
                 window.addEventListener("keypress", down);
             }
         }
-        init(canvasId) {
+        init(canvasId, tanks) {
             this.canvas = document.getElementById(canvasId);
             this.context = this.canvas.getContext('2d');
-
+            this.tanks = tanks;
             this.createWorld();
 
             // Request an animation frame for the first time
@@ -607,9 +607,21 @@ if(Common::is_logged_in()){
             let py = getRandomRange(0, this.canvas.height);
             let ax = getRandomRange(0, this.canvas.width*.5);
             let ay = getRandomRange(0, this.canvas.height);
+            let ptdata = this.tanks[0];
+            let pt = new Tank(this.context, px, py, ptdata.range,
+                ptdata.turnSpeed, false, ptdata.fireRate, ptdata.health, ptdata.tankColor,
+                ptdata.barrelColor, ptdata.barrelTipColor, ptdata.treadColor, ptdata.hitColor);
+            let etdata = this.tanks[1];
+            let et = new Tank(this.context, ax, ay, etdata.range,
+                etdata.turnSpeed, true, etdata.fireRate, etdata.health, etdata.tankColor,
+                etdata.barrelColor, etdata.barrelTipColor, etdata.treadColor, etdata.hitColor);
+            console.log(ptdata);
+            console.log(etdata);
             this.gameObjects = [
-                new Tank(this.context, px, py, 200, false, 200, 100),
-                new Tank(this.context, ax, ay, 200, true, 200, 50),
+                pt,
+                et
+                //new Tank(this.context, px, py, 200, false, 200, 100),
+                //new Tank(this.context, ax, ay, 200, true, 200, 50),
                 //new Tank(this.context, 250, 300, 0, -50, 1, this.showAngle, this.bounceOfEdges),
                 /*new Circle(this.context, 200, 0, 50, 50),*/
                 //new Tank(this.context, 150, 0, 50, 50, 1, this.showAngle, this.bounceOfEdges),
@@ -814,7 +826,11 @@ if(Common::is_logged_in()){
             this.context.fillText("Time: " + Math.round(this.time), 10, 50);
         }
     }
-
+    function setupGame(canvasId, tanks){
+        //init('canvas', true, true, true, false, true, true);
+        var gameWorld = new GameWorld(true, true, false, false, true, false);
+        gameWorld.init(canvasId, tanks);
+    }
     function init(canvasId, showCollision, showCircles, bounce, gravityAndMass, showAngle, bounceOfEdges){
         console.log("called");
         var gameWorld = new GameWorld(showCollision, showCircles, bounce, gravityAndMass, showAngle, bounceOfEdges);
@@ -837,7 +853,8 @@ if(Common::is_logged_in()){
                 let json = JSON.parse(xhttp.responseText);
                 console.log(json);
                 //start game
-                init('canvas', true, true, true, false, true, true);
+                setupGame('canvas', json.tanks);
+                //init('canvas', true, true, true, false, true, true);
             }
         };
         xhttp.onerror = function() {
