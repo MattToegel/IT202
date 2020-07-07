@@ -248,4 +248,53 @@ class DBH{
             return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
         }
     }
+    public static function create_tank($user_id, $name = ""){
+        //defaulting to empty string for now, may add a feature to show name, but it doesn't matter right now
+        try {
+            $query = file_get_contents(__DIR__ . "/../sql/queries/create_tank.sql");
+            $stmt = DBH::getDB()->prepare($query);
+            $result = $stmt->execute([
+                ":name" => $name,
+                ":user_id" => $user_id
+            ]);
+            DBH::verify_sql($stmt);
+            if($result){
+                return DBH::response(NULL,200, "success");
+            }
+            else{
+                return DBH::response(NULL, 400, "error");
+            }
+        }
+        catch(Exception $e){
+            error_log($e->getMessage());
+            return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
+        }
+    }
+
+    /*** Technically we're only going to have 1 tank per person, but I left it open to allow multiple
+     * @param $user_id
+     * @return array
+     */
+    public static function get_tanks($user_id){
+        try {
+            $query = file_get_contents(__DIR__ . "/../sql/queries/get_tanks.sql");
+            $stmt = DBH::getDB()->prepare($query);
+            $result = $stmt->execute([
+                ":user_id" => $user_id
+            ]);
+            DBH::verify_sql($stmt);
+            if($result){
+                $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                return DBH::response($result,200, "success");
+            }
+            else{
+                return DBH::response(NULL, 400, "error");
+            }
+        }
+        catch(Exception $e){
+            error_log($e->getMessage());
+            return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
+        }
+    }
 }

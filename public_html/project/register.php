@@ -32,6 +32,9 @@ if (Common::get($_POST, "submit", false)){
         $result = DBH::register($email, $password);
         echo var_export($result, true);
         if(Common::get($result, "status", 400) == 200){
+            //Note to self: Intentionally didn't add tank creation here
+            //keeping it in login where it is (creates a new tank only if user has no tanks)
+            //it fulfills the purpose there
             Common::flash("Successfully registered, please login", "success");
             die(header("Location: " . Common::url_for("login")));
         }

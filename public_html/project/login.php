@@ -34,6 +34,25 @@ if (Common::get($_POST, "submit", false)){
                 error_log("Got system_id " . $_SESSION["system_id"]);
             }
             //end system user fetch
+            //get user tank(s) and store in session, not necessary but saves extra DB calls later
+            $result = DBH::get_tanks(Common::get_user_id());
+            if(Common::get($result, "status", 400) == 200){
+                $tanks = Common::get($result, "data", []);
+                if(count($tanks) == 0) {
+                    //this section is needed to give any previously existing users a tank that didn't have a tank before
+                    //this feature was created/added
+                    $result = DBH::create_tank(Common::get_user_id());
+                    if (Common::get($result, "status", 400) == 200) {
+                        $result = DBH::get_tanks(Common::get_user_id());
+                        if (Common::get($result, "status", 400) == 200) {
+                            $tanks = Common::get($result, "data", []);
+                        }
+                    }
+                }
+                //finally let's save our tanks in session
+                $_SESSION["user"]["tanks"] = $tanks;
+            }
+            //end get tanks
 
             die(header("Location: " . Common::url_for("home")));
         }
