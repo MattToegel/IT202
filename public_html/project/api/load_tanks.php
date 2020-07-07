@@ -1,12 +1,14 @@
 <?php
 require(__DIR__ . "/../includes/common.inc.php");
-$response = array("status"=>400);
+$response = array("status"=>400, "message"=>"something went wrong");
 if(Common::is_logged_in(false)) {
-    $tanks = array();
+
     $playerTanks = Common::get($_SESSION["user"], "tanks", []);
     if (count($playerTanks) > 0) {
+        $tanks = array();
         //get first/only tank
         $t = $playerTanks[0];
+        error_log(var_export($t, true));
         array_push($tanks, $t);
         //https://www.w3schools.com/php/func_math_mt_rand.asp
         $speed = Common::get($t, "speed", 50);
@@ -31,6 +33,9 @@ if(Common::is_logged_in(false)) {
         array_push($tanks, $enemyTank);
         $response["status"] = 200;
         $response["tanks"] = json_encode($tanks);
+    }
+    else{
+        $response["message"] = "Player doesn't have any tanks";
     }
 }
 echo $response;

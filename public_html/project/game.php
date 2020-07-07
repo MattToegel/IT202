@@ -833,6 +833,7 @@ if(Common::is_logged_in()){
                 console.log(`Error ${xhttp.status}: ${xhttp.statusText}`); // e.g. 404: Not Found
             } else { // show the result
                 console.log(`Done, got ${xhttp.response.length} bytes`); // response is the server
+                console.log(xhttp.responseText);
                 let json = JSON.parse(xhttp.responseText);
                 console.log(json);
                 //start game
