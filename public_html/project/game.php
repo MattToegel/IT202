@@ -412,6 +412,13 @@ if(Common::is_logged_in()){
             this.sx = x;
             this.sy = y;
         }
+        setup(x, y, vx, vy, dist){
+            this.x = x;
+            this.y = y;
+            this.vx = vx;
+            this.vy = vy;
+            this.dist = dist;
+        }
         subDraw(){
             if(this.type == 1){
                 this.context.beginPath();
@@ -633,21 +640,18 @@ if(Common::is_logged_in()){
                 }
             }
             if(!bullet){
-                bullet = new Bullet(this.context, 300, 75, 50, 50, 5, dist);
+                bullet = new Bullet(this.context, 300, 75, 50, 50, 5);
                 this.gameObjects.push(bullet);
             }
-            bullet.dist = dist;
+
             bullet.disabled = false;
             //const vx = x - tx;
             //const vy = y - ty;
-            const vectorX = Math.cos(angle * Math.PI / 180);
-            const vectorY = Math.sin(angle * Math.PI / 180);
+            const vectorX = Math.cos(angle * Math.PI / 180) * (150+vx);
+            const vectorY = Math.sin(angle * Math.PI / 180) * (150+vy);
             const _x = x + vectorX * 30 * 1.5;
             const _y = y + vectorY * 30 * 1.5;
-            bullet.x = _x;
-            bullet.y = _y;
-            bullet.vx = vectorX * (150+vx);
-            bullet.vy = vectorY * (150+vy);
+            bullet.setup(_x, _y, vectorX, vectorY, dist);
         }
 
         gameLoop(timeStamp) {
