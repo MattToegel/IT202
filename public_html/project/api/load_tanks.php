@@ -32,12 +32,12 @@ if(Common::is_logged_in(false)) {
         );
         array_push($tanks, $enemyTank);
         $response["status"] = 200;
-        $response["tanks"] = json_encode($tanks);
+        $response["tanks"] = $tanks;
     }
     else{
         $response["message"] = "Player doesn't have any tanks";
     }
 }
-echo $response;
+echo json_encode($response);
 ?>
 
