@@ -134,7 +134,7 @@ if(Common::is_logged_in()){
                 if(this.context.game.time >= this.nextFire){
                     this.nextFire = this.context.game.time + this.fireRate;
                     console.log("Shoot", this.nextFire);
-                    this.context.game.spawnBullet(this.x, this.y, this.vx, this.vy, this.angle);
+                    this.context.game.spawnBullet(this.x, this.y, this.vx, this.vy, this.angle, this.range);
                 }
         }
         subDraw(){
