@@ -5,21 +5,21 @@ if(Common::is_logged_in()){
     //this will auto redirect if user isn't logged in
 }
 ?>
-<div>
+<div class="jumbotron">
     <?php $outcome = Common::get($_SESSION, "outcome", false);?>
     <?php if($outcome):?>
         <?php unset($_SESSION["outcome"]);?>
         <?php unset($_SESSION["started"]);?>
         <?php if($outcome == "win"):?>
-            <h1>Congrats, you won this round!</h1>
+            <h1 class="display-5">Congrats, you won this round!</h1>
         <?php else:?>
-            <h1>Better luck next time. Tanks for Playing : )</h1>
+            <h1 class="display-5">Better luck next time. Tanks for Playing : )</h1>
         <?php endif;?>
     <?php else:?>
-    <p>Why are you here? There are no game outcomes to display</p>
+        <p class="lead">Hmm, either the match ended too quickly or you stumbled here by mistake.</p>
     <?php endif;?>
-    <div>
-        <p>Try again?</p>
-        <a href="game.php">Let's go!</a>
+    <div class="container">
+        <p class="lead">Try again?</p>
+        <a class="btn btn-secondary" href="game.php">Let's go!</a>
     </div>
 </div>

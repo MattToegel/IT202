@@ -51,7 +51,7 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
     <?php if($last_updated):?>
         <p>Last Updated: <?php echo $last_updated->format('Y-m-d H:i:s');;?></p>
     <?php endif;?>
-    <table>
+    <table class="table">
         <thread>
             <tr>
                 <td>Level</td>
