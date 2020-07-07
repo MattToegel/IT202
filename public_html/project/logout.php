@@ -14,4 +14,5 @@ if (ini_get("session.use_cookies")) {
 }
 //This won't work since it's a different session, we just destroyed our original session.
 Common::flash("You have successfully logged out");
+header("Location: login.php");
 ?>
