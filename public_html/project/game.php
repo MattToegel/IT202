@@ -131,11 +131,11 @@ if(Common::is_logged_in()){
             console.log("Am I AI", this.isAI);
         }
         shoot(){
-                if(this.context.game.time >= this.nextFire){
-                    this.nextFire = this.context.game.time + this.fireRate;
-                    console.log("Shoot", this.nextFire);
-                    this.context.game.spawnBullet(this.x, this.y, this.vx, this.vy, this.angle, this.range);
-                }
+            if(this.context.game.time >= this.nextFire){
+                this.nextFire = this.context.game.time + this.fireRate;
+                console.log("Shoot", this.nextFire);
+                this.context.game.spawnBullet(this.x, this.y, this.vx, this.vy, this.angle, this.range);
+            }
         }
         subDraw(){
             //tank body
@@ -398,7 +398,7 @@ if(Common::is_logged_in()){
     }
     class Bullet extends Circle{
         //constructor (context, x, y, vx, vy, radius, showAngle, bounceOfEdges){
-        constructor (context, x, y, vx, vy, radius, type=3, dist = 200){
+        constructor (context, x, y, vx, vy, radius, type=3){
             if(type == 3){
                 radius *= .5;
             }
@@ -408,16 +408,16 @@ if(Common::is_logged_in()){
             this.type = type
             this.halfRadius = this.radius * .5;
             this.diameter = this.radius * 2;
-            this.dist = dist;
-            this.sx = x;
-            this.sy = y;
         }
         setup(x, y, vx, vy, dist){
             this.x = x;
             this.y = y;
+            this.sx = x;
+            this.sy = y;
             this.vx = vx;
             this.vy = vy;
             this.dist = dist;
+            console.log("setup");
         }
         subDraw(){
             if(this.type == 1){
@@ -471,6 +471,7 @@ if(Common::is_logged_in()){
             const y2 = Math.pow((this.sy - this.y), 2);
             const squareDistance = (x2 + y2);
             if(squareDistance > this.dist){
+                console.log("out of range");
                 this.disabled = true;
             }
         }
@@ -644,14 +645,15 @@ if(Common::is_logged_in()){
                 this.gameObjects.push(bullet);
             }
 
-            bullet.disabled = false;
+
             //const vx = x - tx;
             //const vy = y - ty;
-            const vectorX = Math.cos(angle * Math.PI / 180) * (150+vx);
-            const vectorY = Math.sin(angle * Math.PI / 180) * (150+vy);
+            const vectorX = Math.cos(angle * Math.PI / 180) ;
+            const vectorY = Math.sin(angle * Math.PI / 180) ;
             const _x = x + vectorX * 30 * 1.5;
             const _y = y + vectorY * 30 * 1.5;
-            bullet.setup(_x, _y, vectorX, vectorY, dist);
+            bullet.setup(_x, _y, vectorX * (150+vx), vectorY* (150+vy), dist);
+            bullet.disabled = false;
         }
 
         gameLoop(timeStamp) {
