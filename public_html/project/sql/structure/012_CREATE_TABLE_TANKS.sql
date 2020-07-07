@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS  `Tanks`
     `id`         int auto_increment not null,
     `name`      varchar(100)       not null,
     `speed` int default 50,
-    `range` int default 50,
+    `range` int default 100,
     `turnSpeed` int default 25,
     `fireRate` int default 10,
     `health` int default 3,
