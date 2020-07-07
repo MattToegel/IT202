@@ -842,7 +842,7 @@ if(Common::is_logged_in()){
         xhttp.onerror = function() {
             console.log("Request failed");
         };
-        xhttp.open("GET", "load_tanks.php", true);
+        xhttp.open("GET", "api/load_tanks.php", true);
         xhttp.send();
     }
     function saveScore(gameState){
