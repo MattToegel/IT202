@@ -830,15 +830,19 @@ if(Common::is_logged_in()){
         var xhttp = new XMLHttpRequest();
         xhttp.onload = function() {
             if (xhttp.status != 200) { // analyze HTTP status of the response
-                alert(`Error ${xhttp.status}: ${xhttp.statusText}`); // e.g. 404: Not Found
+                console.log(`Error ${xhttp.status}: ${xhttp.statusText}`); // e.g. 404: Not Found
             } else { // show the result
-                alert(`Done, got ${xhttp.response.length} bytes`); // response is the server
+                console.log(`Done, got ${xhttp.response.length} bytes`); // response is the server
+                let json = JSON.parse(xhttp.responseText);
+                console.log(json);
+                //start game
+                init('canvas', true, true, true, false, true, true);
             }
         };
         xhttp.onerror = function() {
-            alert("Request failed");
+            console.log("Request failed");
         };
-        xhttp.open("GET", "home.php", true);
+        xhttp.open("GET", "load_tanks.php", true);
         xhttp.send();
     }
     function saveScore(gameState){
@@ -867,7 +871,8 @@ if(Common::is_logged_in()){
         //fetch player tank
         //fetch enemy tank
         //canvasId, showCollision, showCircles, bounce, gravityAndMass, showAngle, bounceOfEdges
-        init('canvas', true, true, true, false, true, true);
+        //init('canvas', true, true, true, false, true, true);
+        getGameData();
         console.log("init");
     };
 

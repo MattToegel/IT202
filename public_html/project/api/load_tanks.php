@@ -1,6 +1,6 @@
 <?php
 require(__DIR__ . "/../includes/common.inc.php");
-
+$response = array("status"=>400);
 if(Common::is_logged_in(false)) {
     $tanks = array();
     $playerTanks = Common::get($_SESSION["user"], "tanks", []);
@@ -28,7 +28,11 @@ if(Common::is_logged_in(false)) {
             "hitColor" => '#A2082B',
             "gunType" => mt_rand(1,3)
         );
+        array_push($tanks, $enemyTank);
+        $response["status"] = 200;
+        $response["tanks"] = json_encode($tanks);
     }
 }
+echo $response;
 ?>
 
