@@ -25,9 +25,9 @@ if(Common::is_logged_in(false)) {
             "barrelTipColor" =>Common::get($t, "barrelTipColor"),
             "treadColor" => Common::get($t, "treadColor"),
             "hitColor" => Common::get($t, "hitColor"),
-            "gunType" => (int)Common::get($t, "gunTypr",1)
+            "gunType" => (int)Common::get($t, "gunType",1)
         );
-        array_push($tanks, $t);
+        array_push($tanks, $playerTank);
         //https://www.w3schools.com/php/func_math_mt_rand.asp
 
 
