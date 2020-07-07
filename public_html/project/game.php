@@ -82,11 +82,13 @@ if(Common::is_logged_in()){
     }
     class Tank extends GameObject
     {
-        constructor (context, x, y, vx, vy, isAI, range = 200, turnSpeed = 1, fireRate = 1){
+        constructor (context, x, y, speed, isAI, range = 200, turnSpeed = 1, fireRate = 1, health = 10,
+                     tankColor = "#05652D", barrelColor = "#034820", barrelTipColor = "#023417",
+                     treadColor = "#000000", hitColor = "#A2082B"){
             //Pass params to super class
-            super(context, x, y, vx, vy, 1, 0.9);
+            super(context, x, y, speed, speed, 1, 0.9);
 
-            console.log(isAI, x, y, vx, vy);
+            console.log(isAI, x, y, speed, speed);
             //Set default width and height
             this.radius = 25;//mass > 0.5?25:10; //25;
             this.showAngle = true;
@@ -111,14 +113,14 @@ if(Common::is_logged_in()){
             this.shooting = false;
             this.diameter = this.radius * 2;
             this.halfRadius = this.radius / 2;
-            this.totalHealth = 10;
+            this.totalHealth = health;
             this.currentHealth = this.totalHealth;
             this.isAI = isAI;
-            this.tankColor = "#05652D";
-            this.barrelColor = "#034820";
-            this.hitColor = "#A2082B";
-            this.barrelTipColor = "#023417";
-            this.treadColor = "#000000";
+            this.tankColor = tankColor;
+            this.barrelColor = barrelColor;
+            this.hitColor = hitColor
+            this.barrelTipColor = barrelTipColor;
+            this.treadColor = treadColor;
             if(this.isAI){
                 this.atTarget = true;
             }
@@ -396,7 +398,7 @@ if(Common::is_logged_in()){
     }
     class Bullet extends Circle{
         //constructor (context, x, y, vx, vy, radius, showAngle, bounceOfEdges){
-        constructor (context, x, y, vx, vy, radius, type=3){
+        constructor (context, x, y, vx, vy, radius, type=3, dist = 200){
             if(type == 3){
                 radius *= .5;
             }
@@ -406,6 +408,9 @@ if(Common::is_logged_in()){
             this.type = type
             this.halfRadius = this.radius * .5;
             this.diameter = this.radius * 2;
+            this.dist = dist;
+            this.sx = x;
+            this.sy = y;
         }
         subDraw(){
             if(this.type == 1){
@@ -441,6 +446,26 @@ if(Common::is_logged_in()){
                 return;
             }
             this.lookAtDirection();
+        }
+        update(frameDeltaTime){
+            if(this.disabled){
+                return;
+            }
+            //Move with velocity x/y
+            this.x += this.vx * frameDeltaTime;
+            this.y += this.vy * frameDeltaTime;
+
+            if (this.showAngle){
+                let angleRadians = Math.atan2(this.vy, this.vx); //in radians
+                let degrees = 180*angleRadians/Math.PI; // to degrees
+                this.angle =  degrees; //(360+Math.round(degrees))%360;
+            }
+            const x2 = Math.pow((this.sx - this.x), 2);
+            const y2 = Math.pow((this.sy - this.y), 2);
+            const squareDistance = (x2 + y2);
+            if(squareDistance <= this.dist){
+                this.disabled = true;
+            }
         }
     }
 
@@ -575,8 +600,8 @@ if(Common::is_logged_in()){
             let ax = getRandomRange(0, this.canvas.width*.5);
             let ay = getRandomRange(0, this.canvas.height);
             this.gameObjects = [
-                new Tank(this.context, px, py, 200, 200, false, 200, 100),
-                new Tank(this.context, ax, ay, 200, 200, true, 200, 50),
+                new Tank(this.context, px, py, 200, false, 200, 100),
+                new Tank(this.context, ax, ay, 200, true, 200, 50),
                 //new Tank(this.context, 250, 300, 0, -50, 1, this.showAngle, this.bounceOfEdges),
                 /*new Circle(this.context, 200, 0, 50, 50),*/
                 //new Tank(this.context, 150, 0, 50, 50, 1, this.showAngle, this.bounceOfEdges),
@@ -596,7 +621,7 @@ if(Common::is_logged_in()){
                 saveScore(isAI?"win":"loss");
             }
         }
-        spawnBullet(x, y, vx, vy, angle){
+        spawnBullet(x, y, vx, vy, angle, dist){
             let bullet;
             for(let i = 0; i < this.gameObjects.length; i++){
                 let g = this.gameObjects[i];
