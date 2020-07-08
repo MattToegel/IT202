@@ -44,6 +44,7 @@ if(isset($_POST["order"])){
                             $turnSpeed = (int)Common::get($t, "turnSpeed", 25);
                             $fireRate = (int)Common::get($t, "fireRate", 10);
                             $health = (int)Common::get($t, "health", 3);
+                            $damage = (int)Common::get($t, "damage", 1);
                             foreach ($order as $item) {
                                 $type = (int)$item["type"];
                                 $q = (int)$item["quantity"];
@@ -61,6 +62,9 @@ if(isset($_POST["order"])){
                                 }
                                 else if($type == "health"){
                                     $health += $q;
+                                }
+                                else if($type=="damage"){
+                                    $damage += $q;
                                 }
                             }
                             $t["speed"] = $speed;

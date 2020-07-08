@@ -14,6 +14,7 @@ if(Common::is_logged_in(false)) {
         $turnSpeed = (int)Common::get($t, "turnSpeed", 25);
         $fireRate = (int)Common::get($t, "fireRate", 10);
         $health = (int)Common::get($t, "health", 3);
+        $damage = (int)Common::get($t, "damage", 1);
         $playerTank = array(
             "speed"=>$speed,
             "range"=>$range,
@@ -25,7 +26,8 @@ if(Common::is_logged_in(false)) {
             "barrelTipColor" =>Common::get($t, "barrelTipColor"),
             "treadColor" => Common::get($t, "treadColor"),
             "hitColor" => Common::get($t, "hitColor"),
-            "gunType" => (int)Common::get($t, "gunType",1)
+            "gunType" => (int)Common::get($t, "gunType",1),
+            "damage"=>$damage
         );
         array_push($tanks, $playerTank);
         //https://www.w3schools.com/php/func_math_mt_rand.asp
@@ -42,7 +44,8 @@ if(Common::is_logged_in(false)) {
             "barrelTipColor" => "#" . dechex(rand(0x000000, 0xFFFFFF)),
             "treadColor" => "#" . dechex(rand(0x000000, 0xFFFFFF)),
             "hitColor" => '#A2082B',
-            "gunType" => mt_rand(1,3)
+            "gunType" => mt_rand(1,3),
+            "damage"=>max(mt_rand($damage*.5, $damage*1.5),1)
         );
         array_push($tanks, $enemyTank);
         $response["status"] = 200;
