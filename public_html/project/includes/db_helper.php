@@ -378,7 +378,8 @@ class DBH{
                 ":range"=>$tank["range"],
                 ":turnSpeed"=>$tank["turnSpeed"],
                 ":fireRate"=>$tank["fireRate"],
-                ":health"=>$tank["health"]
+                ":health"=>$tank["health"],
+                ":damage"=>$tank["damage"]
             ]);
             DBH::verify_sql($stmt);
             if($result){
