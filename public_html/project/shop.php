@@ -65,7 +65,21 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
         <div class="col-4">
             <h5>Cart</h5>
             <h6 class="row">Points: <div id="used">0</div>/<div><?php echo Common::get($_SESSION["user"], "points", 0);?></div></h6>
-            <p>Cart placeholder</p>
+            <ul class="list-group" id="cart">
+
+            </ul>
         </div>
     </div>
 </div>
+<script>
+    let cart = document.getElementById("cart");
+    function addToCart(){
+
+    }
+    function removeFromCart(){
+
+    }
+    function purchase(){
+
+    }
+</script>
