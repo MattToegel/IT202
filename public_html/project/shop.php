@@ -50,6 +50,9 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
                                         <p class="card-text">
                                             Cost: <?php echo Common::get($item,"cost", 0);?>
                                         </p>
+                                        <button class="btn btn-sm btn-secondary"
+                                        data-type="<?php echo Common::get($item, "stat","");?>"
+                                        onclick="addToCart(this);">Add</button>
                                     </div>
 
                                 </div>
