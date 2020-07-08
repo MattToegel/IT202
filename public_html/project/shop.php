@@ -77,8 +77,18 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
 <script>
     //$ in var name signifies a jquery obj
     let $cart = $("#cart");
+    function updateCost(){
+        $cart.find("li").each(function (index, item) {
+            let q = $(item).data("quantity");
+            let c = $(item).data("cost");
+            let t = q * c;
+            let $used = $("#used");
+            $used.text(t);
+        });
+    }
     function addToCart(ele){
         let itemType = $(ele).data("type");
+        let itemCost $(ele).data("cost");
         let updated = false;
         $cart.find("li").each(function (index, item) {
             let _itemType = $(item).data("type");
@@ -93,13 +103,16 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
         if(!updated){
             let $li = $("<li></li>");
             $li.data("type", itemType);
-            $li.data("quantity", 0);
+            $li.data("quantity", 1);
+            $li.data("cost", itemCost);
             $li.text(itemType + ": " + 0);
             $cart.append($li);
         }
+        updateCost();
     }
     function removeFromCart(ele){
-
+        $(ele).closest("li").remove();
+        updateCost();
     }
     function purchase(){
 
