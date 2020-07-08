@@ -371,6 +371,7 @@ class DBH{
         try {
             $query = file_get_contents(__DIR__ . "/../sql/queries/update_tank.sql");
             $stmt = DBH::getDB()->prepare($query);
+            error_log(var_export($tank, true));
             $result = $stmt->execute([
                 ":id"=>$tank["id"],
                 ":user_id"=>Common::get_user_id(),
