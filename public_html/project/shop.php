@@ -143,5 +143,8 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
         });
         console.log(data);
         console.log(JSON.stringify(data));
+        $.post("api/complete_purchase.php", function(data, status){
+            alert("Data: " + data + "\nStatus: " + status);
+        });
     }
 </script>
