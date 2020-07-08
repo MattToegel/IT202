@@ -72,6 +72,7 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
             <ul class="list-group" id="cart">
 
             </ul>
+            <button class="btn btn-secondary" onclick="purchase();">Complete Purchase</button>
         </div>
     </div>
 </div>
@@ -113,7 +114,8 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
             }
         });
         if(!updated){
-            let $li = $("<li><span></span><button onclick='removeFromCart(this);' class='btn btn-sm btn-danger'>X</button></li>");
+            let $li = $("<li></li>");
+            $li.append("<span></span><button onclick='removeFromCart(this);' class='btn btn-sm btn-danger'>X</button>");
             $li.data("type", itemType);
             $li.data("quantity", 1);
             $li.data("cost", itemCost);
@@ -128,6 +130,13 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
         updateCost();
     }
     function purchase(){
-
+        let data = [];
+        $cart.each(function(index, item){
+            let itemType = $(item).data("type");
+            let itemQuantity = $(item).data("quantity");
+            data.push({item: itemType, quantity: itemQuantity});
+        });
+        console.log(data);
+        console.log(JSON.stringify(data));
     }
 </script>
