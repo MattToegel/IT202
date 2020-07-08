@@ -46,7 +46,7 @@ if(isset($_POST["order"])){
                             $health = (int)Common::get($t, "health", 3);
                             $damage = (int)Common::get($t, "damage", 1);
                             foreach ($order as $item) {
-                                $type = (int)$item["type"];
+                                $type = $item["type"];
                                 $q = (int)$item["quantity"];
                                 if($type == "speed"){
                                     $speed += $q;
@@ -72,6 +72,7 @@ if(isset($_POST["order"])){
                             $t["turnSpeed"] = $turnSpeed;
                             $t["fireRate"] = $fireRate;
                             $t["health"] = $health;
+                            $t["damage"] = $damage;
                             $result = DBH::update_tank($t);
                             if(Common::get($result, "status", 400) == 200) {
                                 $result = DBH::get_tanks(Common::get_user_id());
