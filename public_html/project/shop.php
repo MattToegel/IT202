@@ -72,11 +72,30 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
     </div>
 </div>
 <script>
-    let cart = document.getElementById("cart");
-    function addToCart(){
-
+    //$ in var name signifies a jquery obj
+    let $cart = $("#cart");
+    function addToCart(ele){
+        let itemType = $(ele).data("type");
+        let updated = false;
+        $cart.each(function (item, index) {
+            let _itemType = $(item).data("type");
+            if(_itemType == _itemType){
+                let q = $(item).data("quantity");
+                q++;
+                $(item).data("quantity", q);
+                $(item).text(_itemType + ": " + q);
+                updated = true;
+            }
+        });
+        if(!updated){
+            let $li = $("<li></li>");
+            $li.data("type", itemType);
+            $li.data("quantity", 0);
+            $li.text(itemType + ": " + 0);
+            $cart.append($li);
+        }
     }
-    function removeFromCart(){
+    function removeFromCart(ele){
 
     }
     function purchase(){
