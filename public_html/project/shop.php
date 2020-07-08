@@ -19,45 +19,52 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
         <p>Points: <?php echo Common::get($_SESSION["user"], "points", 0);?></p>
         <p>Last Updated: <?php echo $last_updated->format('Y-m-d H:i:s');;?></p>
     <?php endif;?>
-    <table class="table">
-        <tbody>
-        <?php $total = count($items);
-        if($total > 0):?>
-            <?php
+    <div class="row">
+        <div class="col-8">
+            <table class="table">
+                <tbody>
+                <?php $total = count($items);
+                if($total > 0):?>
+                    <?php
 
-                $rows = (int)($total/ 5) + 1;
-                //echo "<br>Rows: $rows<br>";
-            ?>
-        <?php for($i = 0; $i < $rows; $i++):?>
-        <tr>
-            <?php for($k = 0; $k < 5; $k++):?>
-                <?php $index = (($i) * 5) + ($k);
-                $item = null;
-                if($index < $total){
-                    $item = $items[$index];
-                }
-                ?>
-                <?php if(isset($item)):?>
-                    <td>
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title">
-                                    <?php echo Common::get($item,"name");?></h5>
-                                <p class="card-text">
-                                    <?php echo Common::get($item, "description");?>
-                                </p>
-                                <p class="card-text">
-                                    Cost: <?php echo Common::get($item,"cost", 0);?>
-                                </p>
-                            </div>
+                        $rows = (int)($total/ 5) + 1;
+                        //echo "<br>Rows: $rows<br>";
+                    ?>
+                <?php for($i = 0; $i < $rows; $i++):?>
+                <tr>
+                    <?php for($k = 0; $k < 5; $k++):?>
+                        <?php $index = (($i) * 5) + ($k);
+                        $item = null;
+                        if($index < $total){
+                            $item = $items[$index];
+                        }
+                        ?>
+                        <?php if(isset($item)):?>
+                            <td>
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">
+                                            <?php echo Common::get($item,"name");?></h5>
+                                        <p class="card-text">
+                                            <?php echo Common::get($item, "description");?>
+                                        </p>
+                                        <p class="card-text">
+                                            Cost: <?php echo Common::get($item,"cost", 0);?>
+                                        </p>
+                                    </div>
 
-                        </div>
-                    </td>
-                <?php endif;?>
-            <?php endfor;?>
-        </tr>
-        <?php endfor;?>
-        <?php endif; ?>
-        </tbody>
-    </table>
+                                </div>
+                            </td>
+                        <?php endif;?>
+                    <?php endfor;?>
+                </tr>
+                <?php endfor;?>
+                <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-4">
+            <p>Cart placeholder</p>
+        </div>
+    </div>
 </div>
