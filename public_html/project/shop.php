@@ -38,7 +38,21 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
                 }
                 ?>
                 <?php if(isset($item)):?>
-                    <td>Name: <?php echo Common::get($item, "name");?></td>
+                    <td>
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <?php echo Common::get($item,"name");?></h5>
+                                <p class="card-text">
+                                    <?php echo Common::get($item, "description");?>
+                                </p>
+                                <p class="card-text">
+                                    Cost: <?php echo Common::get($item,"cost", 0);?>
+                                </p>
+                            </div>
+
+                        </div>
+                    </td>
                 <?php endif;?>
             <?php endfor;?>
         </tr>
