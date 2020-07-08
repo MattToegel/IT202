@@ -16,7 +16,6 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
 <div>
     <p>Welcome, <?php echo Common::get_username();?></p>
     <?php if($last_updated):?>
-        <p>Points: <?php echo Common::get($_SESSION["user"], "points", 0);?></p>
         <p>Last Updated: <?php echo $last_updated->format('Y-m-d H:i:s');;?></p>
     <?php endif;?>
     <div class="row">
@@ -64,6 +63,8 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
             </table>
         </div>
         <div class="col-4">
+            <h5>Cart</h5>
+            <h6 class="row">Points: <div id="used">0</div>/<div><?php echo Common::get($_SESSION["user"], "points", 0);?></div></h6>
             <p>Cart placeholder</p>
         </div>
     </div>
