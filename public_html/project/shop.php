@@ -52,6 +52,7 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
                                         </p>
                                         <button class="btn btn-sm btn-secondary"
                                         data-type="<?php echo Common::get($item, "stat","");?>"
+                                        data-cost="<?php echo Common::get($item, "cost", 0);?>"
                                         onclick="addToCart(this);">Add</button>
                                     </div>
 
@@ -88,7 +89,7 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
     }
     function addToCart(ele){
         let itemType = $(ele).data("type");
-        let itemCost $(ele).data("cost");
+        let itemCost = $(ele).data("cost");
         let updated = false;
         $cart.find("li").each(function (index, item) {
             let _itemType = $(item).data("type");
