@@ -2,7 +2,7 @@
 $response = array("status"=>400, "message"=>"Unknown error");
 if(isset($_POST["order"])){
     $order = $_POST["order"];
-    $order = json_decode($order);
+    $order = json_decode($order, true);
     try {
         require(__DIR__ . "/../includes/common.inc.php");
         if (Common::is_logged_in(false)) {
