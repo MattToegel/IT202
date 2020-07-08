@@ -8,7 +8,7 @@ if(Common::is_logged_in()){
     $_items = Common::get($result, "data", false);
     if($_items){
         $items = $_items;
-        echo var_export($items);
+        //echo var_export($items);
     }
 }
 $last_updated = Common::get($_SESSION, "last_sync", false);
@@ -26,7 +26,7 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
             <?php
 
                 $rows = (int)($total/ 5) + 1;
-                echo "<br>Rows: $rows<br>";
+                //echo "<br>Rows: $rows<br>";
             ?>
         <?php for($i = 0; $i < $rows; $i++):?>
         <tr>
