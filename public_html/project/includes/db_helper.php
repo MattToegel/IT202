@@ -317,4 +317,80 @@ class DBH{
             return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
         }
     }
+    public static function get_item_info($items){
+        try {
+            //need to use a workaround for PDO
+            $placeholders = str_repeat('?, ', count($items) - 1) . '?';
+            $stmt = DBH::getDB()->prepare("SELECT * FROM Items where stat in ($placeholders)");
+            $result = $stmt->execute($items);//not using associative array here
+            DBH::verify_sql($stmt);
+            if ($result) {
+                $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                return DBH::response($result,200, "success");
+            }
+        }
+        catch(Exception $e){
+            error_log($e->getMessage());
+            return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
+        }
+    }
+    public static function save_order($data){
+        try {
+            $query = file_get_contents(__DIR__ . "/../sql/queries/get_max_order_id.sql");
+            $stmt = DBH::getDB()->prepare($query);
+            $result = $stmt->execute();
+            DBH::verify_sql($stmt);
+            if($result){
+                $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                $max = (int)$result["max"];
+                $max += 1;
+                $query =  file_get_contents(__DIR__ . "/../sql/queries/insert_order_item.sql");
+                $stmt = DBH::getDB()->prepare($query);
+                $user_id = Common::get_user_id();
+                foreach($data as $item){
+                    $result = $stmt->execute([
+                        ":order_id"=>$max,
+                        ":item_id"=>$item["id"],
+                        ":user_id"=>$user_id,
+                        ":quantity"=>$item["quantity"],
+                        ":price"=>$item["cost"]
+                    ]);
+                }
+                return DBH::response($result,200, "success");
+            }
+            else{
+                return DBH::response(NULL, 400, "error");
+            }
+        }
+        catch(Exception $e){
+            error_log($e->getMessage());
+            return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
+        }
+    }
+    public static function update_tank($tank){
+        try {
+            $query = file_get_contents(__DIR__ . "/../sql/queries/update_tank.sql");
+            $stmt = DBH::getDB()->prepare($query);
+            $result = $stmt->execute([
+                ":id"=>$tank["id"],
+                ":user_id"=>Common::get_user_id(),
+                ":speed"=>$tank["speed"],
+                ":range"=>$tank["range"],
+                ":turnSpeed"=>$tank["turnSpeed"],
+                ":fireRate"=>$tank["fireRate"],
+                ":health"=>$tank["health"]
+            ]);
+            DBH::verify_sql($stmt);
+            if($result){
+                return DBH::response(NULL,200, "success");
+            }
+            else{
+                return DBH::response(NULL, 400, "error");
+            }
+        }
+        catch(Exception $e){
+            error_log($e->getMessage());
+            return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
+        }
+    }
 }

@@ -51,6 +51,7 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
                                             Cost: <?php echo Common::get($item,"cost", 0);?>
                                         </p>
                                         <button class="btn btn-sm btn-secondary"
+                                        data-id="<?php echo Common::get($item, "id", -1);?>"
                                         data-type="<?php echo Common::get($item, "stat","");?>"
                                         data-cost="<?php echo Common::get($item, "cost", 0);?>"
                                         data-name="<?php echo Common::get($item, "name");?>"
@@ -101,6 +102,7 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
         let itemType = $(ele).data("type");
         let itemCost = $(ele).data("cost");
         let itemName = $(ele).data("name");
+        let itemId = $(ele).data("id");
         if(total + itemCost > points){
             alert("You can't afford that");
             return;
@@ -124,6 +126,7 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
             $li.data("quantity", 1);
             $li.data("cost", itemCost);
             $li.data("name", itemName);
+            $li.data("id", itemId);
             $li.find("span").text(itemName + ": " + 1);
 
             $cart.append($li);
@@ -139,7 +142,9 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
         $cart.find("li").each(function(index, item){
             let itemType = $(item).data("type");
             let itemQuantity = $(item).data("quantity");
-            data.push({item: itemType, quantity: itemQuantity});
+            let itemCost = $(item).data("cost");
+            let itemId = $(item).data("id");
+            data.push({type: itemType, quantity: itemQuantity, cost: itemCost, id: itemId});
         });
         console.log(data);
         console.log(JSON.stringify(data));
