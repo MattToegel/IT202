@@ -80,7 +80,7 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
     function addToCart(ele){
         let itemType = $(ele).data("type");
         let updated = false;
-        $cart.each(function (item, index) {
+        $cart.each(function (index, item) {
             let _itemType = $(item).data("type");
             if(_itemType == _itemType){
                 let q = $(item).data("quantity");
