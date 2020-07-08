@@ -53,6 +53,7 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
                                         <button class="btn btn-sm btn-secondary"
                                         data-type="<?php echo Common::get($item, "stat","");?>"
                                         data-cost="<?php echo Common::get($item, "cost", 0);?>"
+                                        data-name="<?php echo Common::get($item, "name");?>"
                                         onclick="addToCart(this);">Add</button>
                                     </div>
 
@@ -99,6 +100,7 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
 
         let itemType = $(ele).data("type");
         let itemCost = $(ele).data("cost");
+        let itemName = $(ele).data("name");
         if(total + itemCost > points){
             alert("You can't afford that");
             return;
@@ -106,11 +108,12 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
         let updated = false;
         $cart.find("li").each(function (index, item) {
             let _itemType = $(item).data("type");
+            let _itemName = $(item).data("name");
             if(_itemType == itemType){
                 let q = $(item).data("quantity");
                 q++;
                 $(item).data("quantity", q);
-                $(item).find("span").text(_itemType + ": " + q);
+                $(item).find("span").text(_itemName + ": " + q);
                 updated = true;
             }
         });
@@ -120,7 +123,8 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
             $li.data("type", itemType);
             $li.data("quantity", 1);
             $li.data("cost", itemCost);
-            $li.find("span").text(itemType + ": " + 1);
+            $li.data("name", itemName);
+            $li.find("span").text(itemName + ": " + 1);
 
             $cart.append($li);
         }
