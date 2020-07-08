@@ -83,13 +83,15 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
     let points = <?php echo Common::get($_SESSION["user"], "points", 0);?>;
     let total = 0;
     function updateCost(){
+        let sum = 0;
         $cart.find("li").each(function (index, item) {
             let q = $(item).data("quantity");
             let c = $(item).data("cost");
-            total = q * c;
-            let $used = $("#used");
-            $used.text(total);
+            sum += (q * c);
+
         });
+        let $used = $("#used");
+        $used.text(total);
     }
     function addToCart(ele){
 
@@ -102,11 +104,11 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
         let updated = false;
         $cart.find("li").each(function (index, item) {
             let _itemType = $(item).data("type");
-            if(_itemType == _itemType){
+            if(_itemType == itemType){
                 let q = $(item).data("quantity");
                 q++;
                 $(item).data("quantity", q);
-                $(item).text(_itemType + ": " + q);
+                $(item).find("span").text(_itemType + ": " + q);
                 updated = true;
             }
         });
