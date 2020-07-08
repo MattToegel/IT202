@@ -610,7 +610,7 @@ if(Common::is_logged_in()){
             let ay = getRandomRange(0, this.canvas.height);
             let ptdata = this.tanks[0];
             let pt = new Tank(this.context, px, py, ptdata.speed, false, ptdata.range,
-                ptdata.turnSpeed, ptdata.fireRate, ptdata.health,, ptdata.damage, ptdata.tankColor,
+                ptdata.turnSpeed, ptdata.fireRate, ptdata.health, ptdata.damage, ptdata.tankColor,
                 ptdata.barrelColor, ptdata.barrelTipColor, ptdata.treadColor, ptdata.hitColor);
             let etdata = this.tanks[1];
             let et = new Tank(this.context, ax, ay, etdata.speed, true, etdata.range,
