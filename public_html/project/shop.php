@@ -78,18 +78,27 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
 <script>
     //$ in var name signifies a jquery obj
     let $cart = $("#cart");
+    //this is fine because php is executed first on the server then the result is sent to the browser
+    //and will be the expected value by the time JS gets to this
+    let points = <?php echo Common::get($_SESSION["user"], "points", 0);?>;
+    let total = 0;
     function updateCost(){
         $cart.find("li").each(function (index, item) {
             let q = $(item).data("quantity");
             let c = $(item).data("cost");
-            let t = q * c;
+            total = q * c;
             let $used = $("#used");
-            $used.text(t);
+            $used.text(total);
         });
     }
     function addToCart(ele){
+
         let itemType = $(ele).data("type");
         let itemCost = $(ele).data("cost");
+        if(total + itemCost > points){
+            alert("You can't afford that");
+            return;
+        }
         let updated = false;
         $cart.find("li").each(function (index, item) {
             let _itemType = $(item).data("type");
@@ -102,11 +111,12 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
             }
         });
         if(!updated){
-            let $li = $("<li></li>");
+            let $li = $("<li><span></span><button onclick='removeFromCart(this);' class='btn btn-sm btn-danger'>X</button></li>");
             $li.data("type", itemType);
             $li.data("quantity", 1);
             $li.data("cost", itemCost);
-            $li.text(itemType + ": " + 0);
+            $li.find("span").text(itemType + ": " + 1);
+
             $cart.append($li);
         }
         updateCost();
