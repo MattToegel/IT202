@@ -35,8 +35,8 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
                         <?php $index = (($i) * 5) + ($k);
                         $item = null;
                         if($index < $total){
-                            $item = $items[$index];
-                        }
+                        $item = $items[$index];
+                    }
                         ?>
                         <?php if(isset($item)):?>
                             <td>
@@ -121,6 +121,7 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
         });
         if(!updated){
             let $li = $("<li></li>");
+            $li.attr("class", "list-group-item");
             $li.append("<span></span><button onclick='removeFromCart(this);' class='btn btn-sm btn-danger'>X</button>");
             $li.data("type", itemType);
             $li.data("quantity", 1);
