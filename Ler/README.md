@@ -2,6 +2,7 @@
 
 ## Project Name: Interactive Story
 ### Project Summary: Users will be able to participate in numerous interactive stories where they get to pick from a set of choices to see how their journey progresses. Users will also have the ability to create their own stories for others to read.
+#### Try it here [http://it202.privatedns.org/IT202/Ler/](http://it202.privatedns.org/IT202/Ler/)
 
 # Features:
 - [x] User will be able to register a new account
