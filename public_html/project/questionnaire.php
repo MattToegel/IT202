@@ -44,8 +44,8 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
                         <input class="form-control" type="text" id="question_0_answer_0" name="question_0_answer_0"/>
                     </div>
                     <div class="form-group">
-                        <label for="question_0_answer_oe_0">Allow Open Ended?</label>
-                        <input class="form-control" type="checkbox" id="question_0_answer_oe_0" name="question_0_answer_oe_0"/>
+                        <label for="question_0_answeroe_0">Allow Open Ended?</label>
+                        <input class="form-control" type="checkbox" id="question_0_answeroe_0" name="question_0_answeroe_0"/>
                     </div>
                 </div>
             </div>
@@ -59,7 +59,78 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
 </form>
 <?php
     if(Common::get($_POST, "submit", false)){
-        echo "<pre" . var_export($_POST, true) . "</pre>";
+        echo "<pre>" . var_export($_POST, true) . "</pre>";
+        //TODO this isn't going to be the best way to parse the form, and probably not the best form setup
+        //so just use this as an example rather than what you should do.
+        //this is based off of naming conversions used in Python WTForms (I like to try to see if I can get some
+        //php equivalents implemented (to a very, very basic degree))
+        $question_name = Common::get($_POST, "question_name", '');
+        $is_valid = true;
+        if(strlen($question_name) > 0) {
+            //make sure we have a name
+            $question_desc = Common::get($_POST, "question_desc", '');
+            $attempts_per_day = Common::get($_POST, "attempts_per_day", 0);
+            if(is_numeric($attempts_per_day) && (int)$attempts_per_day > 0){
+                $attempts_per_day = (int)$attempts_per_day;
+            }
+            else{
+                $is_valid = false;
+                Common::flash("Attempts per day must be a numerical value greater than zero", "danger");
+            }
+            $max_attempts = Common::get($_POST, "max_attempts", 0);
+            if(is_numeric($max_attempts) && (int)$max_attempts >= 0){
+                $max_attempts = (int)$max_attempts;
+            }
+            else{
+                $is_valid = false;
+                Common::flash("Max attempts must be a numerical value greater than or equal to zero, even if not used", "danger");
+            }
+            if($is_valid){
+                //TODO here's where it gets a tad hacky and there are better ways to do it.
+                $index = 0;
+                $assumed_max_questions = 100;//this isn't a realistic limit, it's just to ensure
+                $questions = [];
+                $answers = [];
+                //we don't get stuck in an infinite loop since while(true) is dangerous if not handled appropriately
+                for($index = 0; $index < $assumed_max_questions; $index++){
+                    $question = Common::get($_POST, "question_$index", false);
+                    if($question){
+                        array_push($questions, $question);
+                        $assumed_max_answers = 100;//same as $assumed_max_questions (var sits here so it resets each loop)
+                        for($i = 0; $i < $assumed_max_answers; $i++){
+                            $check = "".join(["question_",$index, "_answer_", $i]);
+                            error_log("Checking for pattern $check");
+                            $answer = Common::get($_POST, $check, false);
+                            if($answer){
+                                $check2 = "".join(["question_",$index, "_answeroe_", $i]);
+                                $oe = Common::get($_POST, $check2, false);
+                                //TODO we don't ignore if false, it should be true or false so a default of false is perfectly fine
+                                array_push($answers, ["answer"=>$answer, "open_ended"=>$oe]);
+                            }
+                            else{
+                                //we can break this loop since we have no more answers to parse
+                                break;
+                            }
+                        }
+                    }
+                    else{
+                        //we don't have anymore questions in post, early terminate the loop
+                        break;
+                    }
+                }
+                echo "<pre>" . var_export($questions, true) . "</pre>";
+                echo "<pre>" . var_export($answers, true) . "</pre>";
+            }
+        }
+        else{
+            $is_valid = false;
+            Common::flash("A Questionnaire name must be provided", "danger");
+        }
+        if(!$is_valid){
+            //this will erase the form since it's a page refresh, but we need it to show the session messages
+            //this is a last resort as we should use JS/HTML5 for a better UX
+            die(header("Location: questionnaire.php"));
+        }
     }
 ?>
 <script>
