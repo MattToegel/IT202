@@ -44,7 +44,7 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
                     </div>
                     <div class="form-group">
                         <label for="question_0_answer_oe_0">Allow Open Ended?</label>
-                        <input class="form-control" type="text" id="question_0_answer_oe_0" name="question_0_answer_oe_0"/>
+                        <input class="form-control" type="checkbox" id="question_0_answer_oe_0" name="question_0_answer_oe_0"/>
                     </div>
                 </div>
             </div>
@@ -125,6 +125,6 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
         let $li = $lg.find(".list-group-item:first");
         let $clone = $li.clone();
         $lg.append($clone);
-        update_names_and_ids($lg);
+        update_names_and_ids($(".list-group:first"));
     }
 </script>
