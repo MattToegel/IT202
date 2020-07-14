@@ -135,8 +135,10 @@ class Common {
         $user = Common::get($_SESSION, "user", false);
         if($user){
             $roles = Common::get($user, "roles", []);
-            if(count($roles) > 0){
-                return in_array($role, $roles);
+            foreach($roles as $r){
+                if($r["name"] == $role){
+                    return true;
+                }
             }
         }
         return false;
