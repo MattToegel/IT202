@@ -9,6 +9,7 @@ if(Common::is_logged_in()){
 }
 $last_updated = Common::get($_SESSION, "last_sync", false);
 ?>
+<div class="container-fluid">
 <form method="POST">
     <div class="form-group">
         <label for="questionnaire_name">Questionnaire Name</label>
@@ -52,6 +53,7 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
         </div>
     </div>
     <button class="btn btn-secondary" onclick="event.preventDefault(); cloneThis(this);">Add Question</button>
+    <input type="submit" class="btn btn-primary" value="Create Questionnaire"/>
 </form>
 <script>
     function update_names_and_ids($ele){
@@ -128,3 +130,4 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
         update_names_and_ids($(".list-group:first"));
     }
 </script>
+</div>
