@@ -55,7 +55,7 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
 </form>
 <script>
     function update_names_and_ids($ele){
-        let $lis = $ele.find(".list-group-item");
+        let $lis = $ele.children(".list-group-item");
         //loop over all list-group-items of list-group
         $lis.each(function(index, item){
            let $fg = $(item).find(".form-group");
