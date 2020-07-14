@@ -53,8 +53,15 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
         </div>
     </div>
     <button class="btn btn-secondary" onclick="event.preventDefault(); cloneThis(this);">Add Question</button>
-    <input type="submit" class="btn btn-primary" value="Create Questionnaire"/>
+    <div class="form-group">
+        <input type="submit" name="submit" class="btn btn-primary" value="Create Questionnaire"/>
+    </div>
 </form>
+<?php
+    if(Common::get($_POST, "submit", false)){
+        echo "<pre" . var_export($_POST, true) . "</pre>";
+    }
+?>
 <script>
     function update_names_and_ids($ele){
         let $lis = $ele.children(".list-group-item");
