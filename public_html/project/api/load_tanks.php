@@ -32,13 +32,15 @@ if(Common::is_logged_in(false)) {
         array_push($tanks, $playerTank);
         //https://www.w3schools.com/php/func_math_mt_rand.asp
 
-
+        $playerLevel = Common::get($_SESSION["user"],"level",1);
+        //07-14-2020 added logic to take the max value between playerTank health and playerLevel
+        //this is to mitigate any strategy where a player keeps their tank health low and attempts to win with 1 shots
         $enemyTank = array(
             "speed"=>mt_rand($speed*.5, $speed*1.5),
             "range"=>mt_rand($range*.5, $range*1.5),
             "turnSpeed"=>mt_rand($turnSpeed*.5, $turnSpeed*1.5),
             "fireRate"=>mt_rand($fireRate*.5, $fireRate*1.5),
-            "health"=>mt_rand($health*.5, $health*1.5),
+            "health"=>max(mt_rand($health*.5, $health*1.5), $playerLevel * 3),
             "tankColor"=>"#" . dechex(rand(0x000000, 0xFFFFFF)),
             "barrelColor" =>"#" . dechex(rand(0x000000, 0xFFFFFF)),
             "barrelTipColor" => "#" . dechex(rand(0x000000, 0xFFFFFF)),

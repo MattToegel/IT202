@@ -126,6 +126,21 @@ class Common {
         Common::flash("Error finding path", "danger");
         return "/project/index.php";
     }
+
+    /*** Pass a single role to check if the logged in user has the role applied
+     * @param $role
+     * @return bool
+     */
+    public static function has_role($role){
+        $user = Common::get($_SESSION, "user", false);
+        if($user){
+            $roles = Common::get($user, "roles", []);
+            if(count($roles) > 0){
+                return in_array($role, $roles);
+            }
+        }
+        return false;
+    }
     /*** Attempts to safely retrieve a key from an array, otherwise returns the default
      * @param $arr
      * @param $key
