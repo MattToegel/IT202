@@ -121,7 +121,7 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
         });
     }
     function cloneThis(ele){
-        let $lg = $(ele).closest(".list-group");
+        let $lg = $(ele).siblings(".list-group");
         let $li = $lg.find(".list-group-item:first");
         let $clone = $li.clone();
         $lg.append($clone);
