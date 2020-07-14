@@ -64,12 +64,13 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
         //so just use this as an example rather than what you should do.
         //this is based off of naming conversions used in Python WTForms (I like to try to see if I can get some
         //php equivalents implemented (to a very, very basic degree))
-        $question_name = Common::get($_POST, "question_name", '');
+        $question_name = Common::get($_POST, "questionnaire_name", '');
         $is_valid = true;
         if(strlen($question_name) > 0) {
             //make sure we have a name
-            $question_desc = Common::get($_POST, "question_desc", '');
+            $question_desc = Common::get($_POST, "questionnaire_desc", '');
             $attempts_per_day = Common::get($_POST, "attempts_per_day", 0);
+            $use_max = Common::get($_POST, "use_max", false);//used to hard limit the number of attempts
             if(is_numeric($attempts_per_day) && (int)$attempts_per_day > 0){
                 $attempts_per_day = (int)$attempts_per_day;
             }
