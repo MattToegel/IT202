@@ -467,8 +467,8 @@ class DBH{
                     array_push($params,
                         Common::get($answer, "answer",""),
                         Common::get($answer, "open_ended", false)?1:0,
-                        Common::get($results[$qIndex], "id", -1),
-                        Common::get_user_id()
+                        Common::get_user_id(),
+                        Common::get($results[$qIndex], "id", -1)
                     );
 
                     //$query .= "(:answer-$qIndex-$aIndex, :oe-$qIndex-$aIndex, :user_id, :question_id$qIndex)";
