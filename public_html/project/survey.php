@@ -1,4 +1,7 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 include_once(__DIR__."/partials/header.partial.php");
 
 if(Common::is_logged_in()){
@@ -75,7 +78,7 @@ if(Common::get($_POST, "submit", false)){
             if (strpos($key, "other")) {
                 if (trim(strlen($value)) > 0) {
                     $is_other = true;
-                    $answer_id = (int)explode("-")[2];
+                    $answer_id = (int)explode("-", $key)[2];
                     array_push($response, ["question_id" => $questionnaire_id, "answer_id" => $answer_id, "user_input" => $value]);
                 }
             }
