@@ -68,6 +68,7 @@ if(Common::get($_POST, "submit", false)){
     //echo "<br><pre>" . var_export($_POST, true) . "</pre>";
     $response = [];
     foreach($_POST as $key=>$value){
+        echo "<br>$key => $value<br>";
         if(strpos($key, "question")) {
             $is_other = false;
             $question_id = (int)explode("-", $key)[1];
@@ -83,6 +84,7 @@ if(Common::get($_POST, "submit", false)){
             }
         }
     }
+    echo "<br><pre>" . var_export($response, true) . "</pre>";
     if(count($response) > 0){
         $response = DBH::save_response($questionnaire_id, $response);
         if(Common::get($response, "status", 400) == 200){
