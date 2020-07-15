@@ -19,11 +19,11 @@ if(Common::get($response, "status", 400) == 200){
 }
 ?>
 <div>
-    <h5><?php echo Common::get($available[0][0], "questionnaire_name","");?></h5>
+    <h5><?php echo Common::get(current($available)[0], "questionnaire_name","");?></h5>
     <div class="list-group">
         <?php foreach($available as $s): ?>
             <div class="list-group-item">
-                <?php echo Common::get($s[0], "question"); ?>
+                <h6><?php echo Common::get($s[0], "question"); ?></h6>
                 <div class="list-group">
                 <?php foreach($s as $question):?>
                 <div class="list-group-item btn-group-toggle bg-light" data-toggle="buttons">
