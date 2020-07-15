@@ -29,7 +29,7 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
     </div>
     <div class="form-group">
         <label for="use_max">Use Max?</label>
-        <input class="form-control" type="checkbox" id="use_max" name="use_max"/>
+        <input class="form-control" type="checkbox" id="use_max" name="use_max" value="false"/>
     </div>
     <div class="list-group">
         <div class="list-group-item">
@@ -70,6 +70,8 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
             //make sure we have a name
             $question_desc = Common::get($_POST, "questionnaire_desc", '');
             $attempts_per_day = Common::get($_POST, "attempts_per_day", 0);
+            //TODO important to note, if a checkbox isn't toggled/checked it won't be sent with the request.
+            //Checkboxes have a poor design and usually need a hidden form and/or JS magic to work for unchecked values
             $use_max = Common::get($_POST, "use_max", false);//used to hard limit the number of attempts
             if(is_numeric($attempts_per_day) && (int)$attempts_per_day > 0){
                 $attempts_per_day = (int)$attempts_per_day;
