@@ -507,7 +507,7 @@ class DBH{
         try {
             //need to use a workaround for PDO
             $query = file_get_contents(__DIR__ . "/../sql/queries/get_items_by_stats.sql");
-            $query = "SELECT * from Questionnaires as q where attempts_per_day < (SELECT COUNT(1) FROM Responses where user_id = :uid and questionnaire_id = q.id and date(created) = CURDATE())";
+            $query = "SELECT * from Questionnaires as q where attempts_per_day > (SELECT COUNT(1) FROM Responses where user_id = :uid and questionnaire_id = q.id and date(created) = CURDATE())";
             $stmt = DBH::getDB()->prepare($query);
             $result = $stmt->execute([":uid"=>Common::get_user_id()]);//not using associative array here
             DBH::verify_sql($stmt);
