@@ -119,7 +119,7 @@ class DBH{
         try {
             $query = file_get_contents(__DIR__ . "/../sql/queries/login.sql");
             $stmt = DBH::getDB()->prepare($query);
-            $result = $stmt->execute([":email"=>"localhost"]);
+            $stmt->execute([":email"=>"localhost"]);
             DBH::verify_sql($stmt);
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
             if($result){
@@ -322,12 +322,17 @@ class DBH{
         try {
             //need to use a workaround for PDO
             $placeholders = str_repeat('?, ', count($items) - 1) . '?';
-            $stmt = DBH::getDB()->prepare("SELECT * FROM Items where stat in ($placeholders)");
+            $query = file_get_contents(__DIR__ . "/../sql/queries/get_items_by_stats.sql");
+            $query .= "($placeholders)";
+            $stmt = DBH::getDB()->prepare($query);
             $result = $stmt->execute($items);//not using associative array here
             DBH::verify_sql($stmt);
             if ($result) {
                 $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 return DBH::response($result,200, "success");
+            }
+            else{
+                return DBH::response($result,400, "error");
             }
         }
         catch(Exception $e){
@@ -444,7 +449,8 @@ class DBH{
             $stmt->execute($params);
             DBH::verify_sql($stmt);
             //fetch ids
-            $stmt = DBH::getDB()->prepare("SELECT id from Questions where questionnaire_id = :qid");
+            $query = file_get_contents(__DIR__ . "/../sql/queries/get_question_ids_for_questionnaire.sql");
+            $stmt = DBH::getDB()->prepare($query);
             $stmt->execute([":qid"=>$questionnaire_id]);
             DBH::verify_sql($stmt);
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -452,17 +458,19 @@ class DBH{
             $qIndex = 0;
             $params = [];
             //$params[":user_id"] = Common::get_user_id();
-            $query = "INSERT INTO Answers(answer, is_open_ended, user_id, question_id) VALUES ";
+            $query = file_get_contents(__DIR__ . "/../sql/queries/create_answer.partial.sql");
             foreach($questions as $question){
                 $answers = Common::get($question, "answers", []);
                 //$params[":question_id$qIndex"] = Common::get($results[$qIndex], "id", -1);
                 $aIndex = 0;
                 foreach($answers as $answer){
-                   // $params[":answer-$qIndex-$aIndex"] = Common::get($answer, "answer",'');
+                    //TODO attempted named params. This would work, but I felt it was a bit messier to setup
+                    // $params[":answer-$qIndex-$aIndex"] = Common::get($answer, "answer",'');
                     //$params[":oe-$qIndex-$aIndex"] = Common::get($answer, "open_ended", false)?1:0;
                     if($qIndex > 0 || $aIndex > 0){
                         $query .= ",";
                     }
+                    //TODO switched to using positional placeholders instead
                     $query .= "(?, ?, ?, ?)";
                     array_push($params,
                         Common::get($answer, "answer",""),
@@ -488,6 +496,27 @@ class DBH{
             }
             else{
                 return DBH::response(NULL, 400, "error");
+            }
+        }
+        catch(Exception $e){
+            error_log($e->getMessage());
+            return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
+        }
+    }
+    public static function get_available_surveys(){
+        try {
+            //need to use a workaround for PDO
+            $query = file_get_contents(__DIR__ . "/../sql/queries/get_items_by_stats.sql");
+            $query = "SELECT * from Questionnaires as q where attempts_per_day < (SELECT COUNT(1) FROM Responses where user_id = :uid and questionnaire_id = q.id and date(created) = CURDATE())";
+            $stmt = DBH::getDB()->prepare($query);
+            $result = $stmt->execute([":uid"=>Common::get_user_id()]);//not using associative array here
+            DBH::verify_sql($stmt);
+            if ($result) {
+                $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                return DBH::response($result,200, "success");
+            }
+            else{
+                return DBH::response($result,400, "error");
             }
         }
         catch(Exception $e){
