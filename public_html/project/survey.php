@@ -72,10 +72,10 @@ if(Common::get($_POST, "submit", false)){
     $response = [];
     foreach($_POST as $key=>$value){
         echo "<br>$key => $value<br>";
-        if(strpos($key, "question")) {
+        if(strpos($key, "question") !== false) {
             $is_other = false;
             $question_id = (int)explode("-", $key)[1];
-            if (strpos($key, "other")) {
+            if (strpos($key, "other") !== false) {
                 if (trim(strlen($value)) > 0) {
                     $is_other = true;
                     $answer_id = (int)explode("-", $key)[2];
