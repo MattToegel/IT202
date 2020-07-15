@@ -433,7 +433,7 @@ class DBH{
             $params[":questionnaire_id"] = $questionnaire_id;
             //this is the only placeholder we need to loop over
             for($i = 0; $i < $qt; $i++){
-                $params[":question$i"] = $questions[$i];
+                $params[":question$i"] = Common::get($questions[$i], "question", '');
                 if(($i+1) < $qt) {
                     $ni = $i + 1;
                     $query .= ", (:question$ni, :user_id, :questionnaire_id)";
@@ -463,7 +463,7 @@ class DBH{
                     if($qIndex > 0){
                         $query .= ",";
                     }
-                    $query .= "(:question_id$qIndex, :oe-$qIndex-$aIndex, :user_id, :question_id$qIndex)";
+                    $query .= "(:answer-$qIndex-$aIndex, :oe-$qIndex-$aIndex, :user_id, :question_id$qIndex)";
                     $aIndex++;
                 }
 
