@@ -15,6 +15,7 @@ if(Common::get($response, "status", 400) == 200){
 <div>
     <div class="list-group">
         <?php foreach($available as $s):?>
+            var_dump($s);
             <div class="list-group-item">
                 <h6><?php echo Common::get($s, "name");?></h6>
                 <p><?php echo Common::get($s, "description", "");?></p>
