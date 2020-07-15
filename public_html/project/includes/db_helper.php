@@ -563,4 +563,37 @@ class DBH{
             return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
         }
     }
+    public static function save_response($questionnaire_id, $response){
+        try {
+            $query = file_get_contents(__DIR__ . "/../sql/queries/insert_response.sql");
+            $first = true;
+            $params = [];
+            foreach($response as $r){
+                if(!$first){
+                    $query .= ",";
+                }
+                $first = false;
+                $query .= "(?,?,?,?)";
+                array_push($params,
+                    $questionnaire_id,
+                    Common::get($r, "question_id", -1),
+                    Common::get($r, "answer_id", -1),
+                    Common::get($r, "user_input", null)
+                );
+            }
+            $stmt = DBH::getDB()->prepare($query);
+            $result = $stmt->execute($params);
+            DBH::verify_sql($stmt);
+            if($result){
+                return DBH::response(null,200, "success");
+            }
+            else{
+                return DBH::response(NULL, 400, "error");
+            }
+        }
+        catch(Exception $e){
+            error_log($e->getMessage());
+            return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
+        }
+    }
 }

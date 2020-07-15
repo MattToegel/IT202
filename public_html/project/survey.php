@@ -35,7 +35,7 @@ if(Common::get($response, "status", 400) == 200){
                     <?php if(Common::get($question, "open_ended", false)):?>
                         <label for="<?php echo $id;?>"><?php echo Common::get($question, "answer");?></label>
                         <input id="<?php echo $id;?>" class="form-control" type="text"
-                               name="question-<?php echo Common::get($question,"question_id", -1);?>-other"/>
+               name="question-<?php echo Common::get($question,"question_id", -1);?>-other-<?php echo Common::get($question, "answer_id", -1);?>" />
                     <?php else:?>
 
                         <label class="btn btn-secondary btn-lg btn-block" for="<?php echo $id;?>">
@@ -65,5 +65,35 @@ if(Common::get($response, "status", 400) == 200){
 </script>
 <?php
 if(Common::get($_POST, "submit", false)){
-    echo "<br><pre>" . var_export($_POST, true) . "</pre>";
+    //echo "<br><pre>" . var_export($_POST, true) . "</pre>";
+    $response = [];
+    foreach($_POST as $key=>$value){
+        if(strpos($key, "question")) {
+            $is_other = false;
+            $question_id = (int)explode("-", $key)[1];
+            if (strpos($key, "other")) {
+                if (trim(strlen($value)) > 0) {
+                    $is_other = true;
+                    $answer_id = (int)explode("-")[2];
+                    array_push($response, ["question_id" => $questionnaire_id, "answer_id" => $answer_id, "user_input" => $value]);
+                }
+            }
+            if (!$is_other) {
+                array_push($response, ["question_id" => $questionnaire_id, "answer_id" => $value]);
+            }
+        }
+    }
+    if(count($response) > 0){
+        $response = DBH::save_response($questionnaire_id, $response);
+        if(Common::get($response, "status", 400) == 200){
+            Common::flash("Successfully recorded response", "success");
+        }
+        else{
+            Common::flash("Error recording response", "danger");
+        }
+    }
+    else{
+        Common::flash("Error recording response", "danger");
+    }
+    die(header("Location: surveys.php"));
 }
