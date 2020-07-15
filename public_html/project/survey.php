@@ -43,7 +43,7 @@ if(Common::get($response, "status", 400) == 200){
                         <input id="<?php echo $id;?>" autocomplete="off" type="radio"
                                name="question-<?php echo Common::get($question,"question_id", -1);?>"
                                 value="<?php echo Common::get($question, "answer_id", -1);?>"
-                                onclick="select(this);"/>
+                                onclick="selectChoice(this);"/>
                         </label>
                     <?php endif; ?>
                 </div>
@@ -56,7 +56,7 @@ if(Common::get($response, "status", 400) == 200){
     </form>
 </div>
 <script>
-    function select(ele){
+    function selectChoice(ele){
         $("[name=" + $(ele).attr("name") + "]").each(function(index, item){
            $(item).closest("label").removeClass("active");
         });
