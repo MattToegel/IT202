@@ -35,14 +35,15 @@ if(Common::get($response, "status", 400) == 200){
                     <?php if(Common::get($question, "open_ended", false)):?>
                         <label for="<?php echo $id;?>"><?php echo Common::get($question, "answer");?></label>
                         <input id="<?php echo $id;?>" class="form-control" type="text"
-                               name="question-<?php echo Common::get($question,"question_id", -1);?>"/>
+                               name="question-<?php echo Common::get($question,"question_id", -1);?>-other"/>
                     <?php else:?>
 
                         <label class="btn btn-secondary btn-lg btn-block" for="<?php echo $id;?>">
                             <?php echo Common::get($question, "answer");?>
                         <input id="<?php echo $id;?>" autocomplete="off" type="radio"
                                name="question-<?php echo Common::get($question,"question_id", -1);?>"
-                                value="<?php echo Common::get($question, "answer_id", -1);?>" />
+                                value="<?php echo Common::get($question, "answer_id", -1);?>"
+                                onclick="select(this);"/>
                         </label>
                     <?php endif; ?>
                 </div>
@@ -54,6 +55,14 @@ if(Common::get($response, "status", 400) == 200){
         <input type="submit" class="btn btn-primary" name="submit" value="Submit Response"/>
     </form>
 </div>
+<script>
+    function select(ele){
+        $("[name=" + $(ele).attr("name") + "]").each(function(index, item){
+           $(item).closest("label").removeClass("active");
+        });
+        $(ele).closest("label").addClass("active");
+    }
+</script>
 <?php
 if(Common::get($_POST, "submit", false)){
     echo "<br><pre>" . var_export($_POST, true) . "</pre>";
