@@ -21,6 +21,7 @@ if(Common::get($response, "status", 400) == 200){
 <div class="container-fluid">
     <!-- see https://www.w3schools.com/php/func_array_reset.asp for use of current() function -->
     <h3><?php echo Common::get(current($available)[0], "questionnaire_name","");?></h3>
+    <form method="POST">
     <div class="list-group">
         <?php foreach($available as $s): ?>
             <div class="list-group-item">
@@ -46,4 +47,10 @@ if(Common::get($response, "status", 400) == 200){
             </div>
         <?php endforeach; ?>
     </div>
+        <input type="submit" class="btn btn-primary" name="submit" value="Submit Response"/>
+    </form>
 </div>
+<?php
+if(Common::get($_POST, "submit", false)){
+    echo "<br><pre>" . var_export($_POST, true) . "</pre>";
+}
