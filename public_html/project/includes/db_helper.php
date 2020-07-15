@@ -463,13 +463,14 @@ class DBH{
                     if($qIndex > 0 || $aIndex > 0){
                         $query .= ",";
                     }
+                    $query .= "(?, ?, ?, ?)";
                     array_push($params,
                         Common::get($answer, "answer",""),
                         Common::get($answer, "open_ended", false)?1:0,
-                        Common::get($results[$qIndex], "id", -1).
+                        Common::get($results[$qIndex], "id", -1),
                         Common::get_user_id()
                     );
-                    $query .= "(?, ?, ?, ?)";
+
                     //$query .= "(:answer-$qIndex-$aIndex, :oe-$qIndex-$aIndex, :user_id, :question_id$qIndex)";
                     $aIndex++;
                 }
