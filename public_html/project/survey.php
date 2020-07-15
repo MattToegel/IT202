@@ -19,6 +19,7 @@ if(Common::get($response, "status", 400) == 200){
 }
 ?>
 <div>
+    <h5><?php echo Common::get($available[0][0], "questionnaire_name","");?></h5>
     <div class="list-group">
         <?php foreach($available as $s): ?>
             <div class="list-group-item">
@@ -26,8 +27,8 @@ if(Common::get($response, "status", 400) == 200){
                 <div class="list-group">
                 <?php foreach($s as $question):?>
                 <div class="list-group-item">
-                    <?php echo Common::get($question, "question");?>
                     <?php echo Common::get($question, "answer");?>
+                    <input class="btn btn-secondary" type="radio" name="answer-<?php echo Common::get($question,"id", -1);?>"/>
                 </div>
                 <?php endforeach;?>
                 </div>
