@@ -27,8 +27,18 @@ if(Common::get($response, "status", 400) == 200){
                 <div class="list-group">
                 <?php foreach($s as $question):?>
                 <div class="list-group-item">
-                    <?php echo Common::get($question, "answer");?>
-                    <input class="btn btn-secondary" type="radio" name="answer-<?php echo Common::get($question,"id", -1);?>"/>
+
+                    <?php if(Common::get($question, "open_ended", false)):?>
+                        <label><?php echo Common::get($question, "answer");?></label>
+                        <input class="btn btn-secondary" type="text"
+                               name="answer-<?php echo Common::get($question,"id", -1);?>"/>
+                    <?php else:?>
+                        <label class="btn btn-secondary btn-lg btn-block">
+                            <?php echo Common::get($question, "answer");?>
+                        <input class="btn btn-secondary" type="radio"
+                               name="answer-<?php echo Common::get($question,"id", -1);?>"/>
+                        </label>
+                    <?php endif; ?>
                 </div>
                 <?php endforeach;?>
                 </div>
