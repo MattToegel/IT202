@@ -1,5 +1,6 @@
 SELECT
         qs.id as question_id,
+        qs.id as question_id,
         qs.question as question,
        q.id as questionnaire_id,
        q.name as questionnaire_name,
