@@ -568,17 +568,20 @@ class DBH{
             $query = file_get_contents(__DIR__ . "/../sql/queries/insert_response.sql");
             $first = true;
             $params = [];
+            $user_id = Common::get_user_id();
             foreach($response as $r){
                 if(!$first){
                     $query .= ",";
                 }
                 $first = false;
                 $query .= "(?,?,?,?)";
+
                 array_push($params,
                     $questionnaire_id,
                     Common::get($r, "question_id", -1),
                     Common::get($r, "answer_id", -1),
-                    Common::get($r, "user_input", null)
+                    Common::get($r, "user_input", null),
+                    $user_id
                 );
             }
             $stmt = DBH::getDB()->prepare($query);
