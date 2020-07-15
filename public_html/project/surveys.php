@@ -5,7 +5,11 @@ if(Common::is_logged_in()){
     //this will auto redirect if user isn't logged in
 }
 //TODO: Note, internally calling them questionnaires (and for admin), user facing they're called surveys.
-$available = DBH::get_available_surveys();
+$response = DBH::get_available_surveys();
+$available = [];
+if(Common::get($response, "status", 400) == 200){
+    $available = Common::get($response, "data", []);
+}
 ?>
 <div>
     <div class="list-group">
