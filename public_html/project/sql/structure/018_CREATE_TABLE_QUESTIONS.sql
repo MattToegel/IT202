@@ -8,5 +8,5 @@ CREATE TABLE IF NOT EXISTS  `Questions`
     `modified`   timestamp default current_timestamp on update current_timestamp,
     PRIMARY KEY (`id`),
     FOREIGN KEY (`user_id`) REFERENCES Users(`id`),
-    FOREIGN KEY (`questionnaire_id`) REFERENCES Questionnaire(`id`)
+    FOREIGN KEY (`questionnaire_id`) REFERENCES Questionnaires(`id`)
 )
