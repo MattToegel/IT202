@@ -18,12 +18,13 @@ if(Common::get($response, "status", 400) == 200){
     $available = Common::get($response, "data", []);
 }
 ?>
-<div>
-    <h5><?php echo Common::get(current($available)[0], "questionnaire_name","");?></h5>
+<div class="container-fluid">
+    <!-- see https://www.w3schools.com/php/func_array_reset.asp for use of current() function -->
+    <h3><?php echo Common::get(current($available)[0], "questionnaire_name","");?></h3>
     <div class="list-group">
         <?php foreach($available as $s): ?>
             <div class="list-group-item">
-                <h6><?php echo Common::get($s[0], "question"); ?></h6>
+                <h4><?php echo Common::get($s[0], "question"); ?></h4>
                 <div class="list-group">
                 <?php foreach($s as $question):?>
                 <div class="list-group-item btn-group-toggle bg-light" data-toggle="buttons">
