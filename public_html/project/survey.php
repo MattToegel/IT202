@@ -29,16 +29,19 @@ if(Common::get($response, "status", 400) == 200){
                 <div class="list-group">
                 <?php foreach($s as $question):?>
                 <div class="list-group-item btn-group-toggle bg-light" data-toggle="buttons">
-
+                    <?php
+                    $id = Common::get($question, "question_id") . "-" . Common::get($question, "answer_id");
+                    ?>
                     <?php if(Common::get($question, "open_ended", false)):?>
-                        <label><?php echo Common::get($question, "answer");?></label>
-                        <input class="form-control" type="text"
-                               name="answer-<?php echo Common::get($question,"id", -1);?>"/>
+                        <label for="<?php echo $id;?>"><?php echo Common::get($question, "answer");?></label>
+                        <input id="<?php echo $id;?>" class="form-control" type="text"
+                               name="answer-<?php echo Common::get($question,"answer_id", -1);?>"/>
                     <?php else:?>
-                        <label class="btn btn-secondary btn-lg btn-block">
+
+                        <label class="btn btn-secondary btn-lg btn-block" for="<?php echo $id;?>">
                             <?php echo Common::get($question, "answer");?>
-                        <input autocomplete="off" type="radio"
-                               name="answer-<?php echo Common::get($question,"id", -1);?>"/>
+                        <input id="<?php echo $id;?>" autocomplete="off" type="radio"
+                               name="answer-<?php echo Common::get($question,"answer_id", -1);?>"/>
                         </label>
                     <?php endif; ?>
                 </div>
