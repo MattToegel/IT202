@@ -79,11 +79,11 @@ if(Common::get($_POST, "submit", false)){
                 if (trim(strlen($value)) > 0) {
                     $is_other = true;
                     $answer_id = (int)explode("-", $key)[2];
-                    array_push($response, ["question_id" => $questionnaire_id, "answer_id" => $answer_id, "user_input" => $value]);
+                    array_push($response, ["question_id" => $question_id, "answer_id" => $answer_id, "user_input" => $value]);
                 }
             }
-            if (!$is_other) {
-                array_push($response, ["question_id" => $questionnaire_id, "answer_id" => $value]);
+            else{
+                array_push($response, ["question_id" => $question_id, "answer_id" => $value]);
             }
         }
     }
