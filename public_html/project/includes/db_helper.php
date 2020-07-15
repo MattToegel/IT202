@@ -451,19 +451,26 @@ class DBH{
             //batch insert answers
             $qIndex = 0;
             $params = [];
-            $params[":user_id"] = Common::get_user_id();
+            //$params[":user_id"] = Common::get_user_id();
             $query = "INSERT INTO Answers(answer, is_open_ended, user_id, question_id) VALUES ";
             foreach($questions as $question){
                 $answers = Common::get($question, "answers", []);
-                $params[":question_id$qIndex"] = Common::get($results[$qIndex], "id", -1);
+                //$params[":question_id$qIndex"] = Common::get($results[$qIndex], "id", -1);
                 $aIndex = 0;
                 foreach($answers as $answer){
-                    $params[":answer-$qIndex-$aIndex"] = Common::get($answer, "answer",'');
-                    $params[":oe-$qIndex-$aIndex"] = Common::get($answer, "open_ended", false)?1:0;
+                   // $params[":answer-$qIndex-$aIndex"] = Common::get($answer, "answer",'');
+                    //$params[":oe-$qIndex-$aIndex"] = Common::get($answer, "open_ended", false)?1:0;
                     if($qIndex > 0 || $aIndex > 0){
                         $query .= ",";
                     }
-                    $query .= "(:answer-$qIndex-$aIndex, :oe-$qIndex-$aIndex, :user_id, :question_id$qIndex)";
+                    array_push($params,[
+                        Common::get($answer, "answer",""),
+                        Common::get($answer, "open_ended", false)?1:0,
+                        Common::get($results[$qIndex], "id", -1).
+                        Common::get_user_id()
+                    ]);
+                    $query .= "(?, ?, ?, ?)";
+                    //$query .= "(:answer-$qIndex-$aIndex, :oe-$qIndex-$aIndex, :user_id, :question_id$qIndex)";
                     $aIndex++;
                 }
 
