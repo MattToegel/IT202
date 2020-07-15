@@ -471,6 +471,7 @@ class DBH{
 
             }
             error_log(var_export($query, true));
+            error_log(var_export($params, true));
             $stmt = DBH::getDB()->prepare($query);
             $result = $stmt->execute($params);
             DBH::verify_sql($stmt);
