@@ -460,7 +460,7 @@ class DBH{
                 foreach($answers as $answer){
                     $params[":answer-$qIndex-$aIndex"] = Common::get($answer, "answer",'');
                     $params[":oe-$qIndex-$aIndex"] = Common::get($answer, "open_ended", false)?1:0;
-                    if($qIndex > 0){
+                    if($qIndex > 0 || $aIndex > 0){
                         $query .= ",";
                     }
                     $query .= "(:answer-$qIndex-$aIndex, :oe-$qIndex-$aIndex, :user_id, :question_id$qIndex)";
