@@ -21,15 +21,15 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
     </div>
     <div class="form-group">
         <label for="attempts_per_day">Attempts per day</label>
-        <input class="form-control" type="number" id="attempts_per_day" name="attempts_per_day"/>
+        <input class="form-control" type="number" id="attempts_per_day" name="attempts_per_day" value="1"/>
     </div>
     <div class="form-group">
         <label for="max_attempts">Max Attempts</label>
-        <input class="form-control" type="number" id="max_attempts" name="max_attempts"/>
+        <input class="form-control" type="number" id="max_attempts" name="max_attempts" value="1"/>
     </div>
     <div class="form-group">
         <label for="use_max">Use Max?</label>
-        <input class="form-control" type="checkbox" id="use_max" name="use_max" value="false"/>
+        <input class="form-control" type="checkbox" id="use_max" name="use_max"/>
     </div>
     <div class="list-group">
         <div class="list-group-item">
@@ -64,14 +64,15 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
         //so just use this as an example rather than what you should do.
         //this is based off of naming conversions used in Python WTForms (I like to try to see if I can get some
         //php equivalents implemented (to a very, very basic degree))
-        $question_name = Common::get($_POST, "questionnaire_name", '');
+        $questionnaire_name = Common::get($_POST, "questionnaire_name", '');
         $is_valid = true;
-        if(strlen($question_name) > 0) {
+        if(strlen($questionnaire_name) > 0) {
             //make sure we have a name
-            $question_desc = Common::get($_POST, "questionnaire_desc", '');
+            $questionnaire_desc = Common::get($_POST, "questionnaire_desc", '');
             $attempts_per_day = Common::get($_POST, "attempts_per_day", 0);
             //TODO important to note, if a checkbox isn't toggled/checked it won't be sent with the request.
             //Checkboxes have a poor design and usually need a hidden form and/or JS magic to work for unchecked values
+            //so here we're just going to default to false if it's not present in $_POST
             $use_max = Common::get($_POST, "use_max", false);//used to hard limit the number of attempts
             if(is_numeric($attempts_per_day) && (int)$attempts_per_day > 0){
                 $attempts_per_day = (int)$attempts_per_day;
@@ -93,20 +94,26 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
                 $index = 0;
                 $assumed_max_questions = 100;//this isn't a realistic limit, it's just to ensure
                 $questions = [];
-                $answers = [];
                 //we don't get stuck in an infinite loop since while(true) is dangerous if not handled appropriately
                 for($index = 0; $index < $assumed_max_questions; $index++){
                     $question = Common::get($_POST, "question_$index", false);
                     if($question){
-                        array_push($questions, $question);
                         $assumed_max_answers = 100;//same as $assumed_max_questions (var sits here so it resets each loop)
+                        $answers = [];//reset array each loop
                         for($i = 0; $i < $assumed_max_answers; $i++){
                             $check = "".join(["question_",$index, "_answer_", $i]);
                             error_log("Checking for pattern $check");
                             $answer = Common::get($_POST, $check, false);
                             if($answer){
                                 $check2 = "".join(["question_",$index, "_answeroe_", $i]);
+                                //TODO important to note, if a checkbox isn't toggled/checked it won't be sent with the request.
+                                //Checkboxes have a poor design and usually need a hidden form and/or JS magic to work for unchecked values
+                                //so here we're just going to default to false if it's not present in $_POST
                                 $oe = Common::get($_POST, $check2, false);
+                                //checkbox comes in as 'on'
+                                if($oe == 'on'){
+                                    $oe = true;
+                                }
                                 //TODO we don't ignore if false, it should be true or false so a default of false is perfectly fine
                                 array_push($answers, ["answer"=>$answer, "open_ended"=>$oe]);
                             }
@@ -115,6 +122,10 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
                                 break;
                             }
                         }
+                        array_push($questions,[
+                            "question"=>$question,
+                            "answers"=>$answers
+                        ]);
                     }
                     else{
                         //we don't have anymore questions in post, early terminate the loop
@@ -123,6 +134,23 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
                 }
                 echo "<pre>" . var_export($questions, true) . "</pre>";
                 echo "<pre>" . var_export($answers, true) . "</pre>";
+                //TODO going to try to do this with as few db calls as I can
+                //wrap it up so we can just pass one param to DBH
+                $questionnaire = [
+                    "name"=>$questionnaire_name,
+                    "description"=>$questionnaire_desc,
+                    "attempts_per_day"=>$attempts_per_day,
+                    "max_attempts"=>$max_attempts,
+                    "use_max"=>$use_max,
+                    "questions"=>$questions//contains answers
+                    ];
+                $response = DBH::save_questionnaire($questionnaire);
+                if(Common::get($response, "status", 400) == 200){
+                    Common::flash("Successfully saved questionnaire", "success");
+                }
+                else{
+                    Common::flash("There was an error creating the questionnaire", "danger");
+                }
             }
         }
         else{
