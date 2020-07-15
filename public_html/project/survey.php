@@ -1,7 +1,4 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 include_once(__DIR__."/partials/header.partial.php");
 
 if(Common::is_logged_in()){
@@ -19,6 +16,43 @@ $response = DBH::get_questionnaire_by_id($questionnaire_id);
 $available = [];
 if(Common::get($response, "status", 400) == 200){
     $available = Common::get($response, "data", []);
+}
+?>
+<?php
+if(Common::get($_POST, "submit", false)){
+    //echo "<br><pre>" . var_export($_POST, true) . "</pre>";
+    $response = [];
+    foreach($_POST as $key=>$value){
+        echo "<br>$key => $value<br>";
+        if(strpos($key, "question") !== false) {
+            $is_other = false;
+            $question_id = (int)explode("-", $key)[1];
+            if (strpos($key, "other") !== false) {
+                if (trim(strlen($value)) > 0) {
+                    $is_other = true;
+                    $answer_id = (int)explode("-", $key)[2];
+                    array_push($response, ["question_id" => $question_id, "answer_id" => $answer_id, "user_input" => $value]);
+                }
+            }
+            else{
+                array_push($response, ["question_id" => $question_id, "answer_id" => $value]);
+            }
+        }
+    }
+    //echo "<br><pre>" . var_export($response, true) . "</pre>";
+    if(count($response) > 0){
+        $response = DBH::save_response($questionnaire_id, $response);
+        if(Common::get($response, "status", 400) == 200){
+            Common::flash("Successfully recorded response", "success");
+        }
+        else{
+            Common::flash("Error recording response", "danger");
+        }
+    }
+    else{
+        Common::flash("Error recording response", "danger");
+    }
+    die(header("Location: surveys.php"));
 }
 ?>
 <div class="container-fluid">
@@ -66,39 +100,3 @@ if(Common::get($response, "status", 400) == 200){
         $(ele).closest("label").addClass("active");
     }
 </script>
-<?php
-if(Common::get($_POST, "submit", false)){
-    //echo "<br><pre>" . var_export($_POST, true) . "</pre>";
-    $response = [];
-    foreach($_POST as $key=>$value){
-        echo "<br>$key => $value<br>";
-        if(strpos($key, "question") !== false) {
-            $is_other = false;
-            $question_id = (int)explode("-", $key)[1];
-            if (strpos($key, "other") !== false) {
-                if (trim(strlen($value)) > 0) {
-                    $is_other = true;
-                    $answer_id = (int)explode("-", $key)[2];
-                    array_push($response, ["question_id" => $question_id, "answer_id" => $answer_id, "user_input" => $value]);
-                }
-            }
-            else{
-                array_push($response, ["question_id" => $question_id, "answer_id" => $value]);
-            }
-        }
-    }
-    echo "<br><pre>" . var_export($response, true) . "</pre>";
-    if(count($response) > 0){
-        $response = DBH::save_response($questionnaire_id, $response);
-        if(Common::get($response, "status", 400) == 200){
-            Common::flash("Successfully recorded response", "success");
-        }
-        else{
-            Common::flash("Error recording response", "danger");
-        }
-    }
-    else{
-        Common::flash("Error recording response", "danger");
-    }
-    die(header("Location: surveys.php"));
-}
