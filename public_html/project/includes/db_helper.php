@@ -532,6 +532,7 @@ class DBH{
             $result = $stmt->execute([":questionnaire_id"=>$questionnaire_id]);//not using associative array here
             DBH::verify_sql($stmt);
             if ($result) {
+                //TODO check https://phpdelusions.net/pdo PDO::FETCH_GROUP for details
                 $result = $stmt->fetchAll(PDO::FETCH_GROUP);
                 error_log(var_export($result, true));
                 //TODO need to do some mapping

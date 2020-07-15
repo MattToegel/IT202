@@ -22,9 +22,15 @@ if(Common::get($response, "status", 400) == 200){
     <div class="list-group">
         <?php foreach($available as $s): ?>
             <div class="list-group-item">
+                <?php var_export($s);?>
+                <div class="list-group">
                 <?php foreach($s as $question):?>
-                    <?php var_export($question)?>
+                <div class="list-group-item">
+                    <?php echo Common::get($question, "question");?>
+                    <?php echo Common::get($question, "answer");?>
+                </div>
                 <?php endforeach;?>
+                </div>
             </div>
         <?php endforeach; ?>
     </div>
