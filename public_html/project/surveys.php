@@ -4,7 +4,8 @@ include_once(__DIR__."/partials/header.partial.php");
 if(Common::is_logged_in()){
     //this will auto redirect if user isn't logged in
 }
-$available = DBH::get_questionnaires();
+//TODO: Note, internally calling them questionnaires (and for admin), user facing they're called surveys.
+$available = DBH::get_available_surveys();
 ?>
 <div>
     <div class="list-group">
