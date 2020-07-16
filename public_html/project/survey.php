@@ -15,6 +15,7 @@ if(!Common::get($_POST, "submit", false)){
     $response = DBH::check_survey_status($questionnaire_id);
     if(Common::get($response, "status", 400) == 200){
         $data = Common::get($response, "data", []);
+        error_log(var_export($data, true));
         $use_max = Common::get($data, "use_max", 0) == 1;
         $today = (int)Common::get($data, "responses_today", 0);
         $total = (int)Common::get($data, "responses_total", 0);
