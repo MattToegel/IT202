@@ -8,10 +8,11 @@ if(Common::is_logged_in()){
 }
 $last_updated = Common::get($_SESSION, "last_sync", false);
 ?>
-<div>
+<div class="container-fluid">
+    <h4>Home</h4>
     <p>Welcome, <?php echo Common::get_username();?></p>
     <?php if($last_updated):?>
-        <p>Last Updated: <?php echo $last_updated->format('Y-m-d H:i:s');;?></p>
+        <p>Stats Last Updated: <?php echo $last_updated->format('Y-m-d H:i:s');;?></p>
     <?php endif;?>
     <table class="table">
         <thread>

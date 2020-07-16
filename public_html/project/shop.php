@@ -14,9 +14,9 @@ if(Common::is_logged_in()){
 $last_updated = Common::get($_SESSION, "last_sync", false);
 ?>
 <div>
-    <p>Welcome, <?php echo Common::get_username();?></p>
+    <h4>Shop</h4>
     <?php if($last_updated):?>
-        <p>Last Updated: <?php echo $last_updated->format('Y-m-d H:i:s');;?></p>
+        <p>Points Last Updated: <?php echo $last_updated->format('Y-m-d H:i:s');;?></p>
     <?php endif;?>
     <div class="row">
         <div class="col-8">

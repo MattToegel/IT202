@@ -12,6 +12,7 @@ if(Common::get($response, "status", 400) == 200){
 }
 ?>
 <div class="container-fluid">
+    <h4>Surveys</h4>
     <div class="list-group">
         <?php foreach($available as $s): ?>
             <div class="list-group-item">
