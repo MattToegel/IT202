@@ -11,7 +11,7 @@ if(Common::get($response, "status", 400) == 200){
     $available = Common::get($response, "data", []);
 }
 ?>
-<div>
+<div class="container-fluid">
     <div class="list-group">
         <?php foreach($available as $s): ?>
             <div class="list-group-item">
@@ -25,5 +25,10 @@ if(Common::get($response, "status", 400) == 200){
                 <a href="survey.php?s=<?php echo Common::get($s, 'id', -1);?>" class="btn btn-secondary">Participate</a>
             </div>
         <?php endforeach; ?>
+        <?php if(count($available) == 0):?>
+            <div class="list-group-item">
+                No surveys available, please check back later.
+            </div>
+        <?php endif; ?>
     </div>
 </div>
