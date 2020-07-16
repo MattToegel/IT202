@@ -50,9 +50,11 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
                 </div>
             </div>
             <button class="btn btn-secondary" onclick="event.preventDefault(); cloneThis(this);">Add Answer</button>
+            <button class="btn btn-danger" onclick="event.preventDefault(); deleteMe(this);">X</button>
         </div>
     </div>
     <button class="btn btn-secondary" onclick="event.preventDefault(); cloneThis(this);">Add Question</button>
+    <button class="btn btn-danger" onclick="event.preventDefault(); deleteMe(this);">X</button>
     <div class="form-group">
         <input type="submit" name="submit" class="btn btn-primary" value="Create Questionnaire"/>
     </div>
@@ -237,6 +239,15 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
         let $clone = $li.clone();
         $lg.append($clone);
         update_names_and_ids($(".list-group:first"));
+    }
+    function deleteMe(ele){
+        let $li = $(ele).siblings(".list-group-item");
+        let $lg = $li.closest(".list-group");
+        let $children = $lg.children(".list-group-item");
+        if($children.length > 1){
+            $li.remove();
+            update_names_and_ids($(".list-group:first"));
+        }
     }
 </script>
 </div>
