@@ -23,7 +23,7 @@ if(Common::get($_POST, "submit", false)){
     //echo "<br><pre>" . var_export($_POST, true) . "</pre>";
     $response = [];
     foreach($_POST as $key=>$value){
-        echo "<br>$key => $value<br>";
+        //echo "<br>$key => $value<br>";
         if(strpos($key, "question") !== false) {
             $is_other = false;
             $question_id = (int)explode("-", $key)[1];

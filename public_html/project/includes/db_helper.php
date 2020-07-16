@@ -574,7 +574,7 @@ class DBH{
                     $query .= ",";
                 }
                 $first = false;
-                $query .= "(?,?,?,?)";
+                $query .= "(?,?,?,?,?)";
 
                 array_push($params,
                     $questionnaire_id,
