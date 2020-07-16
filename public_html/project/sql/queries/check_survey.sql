@@ -7,6 +7,6 @@ SELECT
 FROM
     (SELECT id, use_max, max_attempts, attempts_per_day FROM Questionnaires WHERE id = :qid ) as q
         left join
-    (SELECT questionnaire_id, created FROM Responses where user_id = :uid) as r
+    (SELECT questionnaire_id, created FROM Responses where user_id = :uid group by questionnaire_id) as r
 
     on q.id = r.questionnaire_id
