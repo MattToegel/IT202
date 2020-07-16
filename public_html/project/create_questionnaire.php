@@ -62,7 +62,7 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
 </form>
 <?php
     if(Common::get($_POST, "submit", false)){
-        echo "<pre>" . var_export($_POST, true) . "</pre>";
+        //echo "<pre>" . var_export($_POST, true) . "</pre>";
         //TODO this isn't going to be the best way to parse the form, and probably not the best form setup
         //so just use this as an example rather than what you should do.
         //this is based off of naming conversions used in Python WTForms (I like to try to see if I can get some
@@ -135,8 +135,8 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
                         break;
                     }
                 }
-                echo "<pre>" . var_export($questions, true) . "</pre>";
-                echo "<pre>" . var_export($answers, true) . "</pre>";
+                //echo "<pre>" . var_export($questions, true) . "</pre>";
+                //echo "<pre>" . var_export($answers, true) . "</pre>";
                 //TODO going to try to do this with as few db calls as I can
                 //wrap it up so we can just pass one param to DBH
                 $questionnaire = [
@@ -163,7 +163,7 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
         if(!$is_valid){
             //this will erase the form since it's a page refresh, but we need it to show the session messages
             //this is a last resort as we should use JS/HTML5 for a better UX
-            //die(header("Location: questionnaire.php"));
+            die(header("Location: questionnaire.php"));
         }
     }
 ?>
@@ -212,6 +212,7 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
                            let lastIndex = -1;
                            pieces.forEach(function(item, index){
                                if(!isNaN(item)){
+                                   //question_#_answer_#
                                    if(lastIndex == -1) {
                                        //question_#
                                        pieces[index] = liIndex;//replace the first # with the parent outer loop index
