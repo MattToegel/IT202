@@ -36,12 +36,14 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
             <div class="form-group">
                 <label for="question_0">Question</label>
                 <input class="form-control" type="text" id="question_0" name="question_0"/>
+                <button class="btn btn-danger" onclick="event.preventDefault(); deleteMe(this);">X</button>
             </div>
             <div class="list-group">
                 <div class="list-group-item">
                     <div class="form-group">
                         <label for="question_0_answer_0">Answer</label>
                         <input class="form-control" type="text" id="question_0_answer_0" name="question_0_answer_0"/>
+                        <button class="btn btn-danger" onclick="event.preventDefault(); deleteMe(this);">X</button>
                     </div>
                     <div class="form-group">
                         <label for="question_0_answeroe_0">Allow Open Ended?</label>
@@ -50,11 +52,10 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
                 </div>
             </div>
             <button class="btn btn-secondary" onclick="event.preventDefault(); cloneThis(this);">Add Answer</button>
-            <button class="btn btn-danger" onclick="event.preventDefault(); deleteMe(this);">X</button>
         </div>
     </div>
     <button class="btn btn-secondary" onclick="event.preventDefault(); cloneThis(this);">Add Question</button>
-    <button class="btn btn-danger" onclick="event.preventDefault(); deleteMe(this);">X</button>
+
     <div class="form-group">
         <input type="submit" name="submit" class="btn btn-primary" value="Create Questionnaire"/>
     </div>
@@ -145,7 +146,7 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
                     "max_attempts"=>$max_attempts,
                     "use_max"=>$use_max,
                     "questions"=>$questions//contains answers
-                    ];
+                ];
                 $response = DBH::save_questionnaire($questionnaire);
                 if(Common::get($response, "status", 400) == 200){
                     Common::flash("Successfully saved questionnaire", "success");
@@ -162,7 +163,7 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
         if(!$is_valid){
             //this will erase the form since it's a page refresh, but we need it to show the session messages
             //this is a last resort as we should use JS/HTML5 for a better UX
-            die(header("Location: questionnaire.php"));
+            //die(header("Location: questionnaire.php"));
         }
     }
 ?>
@@ -212,10 +213,12 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
                            pieces.forEach(function(item, index){
                                if(!isNaN(item)){
                                    if(lastIndex == -1) {
+                                       //question_#
                                        pieces[index] = liIndex;//replace the first # with the parent outer loop index
                                        lastIndex = index;
                                    }
                                    else{
+                                       //question_#_answer_#
                                        pieces[index] = childLiIndex;//replace the second # with the child loop index
                                    }
                                }

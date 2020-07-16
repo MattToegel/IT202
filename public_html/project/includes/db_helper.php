@@ -412,8 +412,7 @@ class DBH{
                     "attempts_per_day"=>$attempts_per_day,
                     "max_attempts"=>$max_attempts,
                     "use_max"=>$use_max,
-                    "questions"=>$questions,
-                    "answers"=>$answers
+                    "questions"=>$questions
                     ];
              */
             $query = file_get_contents(__DIR__ . "/../sql/queries/create_questionnaire.sql");
@@ -453,7 +452,7 @@ class DBH{
             $stmt = DBH::getDB()->prepare($query);
             $stmt->execute([":qid"=>$questionnaire_id]);
             DBH::verify_sql($stmt);
-            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $question_ids = $stmt->fetchAll(PDO::FETCH_ASSOC);
             //batch insert answers
             $qIndex = 0;
             $params = [];
@@ -476,7 +475,7 @@ class DBH{
                         Common::get($answer, "answer",""),
                         Common::get($answer, "open_ended", false)?1:0,
                         Common::get_user_id(),
-                        Common::get($results[$qIndex], "id", -1)
+                        Common::get($question_ids[$qIndex], "id", -1)
                     );
 
                     //$query .= "(:answer-$qIndex-$aIndex, :oe-$qIndex-$aIndex, :user_id, :question_id$qIndex)";
