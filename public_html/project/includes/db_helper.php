@@ -506,8 +506,7 @@ class DBH{
     public static function get_available_surveys(){
         try {
             //need to use a workaround for PDO
-            $query = file_get_contents(__DIR__ . "/../sql/queries/get_items_by_stats.sql");
-            $query = "SELECT * from Questionnaires as q where attempts_per_day > (SELECT COUNT(1) FROM Responses where user_id = :uid and questionnaire_id = q.id and date(created) = CURDATE())";
+            $query = file_get_contents(__DIR__ . "/../sql/queries/get_available_questionnaires.sql");
             $stmt = DBH::getDB()->prepare($query);
             $result = $stmt->execute([":uid"=>Common::get_user_id()]);//not using associative array here
             DBH::verify_sql($stmt);
@@ -556,6 +555,27 @@ class DBH{
             }
             else{
                 return DBH::response($result,400, "error");
+            }
+        }
+        catch(Exception $e){
+            error_log($e->getMessage());
+            return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
+        }
+    }
+    public static function check_survey_status($questionnaire_id){
+        try {
+            $query = file_get_contents(__DIR__ . "/../sql/queries/check_survey.sql");
+
+            $user_id = Common::get_user_id();
+            $stmt = DBH::getDB()->prepare($query);
+            $result = $stmt->execute([":qid"=>$questionnaire_id, ":uid"=>$user_id]);
+            DBH::verify_sql($stmt);
+            if($result){
+                $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                return DBH::response($result,200, "success");
+            }
+            else{
+                return DBH::response(NULL, 400, "error");
             }
         }
         catch(Exception $e){

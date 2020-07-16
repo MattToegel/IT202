@@ -11,6 +11,29 @@ else{
     Common::flash("Not a valid survey", "warning");
     die(header("Location: surveys.php"));
 }
+if(!Common::get($_POST, "submit", false)){
+    $response = DBH::check_survey_status($questionnaire_id);
+    if(Common::get($response, "status", 400) == 200){
+        $data = Common::get($response, "data", []);
+        $use_max = Common::get($data, "use_max", 0) == 1;
+        $today = (int)Common::get($data, "responses_today", 0);
+        $total = (int)Common::get($data, "responses_total", 0);
+        $max = (int)Common::get($data, "max_attempts", 0);
+        $apd = (int)Common::get($data, "attempts_per_day", 0);
+        if($use_max){
+            if($total >= $max){
+                Common::flash("Max responses have already been recorded for this survey", "warning");
+                die(header("Location: surveys.php"));
+            }
+        }
+        else{
+            if($today >= $apd){
+                Common::flash("Max responses have already been recorded today for this survey", "warning");
+                die(header("Location: surveys.php"));
+            }
+        }
+    }
+}
 //TODO: Note, internally calling them questionnaires (and for admin), user facing they're called surveys.
 $response = DBH::get_questionnaire_by_id($questionnaire_id);
 $available = [];
