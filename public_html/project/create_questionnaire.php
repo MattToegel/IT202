@@ -36,15 +36,15 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
             <div class="form-group">
                 <label for="question_0">Question</label>
                 <input class="form-control" type="text" id="question_0" name="question_0"/>
-                <button class="btn btn-danger" onclick="event.preventDefault(); deleteMe(this);">X</button>
             </div>
+            <button class="btn btn-danger" onclick="event.preventDefault(); deleteMe(this);">X</button>
             <div class="list-group">
                 <div class="list-group-item">
                     <div class="form-group">
                         <label for="question_0_answer_0">Answer</label>
                         <input class="form-control" type="text" id="question_0_answer_0" name="question_0_answer_0"/>
-                        <button class="btn btn-danger" onclick="event.preventDefault(); deleteMe(this);">X</button>
                     </div>
+                    <button class="btn btn-danger" onclick="event.preventDefault(); deleteMe(this);">X</button>
                     <div class="form-group">
                         <label for="question_0_answeroe_0">Allow Open Ended?</label>
                         <input class="form-control" type="checkbox" id="question_0_answeroe_0" name="question_0_answeroe_0"/>
@@ -244,7 +244,7 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
         update_names_and_ids($(".list-group:first"));
     }
     function deleteMe(ele){
-        let $li = $(ele).siblings(".list-group-item");
+        let $li = $(ele).closest(".list-group-item");
         let $lg = $li.closest(".list-group");
         let $children = $lg.children(".list-group-item");
         if($children.length > 1){
