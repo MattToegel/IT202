@@ -418,11 +418,11 @@ class DBH{
             $query = file_get_contents(__DIR__ . "/../sql/queries/create_questionnaire.sql");
             $stmt = DBH::getDB()->prepare($query);
             $stmt->execute([
-               ":name"=>Common::get($questionnaire, "name", null),
-               ":desc"=>Common::get($questionnaire, "description", null),
-               ":apd"=>Common::get($questionnaire, "attempts_per_day", 1),
-               ":ma"=>Common::get($questionnaire, "max_attempts", 1),
-               ":um"=>Common::get($questionnaire, "use_max", false)?1:0,//convert to tinyint
+                ":name"=>Common::get($questionnaire, "name", null),
+                ":desc"=>Common::get($questionnaire, "description", null),
+                ":apd"=>Common::get($questionnaire, "attempts_per_day", 1),
+                ":ma"=>Common::get($questionnaire, "max_attempts", 1),
+                ":um"=>Common::get($questionnaire, "use_max", false)?1:0,//convert to tinyint
                 ":uid"=>Common::get_user_id()
             ]);
             DBH::verify_sql($stmt);

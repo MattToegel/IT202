@@ -193,7 +193,7 @@ class Common {
      */
     public static function getFlashMessages() {
         $messages = $_SESSION["messages"];
-       //error_log("Get Flash Messages(): " . var_export($messages, true));
+        //error_log("Get Flash Messages(): " . var_export($messages, true));
         $_SESSION["messages"] = [];
         return $messages;
     }

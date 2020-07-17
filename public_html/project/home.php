@@ -25,13 +25,13 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
             </tr>
         </thread>
         <tbody>
-            <tr>
-                <td><?php echo Common::get($_SESSION["user"], "level", 0);?></td>
-                <td><?php echo Common::get($_SESSION["user"], "experience", 0);?></td>
-                <td><?php echo Common::get($_SESSION["user"], "points", 0);?></td>
-                <td><?php echo Common::get($_SESSION["user"], "wins", 0);?></td>
-                <td><?php echo Common::get($_SESSION["user"], "losses", 0);?></td>
-            </tr>
+        <tr>
+            <td><?php echo Common::get($_SESSION["user"], "level", 0);?></td>
+            <td><?php echo Common::get($_SESSION["user"], "experience", 0);?></td>
+            <td><?php echo Common::get($_SESSION["user"], "points", 0);?></td>
+            <td><?php echo Common::get($_SESSION["user"], "wins", 0);?></td>
+            <td><?php echo Common::get($_SESSION["user"], "losses", 0);?></td>
+        </tr>
         </tbody>
     </table>
 </div>
