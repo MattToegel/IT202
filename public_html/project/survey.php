@@ -22,6 +22,8 @@ if(!Common::get($_POST, "submit", false)){
         $max = (int)Common::get($data, "max_attempts", 0);
         $apd = (int)Common::get($data, "attempts_per_day", 0);
         if($use_max){
+            //TODO check query as this part doesn't seem accurate with the group by
+            //but the group by is needed for the "today" check
             if($total >= $max){
                 Common::flash("Max responses have already been recorded for this survey", "warning");
                 die(header("Location: surveys.php"));
@@ -54,7 +56,7 @@ if(Common::get($_POST, "submit", false)){
             if (strpos($key, "other") !== false) {
                 if (trim(strlen($value)) > 0) {
                     $is_other = true;
-                    $answer_id = (int)explode("-", $key)[2];
+                    $answer_id = (int)explode("-", $key)[3];
                     array_push($response, ["question_id" => $question_id, "answer_id" => $answer_id, "user_input" => $value]);
                 }
             }
