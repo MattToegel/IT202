@@ -102,7 +102,7 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
                 }
                 else {
                     $error = true;
-                    Common::flash("First, Second, and Third place percentages must be less than or equal to 1", "warning");
+                    Common::flash("First, Second, and Third place percentages must be less than or equal to 100%", "warning");
                 }
             }
             else{

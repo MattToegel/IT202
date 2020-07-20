@@ -634,6 +634,7 @@ class DBH{
             foreach($competition as $key=>$value){
                 $params[":$key"] = $value;
             }
+            error_log(var_export($params, true));
             $stmt = DBH::getDB()->prepare($query);
             $result = $stmt->execute($params);
             DBH::verify_sql($stmt);
