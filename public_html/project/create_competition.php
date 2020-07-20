@@ -73,7 +73,7 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
                     "third_place" => round(Common::clamp(Common::get($_POST, "tpp", 1.0)/100, 0.0, 1.0), 1),
                     "entry_fee" => Common::clamp(Common::get($_POST, "entry_fee", 0), 0, 10000),
                     "increment_on_entry" => Common::get($_POST, "increment_entry", false) ? 1 : 0,
-                    "percent_on_entry" => round(Common::clamp(Common::get($_POST, "eci", 0.0)/100, 0.0, 1.0), 1),
+                    "percent_of_entry" => round(Common::clamp(Common::get($_POST, "eci", 0.0)/100, 0.0, 1.0), 1),
                     "min_participants" => Common::clamp(Common::get($_POST, "min_participants", 3), 3, 10000),
                     "points" => $points
                 ];
