@@ -73,7 +73,8 @@ class DBH{
             $result = $stmt->execute([":email" => $email, ":password" => $pass]);
             DBH::verify_sql($stmt);
             if($result){
-                return DBH::response(NULL,200, "Registration successful");
+                $id = DBH::getDB()->lastInsertId();
+                return DBH::response(["user_id"=>$id],200, "Registration successful");
             }
             else{
                 return DBH::response(NULL, 400, "Registration unsuccessful");
@@ -151,6 +152,13 @@ class DBH{
             //commonly points will be from the system user
             if($user_id_dest <= 0){
                 $user_id_dest = Common::get_system_id();
+                if($user_id_dest <= 0){
+                    $r = DBH::get_system_user_id();
+                    $r = Common::get($r, "data", false);
+                    if($r){
+                        $user_id_dest = Common::get($r, "id", -1);
+                    }
+                }
             }
             error_log("System user $user_id_dest");
             $query = file_get_contents(__DIR__ . "/../sql/queries/change_points.sql");
