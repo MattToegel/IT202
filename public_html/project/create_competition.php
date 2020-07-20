@@ -21,15 +21,15 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
         </div>
         <div class="form-group">
             <label for="fpp">First Place %</label>
-            <input class="form-control" type="number" id="fpp" name="fpp" value="1" min="0.0" max="1.0"/>
+            <input class="form-control" type="range" id="fpp" name="fpp" value="1" min="0" max="100"/>
         </div>
         <div class="form-group">
             <label for="spp">Second Place %</label>
-            <input class="form-control" type="number" id="spp" name="spp" value="0" min="0.0" max="1.0"/>
+            <input class="form-control" type="range" id="spp" name="spp" value="0" min="0" max="100"/>
         </div>
         <div class="form-group">
             <label for="tpp">Third Place %</label>
-            <input class="form-control" type="number" id="tpp" name="tpp" value="0" min="0.0" max="1.0"/>
+            <input class="form-control" type="range" id="tpp" name="tpp" value="0" min="0" max="100"/>
         </div>
         <div class="form-group">
             <label for="entry_fee">Entry Fee (points)</label>
@@ -42,11 +42,11 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
         </div>
         <div class="form-group eci" style="display:none;">
             <label for="eci">Entry Cost Increment %</label>
-            <input class="form-control" type="number" id="eci" name="eci" value="0" min="0.0" max="1.0"/>
+            <input class="form-control" type="range" id="eci" name="eci" value="0" min="0" max="100"/>
         </div>
         <div class="form-group">
             <label for="min_participants">Minimum Participants for Reward</label>
-            <input class="form-control" type="number" id="min_participants" name="min_participants" value="0" min="3" required/>
+            <input class="form-control" type="number" id="min_participants" name="min_participants" value="3" min="3" required/>
         </div>
         <div class="form-group">
             <label for="reward">Points Reward</label>
@@ -120,7 +120,7 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
             }
         }
         function updateCost(ele){
-            let cost = $(ele).val() + 1;
+            let cost = parseInt($(ele).val()) + 1;
             $("#submit").val("Create Competition (" + cost + ")");
         }
     </script>
