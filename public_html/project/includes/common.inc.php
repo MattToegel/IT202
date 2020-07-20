@@ -239,6 +239,10 @@ class Common {
             $_SESSION["last_sync"] = $last_sync;
         }
     }
+    public static function clamp($current, $min, $max) {
+        //https://stackoverflow.com/a/35438811
+        return max($min, min($max, $current));
+    }
 }
 
 $common = new Common();

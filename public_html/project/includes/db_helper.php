@@ -626,4 +626,27 @@ class DBH{
             return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
         }
     }
+    public static function create_competition($competition){
+        try {
+            $query = file_get_contents(__DIR__ . "/../sql/queries/insert_competition.sql");
+            //lazy map keys
+            $params = [];
+            foreach($competition as $key=>$value){
+                $params[":$key"] = $value;
+            }
+            $stmt = DBH::getDB()->prepare($query);
+            $result = $stmt->execute($params);
+            DBH::verify_sql($stmt);
+            if($result){
+                return DBH::response(null,200, "success");
+            }
+            else{
+                return DBH::response(NULL, 400, "error");
+            }
+        }
+        catch(Exception $e){
+            error_log($e->getMessage());
+            return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
+        }
+    }
 }
