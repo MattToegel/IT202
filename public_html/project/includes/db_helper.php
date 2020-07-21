@@ -654,7 +654,7 @@ class DBH{
         try {
             $query = file_get_contents(__DIR__ . "/../sql/queries/get_competitions.sql");
             $stmt = DBH::getDB()->prepare($query);
-            $result = $stmt->execute();
+            $result = $stmt->execute([":user_id"=>Common::get_user_id()]);
             DBH::verify_sql($stmt);
             if($result){
                 $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -668,5 +668,8 @@ class DBH{
             error_log($e->getMessage());
             return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
         }
+    }
+    public static function join_competition($user_id, $competition_id){
+
     }
 }
