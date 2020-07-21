@@ -34,9 +34,9 @@ $logged_in = Common::is_logged_in(false);
                 Competitions
             </a>
             <div class="dropdown-menu" aria-labelledby="compDropdown">
-                <a class="nav-link" href="<?php echo Common::url_for("create_competition");?>">Create</a>
-                <a class="nav-link" href="<?php echo Common::url_for("competitions");?>">Available</a>
-                <a class="nav-link" href="<?php echo Common::url_for("competitions");?>?status=registered">Registered</a>
+                <a class="dropdown-item" href="<?php echo Common::url_for("create_competition");?>">Create</a>
+                <a class="dropdown-item" href="<?php echo Common::url_for("competitions");?>">Available</a>
+                <a class="dropdown-item" href="<?php echo Common::url_for("competitions");?>?status=registered">Registered</a>
             </div>
         </li>
         <li class="nav-item">
