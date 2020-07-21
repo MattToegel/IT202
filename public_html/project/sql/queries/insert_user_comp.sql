@@ -1,1 +1,1 @@
-INSERT INTO UserComp(user_id, competition_id) VALUES(:uid, :cid)
+INSERT INTO UserCompetitions(user_id, competition_id) VALUES(:uid, :cid)
