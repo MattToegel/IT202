@@ -650,9 +650,14 @@ class DBH{
             return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
         }
     }
-    public static function get_competitions(){
+    public static function get_competitions($fetch_registered = false){
         try {
-            $query = file_get_contents(__DIR__ . "/../sql/queries/get_competitions.sql");
+            if($fetch_registered) {
+                $query = file_get_contents(__DIR__ . "/../sql/queries/get_registered_competitions.sql");
+            }
+            else{
+                $query = file_get_contents(__DIR__ . "/../sql/queries/get_competitions.sql");
+            }
             $stmt = DBH::getDB()->prepare($query);
             $result = $stmt->execute([":user_id"=>Common::get_user_id()]);
             DBH::verify_sql($stmt);

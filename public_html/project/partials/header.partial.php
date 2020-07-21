@@ -26,11 +26,16 @@ $logged_in = Common::is_logged_in(false);
             <a class="nav-link" href="<?php echo Common::url_for("create_questionnaire");?>">Create Questionnaire</a>
         </li>
         <?php endif;?>
-        <li class="nav-item">
-            <a class="nav-link" href="<?php echo Common::url_for("create_competition");?>">Create Competition</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="<?php echo Common::url_for("competitions");?>">Competitions</a>
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="compDropdown" role="button"
+               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Competitions
+            </a>
+            <div class="dropdown-menu" aria-labelledby="compDropdown">
+                <a class="nav-link" href="<?php echo Common::url_for("create_competition");?>">Create</a>
+                <a class="nav-link" href="<?php echo Common::url_for("competitions");?>">Available</a>
+                <a class="nav-link" href="<?php echo Common::url_for("competitions");?>?status=registered">Registered</a>
+            </div>
         </li>
         <li class="nav-item">
             <a class="nav-link" href="<?php echo Common::url_for("surveys");?>">Surveys</a>

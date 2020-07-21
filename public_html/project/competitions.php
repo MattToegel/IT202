@@ -60,7 +60,8 @@ if(Common::get($_GET, "c", false)){
 }
 if(Common::is_logged_in()){
     //this will auto redirect if user isn't logged in
-    $results = DBH::get_competitions();
+    $status = Common::get($_GET, "status", false)?true:false;
+    $results = DBH::get_competitions($status);
     $comps = [];
     if(Common::get($results, "status", 400) == 200){
         $comps = Common::get($results, "data", []);
