@@ -186,13 +186,14 @@ if(Common::is_logged_in()){
             this.context.fillRect(this.x - this.radius, this.y - this.diameter - 5, this.diameter, this.halfRadius);
             //fill
             this.context.fillStyle = "#0000ff";
-            let diff =  this.nextFire - this.context.game.time;
+            let diff =  Math.min(this.nextFire - this.context.game.time, 0);
             let p = (diff / this.fireRate);
             if(p <= 0){
                 p = 0;
             }
+            p = 1-p;
             //console.log("Health Percent: ", p);
-            this.context.fillRect(this.x - this.radius, this.y - this.diameter, this.diameter * p, this.halfRadius );
+            this.context.fillRect(this.x - this.radius, this.y - this.diameter - 5, this.diameter * p, this.halfRadius );
         }
         draw() {
             //Wrapped drawing logic in function for easy of use and later layering
