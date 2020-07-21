@@ -180,10 +180,25 @@ if(Common::is_logged_in()){
             //console.log("Health Percent: ", p);
             this.context.fillRect(this.x - this.radius, this.y - this.diameter, this.diameter * p, this.halfRadius );
         }
+        drawShotCooldown(){
+            //background
+            this.context.fillStyle = "#000000";
+            this.context.fillRect(this.x - this.radius, this.y - this.diameter - 5, this.diameter, this.halfRadius);
+            //fill
+            this.context.fillStyle = "#0000ff";
+            let diff =  this.nextFire - this.context.game.time;
+            let p = (diff / this.fireRate);
+            if(p <= 0){
+                p = 0;
+            }
+            //console.log("Health Percent: ", p);
+            this.context.fillRect(this.x - this.radius, this.y - this.diameter, this.diameter * p, this.halfRadius );
+        }
         draw() {
             //Wrapped drawing logic in function for easy of use and later layering
 
             this.lookAtDirection();
+            this.drawShotCooldown();
             this.drawHealthbar();
         }
         takeDamage(dmg){
