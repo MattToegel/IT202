@@ -859,14 +859,41 @@ if(Common::is_logged_in()){
         }
     }
     let gameWorld;
+    function extractTankData(){
+        let ptd = {
+            "h": gameWorld.pt.currentHealth,
+            "th": gameWorld.pt.totalHealth,
+            "d": gameWorld.pt.damage,
+            "s": gameWorld.pt.speed,
+            "ts": gameWorld.pt.turnSpeed,
+            "r:": gameWorld.pt.range,
+            "x": gameWorld.pt.x,
+            "y": gameWorld.pt.y,
+            "fr": gameWorld.pt.fireRate,
+            "ra": gameWorld.pt.radius
+        }
+        let etd = {
+            "h": gameWorld.et.currentHealth,
+            "th": gameWorld.et.totalHealth,
+            "d": gameWorld.et.damage,
+            "s": gameWorld.et.speed,
+            "ts": gameWorld.et.turnSpeed,
+            "r:": gameWorld.et.range,
+            "x": gameWorld.et.x,
+            "y": gameWorld.et.y,
+            "fr": gameWorld.et.fireRate,
+            "ra": gameWorld.et.radius
+        }
+        ptd = JSON.stringify(ptd);
+        etd = JSON.stringify(etd);
+        snapshot.push([ptd, etd, CrytoJS.MD5(ptd+etd).toString()]);
+    }
     function setupGame(canvasId, tanks){
         //init('canvas', true, true, true, false, true, true);
         gameWorld = new GameWorld(true, true, false, false, true, false);
         gameWorld.init(canvasId, tanks);
         window.setInterval(function(){
-            let ptd = JSON.stringify(gameWorld.pt);
-            let etd = JSON.stringify(gameWorld.et);
-            snapshot.push([ptd, etd, CryptoJS.MD5(ptd+etd).toString()])
+            extractTankData();
         }, 5000);
     }
     /*function init(canvasId, showCollision, showCircles, bounce, gravityAndMass, showAngle, bounceOfEdges){
@@ -906,9 +933,7 @@ if(Common::is_logged_in()){
     function saveScore(gameState){
         var xhttp = new XMLHttpRequest();
         window.onbeforeunload = undefined;
-        let ptd = JSON.stringify(gameWorld.pt);
-        let etd = JSON.stringify(gameWorld.et);
-        snapshot.push([ptd, etd, CryptoJS.MD5(ptd+etd).toString()])
+        extractTankData();
         xhttp.onload = function() {
             if (xhttp.status != 200) { // analyze HTTP status of the response
                 console.log(`Error ${xhttp.status}: ${xhttp.statusText}`); // e.g. 404: Not Found
