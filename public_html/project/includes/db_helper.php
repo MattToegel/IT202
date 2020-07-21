@@ -728,7 +728,7 @@ class DBH{
     }
     public static function join_competition($user_id, $competition_id){
         try {
-            $query = file_get_contents(__DIR__ . "/../sql/queries/inser_user_comp.sql");
+            $query = file_get_contents(__DIR__ . "/../sql/queries/insert_user_comp.sql");
             $stmt = DBH::getDB()->prepare($query);
             $result = $stmt->execute([":cid"=>$competition_id, ":uid"=>$user_id]);
             DBH::verify_sql($stmt);
