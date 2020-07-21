@@ -137,7 +137,7 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
             $("#submit").val("Create Competition (" + cost + ")");
         }
         function updateDisplay(ele){
-            let $label = $(ele).sibling("label");
+            let $label = $(ele).siblings("label");
             let v = parseInt($(ele).val());
             let text = $label.text();
             let parts = text.split(" ");
