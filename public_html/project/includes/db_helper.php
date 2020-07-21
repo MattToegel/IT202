@@ -650,4 +650,23 @@ class DBH{
             return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
         }
     }
+    public static function get_competitions(){
+        try {
+            $query = file_get_contents(__DIR__ . "/../sql/queries/get_competitions.sql");
+            $stmt = DBH::getDB()->prepare($query);
+            $result = $stmt->execute();
+            DBH::verify_sql($stmt);
+            if($result){
+                $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                return DBH::response($results,200, "success");
+            }
+            else{
+                return DBH::response(NULL, 400, "error");
+            }
+        }
+        catch(Exception $e){
+            error_log($e->getMessage());
+            return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
+        }
+    }
 }

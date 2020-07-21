@@ -1,0 +1,1 @@
+SELECT * FROM Competitions where date(expires) >= curdate() order by expires desc, entry_fee asc limit 100
