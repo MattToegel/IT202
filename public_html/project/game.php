@@ -900,7 +900,7 @@ if(Common::is_logged_in()){
             } else { // show the result
                 console.log(xhttp.responseText);
                 console.log(`Done, got ${xhttp.response.length} bytes`); // response is the server
-                window.beforeunload = undefined;
+                window.onbeforeunload = undefined;
                 window.location.replace("outcome.php");
             }
         };
@@ -913,7 +913,7 @@ if(Common::is_logged_in()){
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhttp.send("score=1&outcome=" + gameState);
     }
-    window.beforeunload = function(){
+    window.onbeforeunload = function(){
         //if user navigates away count it as a loss
         saveScore("loss");
     }
