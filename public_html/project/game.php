@@ -858,22 +858,24 @@ if(Common::is_logged_in()){
             this.context.fillText("Time: " + Math.round(this.time), 10, 50);
         }
     }
+    let gameWorld;
     function setupGame(canvasId, tanks){
         //init('canvas', true, true, true, false, true, true);
-        var gameWorld = new GameWorld(true, true, false, false, true, false);
+        gameWorld = new GameWorld(true, true, false, false, true, false);
         gameWorld.init(canvasId, tanks);
-    }
-    function init(canvasId, showCollision, showCircles, bounce, gravityAndMass, showAngle, bounceOfEdges){
-        console.log("called");
-        var gameWorld = new GameWorld(showCollision, showCircles, bounce, gravityAndMass, showAngle, bounceOfEdges);
-        gameWorld.init(canvasId);
         window.setInterval(function(){
             let ptd = JSON.stringify(gameWorld.pt);
             let etd = JSON.stringify(gameWorld.et);
             snapshot.push([ptd, etd, CryptoJS.MD5(ptd+etd).toString()])
         }, 5000);
-        console.log("init world");
     }
+    /*function init(canvasId, showCollision, showCircles, bounce, gravityAndMass, showAngle, bounceOfEdges){
+        console.log("called");
+        gameWorld = new GameWorld(showCollision, showCircles, bounce, gravityAndMass, showAngle, bounceOfEdges);
+        gameWorld.init(canvasId);
+
+        console.log("init world");
+    }*/
     let snapshot = [];
 </script>
 <script>
