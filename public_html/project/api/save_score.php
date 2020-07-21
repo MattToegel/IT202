@@ -9,8 +9,13 @@ if(isset($_POST["score"]) && isset($_POST["outcome"])) {
         $data = Common::get($_POST, "data", []);
         $data = json_decode($data, true);
         foreach($data as $d){
-            $d = json_decode($d, true);
-            error_log(var_export($d, true));
+            $pt = json_decode($d[0], true);
+            $et = json_decode($d[1], true);
+            $hash = $d[2];
+            $check = md5(d[0] + d[1]);
+            error_log($hash + " vs " + $check);
+            error_log(var_export($pt, true));
+            error_log(var_export($et, true));
         }
         error_log(var_export($data,true));
         if(Common::is_valid_game(($outcome=="win"))){
