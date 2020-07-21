@@ -35,7 +35,8 @@ if(Common::is_logged_in()){
         unset($_SESSION["competitions"]);
         $_SESSION["competitions"] = [];
         foreach($comps as $c){
-            array_push($_SESSION["competitions"], [(int)$c["id"]=>$c["entry_fee"]]);
+            $_SESSION["competitions"][(int)$c["id"]] = $c["entry_fee"];
+            //array_push($_SESSION["competitions"], (int)$c["id"]=>$c["entry_fee"]});
         }
     }
 }
