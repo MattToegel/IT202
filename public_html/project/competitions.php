@@ -3,7 +3,8 @@ include_once(__DIR__."/partials/header.partial.php");
 if(Common::get($_GET, "c", false)){
     $comp_id = (int)Common::get($_GET, "c", -1);
     //find comp_id=>price from $_SESSION["competitions"]
-    echo var_export($_SESSION["competitions"], true);
+    $o= var_export($_SESSION["competitions"], true);
+    error_log($o);
     $cost = Common::get($_SESSION["competitions"], $comp_id, -1);
     if($cost < 0){
         error_log("Error fetching cost");
@@ -32,6 +33,7 @@ if(Common::is_logged_in()){
         $comps = Common::get($results, "data", []);
         //stuff to reduce DB calls
         unset($_SESSION["competitions"]);
+        $_SESSION["competitions"] = [];
         foreach($comps as $c){
             array_push($_SESSION["competitions"], [(int)$c["id"]=>$c["entry_fee"]]);
         }
