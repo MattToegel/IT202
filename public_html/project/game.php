@@ -186,7 +186,7 @@ if(Common::is_logged_in()){
             this.context.fillRect(this.x - this.radius, this.y - this.diameter - 5, this.diameter, this.halfRadius);
             //fill
             this.context.fillStyle = "#0000ff";
-            let diff =  Math.min(this.nextFire - this.context.game.time, 0);
+            let diff =  Math.max(this.nextFire - this.context.game.time, 0);
             let p = (diff / this.fireRate);
             if(p <= 0){
                 p = 0;
