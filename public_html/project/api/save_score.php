@@ -6,7 +6,8 @@ if(isset($_POST["score"]) && isset($_POST["outcome"])) {
     require(__DIR__ . "/../includes/common.inc.php");
     if (Common::is_logged_in(false)) {
         $outcome = Common::get($_POST, "outcome", "loss");
-
+        $data = Common::get($_POST, "data", []);
+        error_log(var_export($data));
         if(Common::is_valid_game(($outcome=="win"))){
             //TODO based on game state calc XP
 

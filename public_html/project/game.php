@@ -28,6 +28,8 @@ if(Common::is_logged_in()){
 </canvas>
 <hr/>
 <small>Heavily based on this tutorial: <a href="https://spicyyoghurt.com/tutorials/html5-javascript-game-development/develop-a-html5-javascript-game">Here</a></small>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/core.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/md5.js"></script>
 <script>
     "use strict";
     class GameObject{
@@ -644,6 +646,8 @@ if(Common::is_logged_in()){
                 etdata.barrelColor, etdata.barrelTipColor, etdata.treadColor, etdata.hitColor);
             console.log(ptdata);
             console.log(etdata);
+            this.pt = pt;
+            this.et = et;
             this.gameObjects = [
                 pt,
                 et
@@ -863,8 +867,14 @@ if(Common::is_logged_in()){
         console.log("called");
         var gameWorld = new GameWorld(showCollision, showCircles, bounce, gravityAndMass, showAngle, bounceOfEdges);
         gameWorld.init(canvasId);
+        window.setInterval(function(){
+            let ptd = JSON.stringify(gameWorld.pt);
+            let etd = JSON.stringify(gameWorld.et);
+            snapshot.push([ptd, etd, CryptoJS.MD5(ptd+etd).toString()])
+        }, 5000);
         console.log("init world");
     }
+    let snapshot = [];
 </script>
 <script>
     function getRandomRange(min, max) {
@@ -893,6 +903,10 @@ if(Common::is_logged_in()){
     }
     function saveScore(gameState){
         var xhttp = new XMLHttpRequest();
+        window.onbeforeunload = undefined;
+        let ptd = JSON.stringify(gameWorld.pt);
+        let etd = JSON.stringify(gameWorld.et);
+        snapshot.push([ptd, etd, CryptoJS.MD5(ptd+etd).toString()])
         xhttp.onload = function() {
             if (xhttp.status != 200) { // analyze HTTP status of the response
                 console.log(`Error ${xhttp.status}: ${xhttp.statusText}`); // e.g. 404: Not Found
@@ -900,7 +914,6 @@ if(Common::is_logged_in()){
             } else { // show the result
                 console.log(xhttp.responseText);
                 console.log(`Done, got ${xhttp.response.length} bytes`); // response is the server
-                window.onbeforeunload = undefined;
                 window.location.replace("outcome.php");
             }
         };
@@ -911,7 +924,7 @@ if(Common::is_logged_in()){
         xhttp.open("POST", "api/save_score.php", true);
         //This header is necessary when doing POST and must come after Open and before Send
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xhttp.send("score=1&outcome=" + gameState);
+        xhttp.send("score=1&outcome=" + gameState + "&data=" + JSON.stringify(snapshot));
     }
     window.onbeforeunload = function(){
         //if user navigates away count it as a loss
