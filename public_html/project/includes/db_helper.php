@@ -669,7 +669,79 @@ class DBH{
             return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
         }
     }
+    public static function get_competition_by_id($comp_id){
+        try {
+            $query = file_get_contents(__DIR__ . "/../sql/queries/get_competition_by_id.sql");
+            $stmt = DBH::getDB()->prepare($query);
+            $result = $stmt->execute([":cid"=>$comp_id]);
+            DBH::verify_sql($stmt);
+            if($result){
+                $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                return DBH::response($result,200, "success");
+            }
+            else{
+                return DBH::response(NULL, 400, "error");
+            }
+        }
+        catch(Exception $e){
+            error_log($e->getMessage());
+            return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
+        }
+    }
+    public static function get_competition_stats($comp_id){
+        try {
+            $query = file_get_contents(__DIR__ . "/../sql/queries/get_competition_stats.sql");
+            $stmt = DBH::getDB()->prepare($query);
+            $result = $stmt->execute([":cid"=>$comp_id]);
+            DBH::verify_sql($stmt);
+            if($result){
+                $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                return DBH::response($result,200, "success");
+            }
+            else{
+                return DBH::response(NULL, 400, "error");
+            }
+        }
+        catch(Exception $e){
+            error_log($e->getMessage());
+            return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
+        }
+    }
+    public static function update_competition_data($comp_id, $points, $participants){
+        try {
+            $query = file_get_contents(__DIR__ . "/../sql/queries/update_competition.sql");
+            $stmt = DBH::getDB()->prepare($query);
+            $result = $stmt->execute([":id"=>$comp_id, ":points"=>$points, ":participants"=>$participants]);
+            DBH::verify_sql($stmt);
+            if($result){
+                $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                return DBH::response($result,200, "success");
+            }
+            else{
+                return DBH::response(NULL, 400, "error");
+            }
+        }
+        catch(Exception $e){
+            error_log($e->getMessage());
+            return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
+        }
+    }
     public static function join_competition($user_id, $competition_id){
-
+        try {
+            $query = file_get_contents(__DIR__ . "/../sql/queries/inser_user_comp.sql");
+            $stmt = DBH::getDB()->prepare($query);
+            $result = $stmt->execute([":cid"=>$competition_id, ":uid"=>$user_id]);
+            DBH::verify_sql($stmt);
+            if($result){
+                return DBH::response(NULL,200, "success");
+            }
+            else{
+                return DBH::response(NULL, 400, "error");
+            }
+        }
+        catch(Exception $e){
+            error_log($e->getMessage());
+            return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
+        }
     }
 }

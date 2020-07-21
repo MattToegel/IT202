@@ -1,0 +1,1 @@
+UPDATE Competitions set points = :points, participants = :participants where id = :id
