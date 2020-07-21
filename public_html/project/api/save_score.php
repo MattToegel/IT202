@@ -12,8 +12,8 @@ if(isset($_POST["score"]) && isset($_POST["outcome"])) {
             $pt = json_decode($d[0], true);
             $et = json_decode($d[1], true);
             $hash = $d[2];
-            $check = md5(d[0] + d[1]);
-            error_log($hash + " vs " + $check);
+            $check = md5($d[0] . $d[1]);
+            error_log($hash . " vs " . $check);
             error_log(var_export($pt, true));
             error_log(var_export($et, true));
         }
