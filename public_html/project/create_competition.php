@@ -20,17 +20,17 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
             <input class="form-control" type="number" id="duration" name="duration" min="1" value="1" required/>
         </div>
         <div class="form-group">
-            <label for="fpp">First Place %</label>
+            <label for="fpp">First Place 100%</label>
             <input class="form-control" type="range" id="fpp" onchange="updateDisplay(this);"
                    name="fpp" value="100" min="0" max="100"/>
         </div>
         <div class="form-group">
-            <label for="spp">Second Place %</label>
+            <label for="spp">Second Place 0%</label>
             <input class="form-control" type="range" id="spp" onchange="updateDisplay(this);"
                    name="spp" value="0" min="0" max="100"/>
         </div>
         <div class="form-group">
-            <label for="tpp">Third Place %</label>
+            <label for="tpp">Third Place 0%</label>
             <input class="form-control" type="range" id="tpp" onchange="updateDisplay(this);"
                    name="tpp" value="0" min="0" max="100"/>
         </div>
