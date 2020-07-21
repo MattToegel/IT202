@@ -7,6 +7,7 @@ if(isset($_POST["score"]) && isset($_POST["outcome"])) {
     if (Common::is_logged_in(false)) {
         $outcome = Common::get($_POST, "outcome", "loss");
         $data = Common::get($_POST, "data", []);
+        $data = json_decode($data, true);
         error_log(var_export($data,true));
         if(Common::is_valid_game(($outcome=="win"))){
             //TODO based on game state calc XP
