@@ -10,7 +10,7 @@ if(Common::is_logged_in()){
 $last_updated = Common::get($_SESSION, "last_sync", false);
 ?>
 <div class="container-fluid">
-    <form method="POST">
+    <form method="POST" onsubmit="return checkPercentages();">
         <div class="form-group">
             <label for="competition_name">Competition Name</label>
             <input class="form-control" type="text" id="competition_name" name="competition_name" required/>
@@ -143,6 +143,17 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
             let parts = text.split(" ");
             text = parts[0] + " " + parts[1] + " " + v + "%";
             $label.text(text);
+            checkPercentages();
+        }
+        function checkPercentages(){
+            const fp = parseInt($("#fpp").val());
+            const sp = parseInt($("#spp").val());
+            const tp = parseInt($("#tpp").val());
+            if((fp+sp+tp) > 100){
+                alert("First, second, third percentage totals must be less than or equal to 100%");
+                return false;
+            }
+            return true;
         }
     </script>
 </div>
