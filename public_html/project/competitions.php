@@ -3,12 +3,17 @@ include_once(__DIR__."/partials/header.partial.php");
 if(Common::is_logged_in()){
     //this will auto redirect if user isn't logged in
     $results = DBH::get_competitions();
+    $comps = [];
+    if(Common::get($results, "status", 400) == 200){
+        $comps = Common::get($results, "data", []);
+    }
 }
 ?>
 <h4>Competitions</h4>
 <div class="list-group">
-<?php if(isset($results) && count($results) > 0):?>
-    <?php foreach($results as $c):?>
+<?php if(isset($comps) && count($comps) > 0):?>
+    <?php foreach($comps as $c):?>
+
         <?php
         $fee = Common::get($c, "entry_fee", 0);
         if ($fee < 1){
