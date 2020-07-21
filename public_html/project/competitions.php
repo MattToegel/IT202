@@ -109,7 +109,9 @@ if(Common::is_logged_in()){
                         $fee
                     ]);
                 ?>
+                <?php if(!$status):?>
                 <a class="btn btn-primary" href="competitions.php?<?php echo $params;?>">Join (<?php echo $feeText;?>)</a>
+                <?php endif; ?>
             </div>
         </div>
     <?php endforeach;?>
