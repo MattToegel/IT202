@@ -87,8 +87,6 @@ if(Common::is_logged_in()){
                      treadColor = "#000000", hitColor = "#A2082B"){
             //Pass params to super class
             super(context, x, y, speed, speed, 1, 0.9);
-
-            console.log(isAI, x, y, speed, speed);
             //Set default width and height
             this.radius = 25;//mass > 0.5?25:10; //25;
             this.showAngle = true;
@@ -96,6 +94,9 @@ if(Common::is_logged_in()){
             //this.fireRate = fireRate;
             //calc firerate
             const base = 10;//10 seconds
+            if(fireRate < 0){
+                fireRate = 0;
+            }
             this.fireRate = base - Math.log(fireRate);
             //move direction
             this.dx = 0;
@@ -116,6 +117,9 @@ if(Common::is_logged_in()){
             this.shooting = false;
             this.diameter = this.radius * 2;
             this.halfRadius = this.radius / 2;
+            if(health < 1){
+                health = 1;
+            }
             this.totalHealth = health;
             this.currentHealth = this.totalHealth;
             this.isAI = isAI;
@@ -124,8 +128,12 @@ if(Common::is_logged_in()){
             this.hitColor = hitColor
             this.barrelTipColor = barrelTipColor;
             this.treadColor = treadColor;
-            //calc damage
-            this.damage = Math.log(damage) / Math.log(5);//TODO use as modifier to bullet
+            //calc damage (converts to base log of choice)
+            //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/log
+            if(damage < 0){
+                damage = 0;
+            }
+            this.damage =1 + ( Math.log(damage) / Math.log(5));
             if(this.isAI){
                 this.atTarget = true;
             }
@@ -133,12 +141,10 @@ if(Common::is_logged_in()){
 
                 this.atTarget = false;
             }
-            console.log("Am I AI", this.isAI);
         }
         shoot(){
             if(this.context.game.time >= this.nextFire){
                 this.nextFire = this.context.game.time + this.fireRate;
-                console.log("Shoot", this.nextFire);
                 this.context.game.spawnBullet(this.x, this.y, this.vx, this.vy, this.angle, this.range, this.damage);
             }
         }
@@ -894,6 +900,7 @@ if(Common::is_logged_in()){
             } else { // show the result
                 console.log(xhttp.responseText);
                 console.log(`Done, got ${xhttp.response.length} bytes`); // response is the server
+                window.beforeunload = undefined;
                 window.location.replace("outcome.php");
             }
         };
@@ -905,6 +912,10 @@ if(Common::is_logged_in()){
         //This header is necessary when doing POST and must come after Open and before Send
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         xhttp.send("score=1&outcome=" + gameState);
+    }
+    window.beforeunload = function(){
+        //if user navigates away count it as a loss
+        saveScore("loss");
     }
     window.onload = function(){
         //ajax call to get game data from server
