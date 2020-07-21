@@ -93,7 +93,10 @@ if(Common::is_logged_in()){
             this.radius = 25;//mass > 0.5?25:10; //25;
             this.showAngle = true;
             this.angle = 0;
-            this.fireRate = fireRate;
+            //this.fireRate = fireRate;
+            //calc firerate
+            const base = 10;//10 seconds
+            this.fireRate = base - Math.log(fireRate);
             //move direction
             this.dx = 0;
             this.dy = 0;
@@ -121,7 +124,8 @@ if(Common::is_logged_in()){
             this.hitColor = hitColor
             this.barrelTipColor = barrelTipColor;
             this.treadColor = treadColor;
-            this.damage = damage;//TODO use as modifier to bullet
+            //calc damage
+            this.damage = Math.log(damage) / Math.log(5);//TODO use as modifier to bullet
             if(this.isAI){
                 this.atTarget = true;
             }
@@ -135,7 +139,7 @@ if(Common::is_logged_in()){
             if(this.context.game.time >= this.nextFire){
                 this.nextFire = this.context.game.time + this.fireRate;
                 console.log("Shoot", this.nextFire);
-                this.context.game.spawnBullet(this.x, this.y, this.vx, this.vy, this.angle, this.range);
+                this.context.game.spawnBullet(this.x, this.y, this.vx, this.vy, this.angle, this.range, this.damage);
             }
         }
         subDraw(){
@@ -658,7 +662,7 @@ if(Common::is_logged_in()){
                 saveScore(isAI?"win":"loss");
             }
         }
-        spawnBullet(x, y, vx, vy, angle, dist){
+        spawnBullet(x, y, vx, vy, angle, dist, damage){
             let bullet;
             for(let i = 0; i < this.gameObjects.length; i++){
                 let g = this.gameObjects[i];
@@ -682,6 +686,7 @@ if(Common::is_logged_in()){
             const _x = x + vectorX * 30 * 1.5;
             const _y = y + vectorY * 30 * 1.5;
             bullet.setup(_x, _y, vectorX * (150+vx), vectorY* (150+vy), dist);
+            bullet.damage = damage;
             bullet.disabled = false;
         }
 
