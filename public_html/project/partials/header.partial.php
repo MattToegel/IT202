@@ -30,6 +30,9 @@ $logged_in = Common::is_logged_in(false);
             <a class="nav-link" href="<?php echo Common::url_for("create_competition");?>">Create Competition</a>
         </li>
         <li class="nav-item">
+            <a class="nav-link" href="<?php echo Common::url_for("competitions");?>">Competitions</a>
+        </li>
+        <li class="nav-item">
             <a class="nav-link" href="<?php echo Common::url_for("surveys");?>">Surveys</a>
         </li>
         <?php endif; ?>
