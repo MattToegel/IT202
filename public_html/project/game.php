@@ -886,7 +886,7 @@ if(Common::is_logged_in()){
         }
         ptd = JSON.stringify(ptd);
         etd = JSON.stringify(etd);
-        snapshot.push([ptd, etd, CrytoJS.MD5(ptd+etd).toString()]);
+        snapshot.push([ptd, etd, CryptoJS.MD5(ptd+etd).toString()]);
     }
     function setupGame(canvasId, tanks){
         //init('canvas', true, true, true, false, true, true);
