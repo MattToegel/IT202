@@ -2,6 +2,7 @@
 //TODO use get_finished_competitions to fetch comps that need calc
 //update calced_winner to 1 once done
 //query fetches comp data, second query will be needed to fetch player stats
+error_log("Starting process for calc comp winners");
 require(__DIR__ . "/../includes/common.inc.php");
 $result = DBH::get_pending_competitions();
 if(Common::get($result, "status", 400) == 200){
@@ -10,9 +11,9 @@ if(Common::get($result, "status", 400) == 200){
     $comp_ids_invalid = [];//not enough participants
     foreach($comps as $comp){
         //TODO filter out competitions without enough people
-        $participants = (int)Common::get($comps, "participants", 0);
-        $min_participants = (int)Common::get($comps, "min_participants", 3);
-        $comp_id = Common::get($comps, "id", -1);
+        $participants = (int)Common::get($comp, "participants", 0);
+        $min_participants = (int)Common::get($comp, "min_participants", 3);
+        $comp_id = Common::get($comp, "id", -1);
         if($participants < $min_participants){
             //save these for later so we can process them separately
             //no need to waste resources calculating scores and all for these.
@@ -129,4 +130,5 @@ if(Common::get($result, "status", 400) == 200){
         error_log("No invalid competitions to process");
     }
 }
+error_log("Finished process for calc comp winners");
 ?>
