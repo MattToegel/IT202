@@ -14,6 +14,7 @@ if(isset($_POST["score"]) && isset($_POST["outcome"])) {
         $ph = null;
         $th = null;
         try {
+            $i = 0;
             foreach ($data as $d) {
                 $pt = json_decode($d[0], true);
                 $et = json_decode($d[1], true);
@@ -49,7 +50,14 @@ if(isset($_POST["score"]) && isset($_POST["outcome"])) {
                     error_log("Anti-cheat: hash mismatch");
                     break;
                 }
+                $i++;
+                if($i > 500){
+                    //preventing overload of processing, games shouldn't last this long
+                    //maybe can be exploited but meh, protect the server
+                    break;
+                }
             }
+
         }
         catch(Exception $e){
             error_log("Validation failure");
