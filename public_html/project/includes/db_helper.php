@@ -719,8 +719,8 @@ class DBH{
             $result = $stmt->execute([":id"=>$comp_id, ":points"=>$points, ":participants"=>$participants]);
             DBH::verify_sql($stmt);
             if($result){
-                $result = $stmt->fetch(PDO::FETCH_ASSOC);
-                return DBH::response($result,200, "success");
+                //$result = $stmt->fetch(PDO::FETCH_ASSOC);
+                return DBH::response(NULL,200, "success");
             }
             else{
                 return DBH::response(NULL, 400, "error");
@@ -736,6 +736,76 @@ class DBH{
             $query = file_get_contents(__DIR__ . "/../sql/queries/insert_user_comp.sql");
             $stmt = DBH::getDB()->prepare($query);
             $result = $stmt->execute([":cid"=>$competition_id, ":uid"=>$user_id]);
+            DBH::verify_sql($stmt);
+            if($result){
+                return DBH::response(NULL,200, "success");
+            }
+            else{
+                return DBH::response(NULL, 400, "error");
+            }
+        }
+        catch(Exception $e){
+            error_log($e->getMessage());
+            return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
+        }
+    }
+    public static function get_pending_competitions(){
+        try {
+            $query = file_get_contents(__DIR__ . "/../sql/queries/get_pending_competitions.sql");
+            $stmt = DBH::getDB()->prepare($query);
+            $result = $stmt->execute();
+            DBH::verify_sql($stmt);
+            if($result){
+                $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                return DBH::response($results,200, "success");
+            }
+            else{
+                return DBH::response(NULL, 400, "error");
+            }
+        }
+        catch(Exception $e){
+            error_log($e->getMessage());
+            return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
+        }
+    }
+    public static function get_competitions_scoreboard($comp_ids){
+        try {
+            $query = file_get_contents(__DIR__ . "/../sql/queries/get_competition_scoreboard.sql");
+            //TODO we must do some edits since IN() is dynamic here.
+            //generate placeholders based on number of elements in comp_ids
+            $in  = str_repeat('?,', count($comp_ids) - 1) . '?';
+            //update our query
+            //replace the default IN(?) with or updated placeholder list IN($in)
+            $query = str_ireplace("IN(?)", "IN($in)", $query);
+            $stmt = DBH::getDB()->prepare($query);
+            //pass in our array of ids (it should seamlessly map to our $in
+            $result = $stmt->execute($comp_ids);
+            DBH::verify_sql($stmt);
+            if($result){
+                $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                return DBH::response($results,200, "success");
+            }
+            else{
+                return DBH::response(NULL, 400, "error");
+            }
+        }
+        catch(Exception $e){
+            error_log($e->getMessage());
+            return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
+        }
+    }
+
+    /** Takes array of ids so we can use it to mark 1 or many at once (saves DB calls)
+     * @param $comp_ids
+     * @return array
+     */
+    public static function set_calc_completed_competition($comp_ids){
+        try {
+            $query = file_get_contents(__DIR__ . "/../sql/queries/set_calc_completed_competition.sql");
+            $in  = str_repeat('?,', count($comp_ids) - 1) . '?';
+            $query = str_ireplace("IN(?)", "IN($in)", $query);
+            $stmt = DBH::getDB()->prepare($query);
+            $result = $stmt->execute($comp_ids);
             DBH::verify_sql($stmt);
             if($result){
                 return DBH::response(NULL,200, "success");
