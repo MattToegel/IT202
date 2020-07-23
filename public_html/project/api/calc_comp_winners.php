@@ -38,14 +38,16 @@ if(Common::get($result, "status", 400) == 200){
                 $cid = Common::get($d, "competition_id", -1);
                 $uid = Common::get($d, "user_id", -1);
                 $wins = Common::get($d, "wins", 0);//technically will not exist since only wins are pulled
-                if (!array_key_exists($cid)) {
+                if (!array_key_exists($cid , $scoreboard)) {
                     //if key doesn't exist add it
                     array_push($scoreboard, $cid);
+                    //scoreboard[cid]
                 }
                 //now we can push user-wins to the key
                 array_push($scoreboard[$cid], [
                     $uid => $wins
                 ]);
+                //scoreboard[cid][bob=>10, joe=>5]
             }
             //here our $scoreboard should be populated into unique competitions
             foreach ($scoreboard as $comp_id => $users) {
@@ -78,7 +80,7 @@ if(Common::get($result, "status", 400) == 200){
                     array_push($winners, [
                         $spw => [$spp, "2nd"]
                     ]);
-                    if (round($fp + $sp) == 1.0) {//again be careful
+                    if (round($fp + $sp, 1) == 1.0) {//again be careful
                         //ok we can stop
                     } else {
                         $tp = (float)round(Common::get($comp, "third_place", 0), 1);
@@ -98,7 +100,8 @@ if(Common::get($result, "status", 400) == 200){
                     //filter out invalid entries from above calculation
                     if ($winner_id > -1) {
                         //this will generate a lot of DB calls depending on how many comps complete
-                        $result = DBH::changePoints($winner_id, $reward[0], -1, "comp_winner", $reward[1] . " place");
+                        $title = Common::get($comp, "title", '');
+                        $result = DBH::changePoints($winner_id, $reward[0], -1, "comp_winner", $title . ': ' . $reward[1] . " place");
                         if (Common::get($result, "status", 400) != 200) {
                             error_log("Error awarding user[$winner_id] $reward[0] points for $reward[1] place");
                             $hadError = true;
