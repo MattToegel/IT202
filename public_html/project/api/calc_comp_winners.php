@@ -9,6 +9,7 @@ if(Common::get($result, "status", 400) == 200){
     $comps = Common::get($result, "data", []);
     $comp_ids = [];//valid participant count
     $comp_ids_invalid = [];//not enough participants
+    error_log(var_export($comps, true));
     foreach($comps as $comp){
         //TODO filter out competitions without enough people
         $participants = (int)Common::get($comp, "participants", 0);
