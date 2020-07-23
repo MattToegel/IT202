@@ -96,6 +96,8 @@ if(Common::get($result, "status", 400) == 200){
                     $fpp *= $fp;
                     $fpp = ceil($fpp);//round up, see note above
                     $fpw = Common::get(array_keys($users), 0, -1);
+                    error_log(var_export(array_keys($users), true));
+                    error_log($fpw);
                     //add to winners array
                     if($fpw > 0) {
                         $winners[$fpw] = [$fpp, "1st", $title];
