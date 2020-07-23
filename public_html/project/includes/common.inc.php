@@ -192,8 +192,8 @@ class Common {
      * @return mixed
      */
     public static function getFlashMessages() {
-        $messages = $_SESSION["messages"];
-        //error_log("Get Flash Messages(): " . var_export($messages, true));
+        $messages = Common::get($_SESSION, "messages", []);
+       //error_log("Get Flash Messages(): " . var_export($messages, true));
         $_SESSION["messages"] = [];
         return $messages;
     }
@@ -238,6 +238,10 @@ class Common {
             $last_sync = new DateTime();
             $_SESSION["last_sync"] = $last_sync;
         }
+    }
+    public static function clamp($current, $min, $max) {
+        //https://stackoverflow.com/a/35438811
+        return max($min, min($max, $current));
     }
 }
 

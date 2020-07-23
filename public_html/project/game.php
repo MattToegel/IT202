@@ -28,6 +28,8 @@ if(Common::is_logged_in()){
 </canvas>
 <hr/>
 <small>Heavily based on this tutorial: <a href="https://spicyyoghurt.com/tutorials/html5-javascript-game-development/develop-a-html5-javascript-game">Here</a></small>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/core.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/md5.js"></script>
 <script>
     "use strict";
     class GameObject{
@@ -87,13 +89,17 @@ if(Common::is_logged_in()){
                      treadColor = "#000000", hitColor = "#A2082B"){
             //Pass params to super class
             super(context, x, y, speed, speed, 1, 0.9);
-
-            console.log(isAI, x, y, speed, speed);
             //Set default width and height
             this.radius = 25;//mass > 0.5?25:10; //25;
             this.showAngle = true;
             this.angle = 0;
-            this.fireRate = fireRate;
+            //this.fireRate = fireRate;
+            //calc firerate
+            const base = 10;//10 seconds
+            if(fireRate < 0){
+                fireRate = 0;
+            }
+            this.fireRate = base - Math.log(fireRate);
             //move direction
             this.dx = 0;
             this.dy = 0;
@@ -113,6 +119,9 @@ if(Common::is_logged_in()){
             this.shooting = false;
             this.diameter = this.radius * 2;
             this.halfRadius = this.radius / 2;
+            if(health < 1){
+                health = 1;
+            }
             this.totalHealth = health;
             this.currentHealth = this.totalHealth;
             this.isAI = isAI;
@@ -121,7 +130,12 @@ if(Common::is_logged_in()){
             this.hitColor = hitColor
             this.barrelTipColor = barrelTipColor;
             this.treadColor = treadColor;
-            this.damage = damage;//TODO use as modifier to bullet
+            //calc damage (converts to base log of choice)
+            //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/log
+            if(damage < 0){
+                damage = 0;
+            }
+            this.damage =1 + ( Math.log(damage) / Math.log(5));
             if(this.isAI){
                 this.atTarget = true;
             }
@@ -129,13 +143,11 @@ if(Common::is_logged_in()){
 
                 this.atTarget = false;
             }
-            console.log("Am I AI", this.isAI);
         }
         shoot(){
             if(this.context.game.time >= this.nextFire){
                 this.nextFire = this.context.game.time + this.fireRate;
-                console.log("Shoot", this.nextFire);
-                this.context.game.spawnBullet(this.x, this.y, this.vx, this.vy, this.angle, this.range);
+                this.context.game.spawnBullet(this.x, this.y, this.vx, this.vy, this.angle, this.range, this.damage);
             }
         }
         subDraw(){
@@ -180,10 +192,26 @@ if(Common::is_logged_in()){
             //console.log("Health Percent: ", p);
             this.context.fillRect(this.x - this.radius, this.y - this.diameter, this.diameter * p, this.halfRadius );
         }
+        drawShotCooldown(){
+            //background
+            this.context.fillStyle = "#000000";
+            this.context.fillRect(this.x - this.radius, this.y - this.diameter - 5, this.diameter, this.halfRadius);
+            //fill
+            this.context.fillStyle = "#0000ff";
+            let diff =  Math.max(this.nextFire - this.context.game.time, 0);
+            let p = (diff / this.fireRate);
+            if(p <= 0){
+                p = 0;
+            }
+            p = 1-p;
+            //console.log("Health Percent: ", p);
+            this.context.fillRect(this.x - this.radius, this.y - this.diameter - 5, this.diameter * p, this.halfRadius );
+        }
         draw() {
             //Wrapped drawing logic in function for easy of use and later layering
 
             this.lookAtDirection();
+            this.drawShotCooldown();
             this.drawHealthbar();
         }
         takeDamage(dmg){
@@ -618,6 +646,8 @@ if(Common::is_logged_in()){
                 etdata.barrelColor, etdata.barrelTipColor, etdata.treadColor, etdata.hitColor);
             console.log(ptdata);
             console.log(etdata);
+            this.pt = pt;
+            this.et = et;
             this.gameObjects = [
                 pt,
                 et
@@ -642,7 +672,7 @@ if(Common::is_logged_in()){
                 saveScore(isAI?"win":"loss");
             }
         }
-        spawnBullet(x, y, vx, vy, angle, dist){
+        spawnBullet(x, y, vx, vy, angle, dist, damage){
             let bullet;
             for(let i = 0; i < this.gameObjects.length; i++){
                 let g = this.gameObjects[i];
@@ -666,6 +696,7 @@ if(Common::is_logged_in()){
             const _x = x + vectorX * 30 * 1.5;
             const _y = y + vectorY * 30 * 1.5;
             bullet.setup(_x, _y, vectorX * (150+vx), vectorY* (150+vy), dist);
+            bullet.damage = damage;
             bullet.disabled = false;
         }
 
@@ -827,17 +858,52 @@ if(Common::is_logged_in()){
             this.context.fillText("Time: " + Math.round(this.time), 10, 50);
         }
     }
+    let gameWorld;
+    function extractTankData(){
+        let ptd = {
+            "h": gameWorld.pt.currentHealth,
+            "th": gameWorld.pt.totalHealth,
+            "d": gameWorld.pt.damage,
+            "s": gameWorld.pt.speed,
+            "ts": gameWorld.pt.turnSpeed,
+            "r:": gameWorld.pt.range,
+            "x": gameWorld.pt.x,
+            "y": gameWorld.pt.y,
+            "fr": gameWorld.pt.fireRate,
+            "ra": gameWorld.pt.radius
+        }
+        let etd = {
+            "h": gameWorld.et.currentHealth,
+            "th": gameWorld.et.totalHealth,
+            "d": gameWorld.et.damage,
+            "s": gameWorld.et.speed,
+            "ts": gameWorld.et.turnSpeed,
+            "r:": gameWorld.et.range,
+            "x": gameWorld.et.x,
+            "y": gameWorld.et.y,
+            "fr": gameWorld.et.fireRate,
+            "ra": gameWorld.et.radius
+        }
+        ptd = JSON.stringify(ptd);
+        etd = JSON.stringify(etd);
+        snapshot.push([ptd, etd, CryptoJS.MD5(ptd+etd).toString()]);
+    }
     function setupGame(canvasId, tanks){
         //init('canvas', true, true, true, false, true, true);
-        var gameWorld = new GameWorld(true, true, false, false, true, false);
+        gameWorld = new GameWorld(true, true, false, false, true, false);
         gameWorld.init(canvasId, tanks);
+        window.setInterval(function(){
+            extractTankData();
+        }, 5000);
     }
-    function init(canvasId, showCollision, showCircles, bounce, gravityAndMass, showAngle, bounceOfEdges){
+    /*function init(canvasId, showCollision, showCircles, bounce, gravityAndMass, showAngle, bounceOfEdges){
         console.log("called");
-        var gameWorld = new GameWorld(showCollision, showCircles, bounce, gravityAndMass, showAngle, bounceOfEdges);
+        gameWorld = new GameWorld(showCollision, showCircles, bounce, gravityAndMass, showAngle, bounceOfEdges);
         gameWorld.init(canvasId);
+
         console.log("init world");
-    }
+    }*/
+    let snapshot = [];
 </script>
 <script>
     function getRandomRange(min, max) {
@@ -866,6 +932,8 @@ if(Common::is_logged_in()){
     }
     function saveScore(gameState){
         var xhttp = new XMLHttpRequest();
+        window.onbeforeunload = undefined;
+        extractTankData();
         xhttp.onload = function() {
             if (xhttp.status != 200) { // analyze HTTP status of the response
                 console.log(`Error ${xhttp.status}: ${xhttp.statusText}`); // e.g. 404: Not Found
@@ -883,7 +951,11 @@ if(Common::is_logged_in()){
         xhttp.open("POST", "api/save_score.php", true);
         //This header is necessary when doing POST and must come after Open and before Send
         xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        xhttp.send("score=1&outcome=" + gameState);
+        xhttp.send("score=1&outcome=" + gameState + "&data=" + JSON.stringify(snapshot));
+    }
+    window.onbeforeunload = function(){
+        //if user navigates away count it as a loss
+        saveScore("loss");
     }
     window.onload = function(){
         //ajax call to get game data from server
