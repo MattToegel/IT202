@@ -73,7 +73,8 @@ class DBH{
             $result = $stmt->execute([":email" => $email, ":password" => $pass]);
             DBH::verify_sql($stmt);
             if($result){
-                return DBH::response(NULL,200, "Registration successful");
+                $id = DBH::getDB()->lastInsertId();
+                return DBH::response(["user_id"=>$id],200, "Registration successful");
             }
             else{
                 return DBH::response(NULL, 400, "Registration unsuccessful");
@@ -151,6 +152,13 @@ class DBH{
             //commonly points will be from the system user
             if($user_id_dest <= 0){
                 $user_id_dest = Common::get_system_id();
+                if($user_id_dest <= 0){
+                    $r = DBH::get_system_user_id();
+                    $r = Common::get($r, "data", false);
+                    if($r){
+                        $user_id_dest = Common::get($r, "id", -1);
+                    }
+                }
             }
             error_log("System user $user_id_dest");
             $query = file_get_contents(__DIR__ . "/../sql/queries/change_points.sql");
@@ -340,6 +348,19 @@ class DBH{
             return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
         }
     }
+    public static function update_item_quantity($item_id, $quantity){
+        try{
+            $query =  file_get_contents(__DIR__ . "/../sql/queries/update_item_quantity.sql");
+            $stmt = DBH::getDB()->prepare($query);
+            $stmt->execute([":id"=>$item_id, ":q"=>$quantity]);
+            DBH::verify_sql($stmt);
+            return DBH::response(NULL,200, "success");
+        }
+        catch(Exception $e){
+            error_log($e->getMessage());
+            return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
+        }
+    }
     public static function save_order($data){
         try {
             $query = file_get_contents(__DIR__ . "/../sql/queries/get_max_order_id.sql");
@@ -361,8 +382,10 @@ class DBH{
                         ":quantity"=>$item["quantity"],
                         ":price"=>$item["cost"]
                     ]);
+                    //TODO update item quantity (really should verify it worked)
+                    DBH::update_item_quantity($item["id"], $item["quantity"]);
                 }
-                return DBH::response($result,200, "success");
+                return DBH::response(NULL,200, "success");
             }
             else{
                 return DBH::response(NULL, 400, "error");
@@ -616,6 +639,213 @@ class DBH{
         catch(Exception $e){
             error_log($e->getMessage());
             return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
+        }
+    }
+    public static function create_competition($competition){
+        try {
+            $query = file_get_contents(__DIR__ . "/../sql/queries/insert_competition.sql");
+            //lazy map keys
+            $params = [];
+            foreach($competition as $key=>$value){
+                $params[":$key"] = $value;
+            }
+            error_log(var_export($params, true));
+            $stmt = DBH::getDB()->prepare($query);
+            $result = $stmt->execute($params);
+            DBH::verify_sql($stmt);
+            if($result){
+                return DBH::response(null,200, "success");
+            }
+            else{
+                return DBH::response(NULL, 400, "error");
+            }
+        }
+        catch(Exception $e){
+            error_log($e->getMessage());
+            return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
+        }
+    }
+    public static function get_competitions($fetch_registered = false){
+        try {
+            if($fetch_registered) {
+                $query = file_get_contents(__DIR__ . "/../sql/queries/get_registered_competitions.sql");
+            }
+            else{
+                $query = file_get_contents(__DIR__ . "/../sql/queries/get_competitions.sql");
+            }
+            $stmt = DBH::getDB()->prepare($query);
+            $result = $stmt->execute([":user_id"=>Common::get_user_id()]);
+            DBH::verify_sql($stmt);
+            if($result){
+                $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                return DBH::response($results,200, "success");
+            }
+            else{
+                return DBH::response(NULL, 400, "error");
+            }
+        }
+        catch(Exception $e){
+            error_log($e->getMessage());
+            return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
+        }
+    }
+    public static function get_competition_by_id($comp_id){
+        try {
+            $query = file_get_contents(__DIR__ . "/../sql/queries/get_competition_by_id.sql");
+            $stmt = DBH::getDB()->prepare($query);
+            $result = $stmt->execute([":cid"=>$comp_id]);
+            DBH::verify_sql($stmt);
+            if($result){
+                $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                return DBH::response($result,200, "success");
+            }
+            else{
+                return DBH::response(NULL, 400, "error");
+            }
+        }
+        catch(Exception $e){
+            error_log($e->getMessage());
+            return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
+        }
+    }
+    public static function get_competition_stats($comp_id){
+        try {
+            $query = file_get_contents(__DIR__ . "/../sql/queries/get_competition_stats.sql");
+            $stmt = DBH::getDB()->prepare($query);
+            $result = $stmt->execute([":cid"=>$comp_id]);
+            DBH::verify_sql($stmt);
+            if($result){
+                $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                return DBH::response($result,200, "success");
+            }
+            else{
+                return DBH::response(NULL, 400, "error");
+            }
+        }
+        catch(Exception $e){
+            error_log($e->getMessage());
+            return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
+        }
+    }
+    public static function update_competition_data($comp_id, $points, $participants){
+        try {
+            $query = file_get_contents(__DIR__ . "/../sql/queries/update_competition.sql");
+            $stmt = DBH::getDB()->prepare($query);
+            $result = $stmt->execute([":id"=>$comp_id, ":points"=>$points, ":participants"=>$participants]);
+            DBH::verify_sql($stmt);
+            if($result){
+                //$result = $stmt->fetch(PDO::FETCH_ASSOC);
+                return DBH::response(NULL,200, "success");
+            }
+            else{
+                return DBH::response(NULL, 400, "error");
+            }
+        }
+        catch(Exception $e){
+            error_log($e->getMessage());
+            return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
+        }
+    }
+    public static function join_competition($user_id, $competition_id){
+        try {
+            $query = file_get_contents(__DIR__ . "/../sql/queries/insert_user_comp.sql");
+            $stmt = DBH::getDB()->prepare($query);
+            $result = $stmt->execute([":cid"=>$competition_id, ":uid"=>$user_id]);
+            DBH::verify_sql($stmt);
+            if($result){
+                return DBH::response(NULL,200, "success");
+            }
+            else{
+                return DBH::response(NULL, 400, "error");
+            }
+        }
+        catch(Exception $e){
+            error_log($e->getMessage());
+            return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
+        }
+    }
+    public static function get_pending_competitions(){
+        try {
+            $query = file_get_contents(__DIR__ . "/../sql/queries/get_pending_competitions.sql");
+            $stmt = DBH::getDB()->prepare($query);
+            $result = $stmt->execute();
+            DBH::verify_sql($stmt);
+            if($result){
+                $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                return DBH::response($results,200, "success");
+            }
+            else{
+                return DBH::response(NULL, 400, "error");
+            }
+        }
+        catch(Exception $e){
+            error_log($e->getMessage());
+            return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
+        }
+    }
+    public static function get_competitions_scoreboard($comp_ids){
+        try {
+            $query = file_get_contents(__DIR__ . "/../sql/queries/get_competition_scoreboard.sql");
+            //TODO we must do some edits since IN() is dynamic here.
+            //generate placeholders based on number of elements in comp_ids
+            $in  = str_repeat('?,', count($comp_ids) - 1) . '?';
+            //update our query
+            //replace the default IN(?) with or updated placeholder list IN($in)
+            $query = str_ireplace("IN(?)", "IN($in)", $query);
+            $stmt = DBH::getDB()->prepare($query);
+            //pass in our array of ids (it should seamlessly map to our $in
+            $result = $stmt->execute($comp_ids);
+            DBH::verify_sql($stmt);
+            if($result){
+                $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                return DBH::response($results,200, "success");
+            }
+            else{
+                return DBH::response(NULL, 400, "error");
+            }
+        }
+        catch(Exception $e){
+            error_log($e->getMessage());
+            return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
+        }
+    }
+
+    /** Takes array of ids so we can use it to mark 1 or many at once (saves DB calls)
+     * @param $comp_ids
+     * @return array
+     */
+    public static function set_calc_completed_competition($comp_ids){
+        try {
+            $query = file_get_contents(__DIR__ . "/../sql/queries/set_calc_completed_competition.sql");
+            $in  = str_repeat('?,', count($comp_ids) - 1) . '?';
+            $query = str_ireplace("IN(?)", "IN($in)", $query);
+            $stmt = DBH::getDB()->prepare($query);
+            $result = $stmt->execute($comp_ids);
+            DBH::verify_sql($stmt);
+            if($result){
+                return DBH::response(NULL,200, "success");
+            }
+            else{
+                return DBH::response(NULL, 400, "error");
+            }
+        }
+        catch(Exception $e){
+            error_log($e->getMessage());
+            return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
+        }
+    }
+    public static function get_latest_transactions($user_id){
+        $query = file_get_contents(__DIR__ . "/../sql/queries/get_latest_transactions.sql");
+        $stmt = DBH::getDB()->prepare($query);
+        //pass in our array of ids (it should seamlessly map to our $in
+        $result = $stmt->execute([":uid"=>$user_id]);
+        DBH::verify_sql($stmt);
+        if($result){
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            return DBH::response($results,200, "success");
+        }
+        else{
+            return DBH::response(NULL, 400, "error");
         }
     }
 }

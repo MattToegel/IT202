@@ -1,0 +1,1 @@
+SELECT * FROM Competitions where date(expires) <= curdate() and calced_winner = 0

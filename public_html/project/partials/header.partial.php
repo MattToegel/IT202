@@ -6,29 +6,42 @@ $logged_in = Common::is_logged_in(false);
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 <!-- Include jQuery 3.5.1-->
 <script
-        src="https://code.jquery.com/jquery-3.5.1.min.js"
-        integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
-        crossorigin="anonymous"></script>
+    src="https://code.jquery.com/jquery-3.5.1.min.js"
+    integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <ul class="navbar-nav mr-auto">
         <?php if($logged_in):?>
-            <li class="nav-item">
-                <a class="nav-link" href="<?php echo Common::url_for("home");?>">Home</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="<?php echo Common::url_for("game");?>">Game</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="<?php echo Common::url_for("shop");?>">Shop</a>
-            </li>
-            <?php if (Common::has_role("Admin")):?>
-                <li class="nav-item">
-                    <a class="nav-link" href="<?php echo Common::url_for("create_questionnaire");?>">Create Questionnaire</a>
-                </li>
-            <?php endif;?>
-            <li class="nav-item">
-                <a class="nav-link" href="<?php echo Common::url_for("surveys");?>">Surveys</a>
-            </li>
+        <li class="nav-item">
+            <a class="nav-link" href="<?php echo Common::url_for("home");?>">Home</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="<?php echo Common::url_for("game");?>">Game</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="<?php echo Common::url_for("shop");?>">Shop</a>
+        </li>
+        <?php if (Common::has_role("Admin")):?>
+        <li class="nav-item">
+            <a class="nav-link" href="<?php echo Common::url_for("create_questionnaire");?>">Create Questionnaire</a>
+        </li>
+        <?php endif;?>
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="compDropdown" role="button"
+               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Competitions
+            </a>
+            <div class="dropdown-menu" aria-labelledby="compDropdown">
+                <a class="dropdown-item" href="<?php echo Common::url_for("create_competition");?>">Create</a>
+                <a class="dropdown-item" href="<?php echo Common::url_for("competitions");?>">Available</a>
+                <a class="dropdown-item" href="<?php echo Common::url_for("competitions");?>?status=registered">Registered</a>
+            </div>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="<?php echo Common::url_for("surveys");?>">Surveys</a>
+        </li>
         <?php endif; ?>
         <?php if(!$logged_in):?>
             <li class="nav-item">

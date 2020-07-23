@@ -6,7 +6,70 @@ if(isset($_POST["score"]) && isset($_POST["outcome"])) {
     require(__DIR__ . "/../includes/common.inc.php");
     if (Common::is_logged_in(false)) {
         $outcome = Common::get($_POST, "outcome", "loss");
+        $data = Common::get($_POST, "data", []);
+        $data = json_decode($data, true);
+        $hashValidation = true;
+        $healthValidation = true;
+        $dmgValidation = true;
+        $ph = null;
+        $th = null;
+        try {
+            $i = 0;
+            foreach ($data as $d) {
+                $pt = json_decode($d[0], true);
+                $et = json_decode($d[1], true);
+                $phealth = (float)$pt["h"];
+                $ehealth = (float)$et["h"];
+                if (!isset($ph)) {
+                    $ph = $phealth;
+                }
+                if (!isset($th)) {
+                    $th = $ehealth;
+                }
+                if ($phealth > $ph || $ehealth > $th) {
+                    $healthValidation = false;
+                    error_log("Anti-cheat: invalid health, potential healing");
+                    break;
+                }
+                $pdmg = (float)$pt["d"];
+                $edmg = (float)$et["d"];
+                if ($edmg < ($pdmg * .45)) {
+                    error_log("Anti-cheat: Enemy tank damage nerfed less than allowable offset");
+                    $dmgValidation = false;
+                    break;
+                }
+                //TODO add other validations as necessary, got lazy to validate other status, but the above are the important ones
+                $hash = $d[2];
+                $check = md5($d[0] . $d[1]);
 
+                error_log($hash . " vs " . $check);
+                error_log(var_export($pt, true));
+                error_log(var_export($et, true));
+                if ($hash != $check) {
+                    $hashValidation = false;
+                    error_log("Anti-cheat: hash mismatch");
+                    break;
+                }
+                $i++;
+                if($i > 500){
+                    //preventing overload of processing, games shouldn't last this long
+                    //maybe can be exploited but meh, protect the server
+                    break;
+                }
+            }
+
+        }
+        catch(Exception $e){
+            error_log("Validation failure");
+            error_log($e->getMessage());
+            $hashValidation = false;
+            $healthValidation = false;
+            $dmgValidation = false;
+        }
+        if(!$hashValidation || !$healthValidation || !$dmgValidation || count($data) < 2){
+            $outcome = "loss";
+        }
+        error_log(var_export($data,true));
         if(Common::is_valid_game(($outcome=="win"))){
             //TODO based on game state calc XP
 
@@ -31,7 +94,7 @@ if(isset($_POST["score"]) && isset($_POST["outcome"])) {
                 //only save if we have points to save
 
                 //give points
-                $p_resp = DBH::changePoints($user_id, $points);
+                $p_resp = DBH::changePoints($user_id, $points, -1, "earned", "won a round");
                 $points_response = Common::get($p_resp, "status", 400) == 200;
             }
             else{

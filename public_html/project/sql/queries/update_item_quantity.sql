@@ -1,0 +1,1 @@
+UPDATE Items set quantity = quantity + :q where id = :id

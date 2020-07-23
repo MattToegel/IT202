@@ -1,0 +1,1 @@
+SELECT count(user_id) as participants FROM UserCompetitions where id = :cid
