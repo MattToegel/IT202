@@ -71,7 +71,12 @@ if(Common::get($result, "status", 400) == 200){
                 //but just being sure
                 //TODO put key/value pairs in desc order based on value
                 arsort($users);//should have no more than 10 for each comp
-                $comp = Common::get($comps, $comp_id, []);//competition data for point award calc
+                $comp = null;// Common::get($comps, $comp_id, []);//competition data for point award calc
+                $search = array_search($comp_id, $comps);
+                if($search){
+                    $comp = $comps[$search];
+                }
+                error_log("comp: " . var_export($comp, true));
                 $title = Common::get($comp, "title", '');
                 $fp = (float)round(Common::get($comp, "first_place", 1), 1);
                 $winners = [];
