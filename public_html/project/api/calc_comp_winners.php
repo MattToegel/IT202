@@ -72,6 +72,8 @@ if(Common::get($result, "status", 400) == 200){
                 //but just being sure
                 //TODO put key/value pairs in desc order based on value
                 arsort($users);//should have no more than 10 for each comp
+                error_log("Users var post sort");
+                error_log(var_export($users, true));
                 $comp = null;// Common::get($comps, $comp_id, []);//competition data for point award calc
                 //https://www.php.net/manual/en/function.array-column.php
                 foreach($comps as $comp){
