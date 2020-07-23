@@ -93,20 +93,24 @@ if(Common::get($result, "status", 400) == 200){
                     //this is the easy one, just 1 winner
                     $fpp = (int)Common::get($comp, "points", 1);
                     $fpp *= $fp;
-                    $fpp = round($fpp, 0);//round to nearest whole number, see note above
+                    $fpp = ceil($fpp);//round up, see note above
                     $fpw = current($users);//Common::get($users, 0, -1);
                     //add to winners array
-                    $winners[$fpw] = [$fpp, "1st", $title];
+                    if($fpw > 0) {
+                        $winners[$fpw] = [$fpp, "1st", $title];
+                    }
 
                 } else {
                     $sp = (float)round(Common::get($comp, "second_place", 0), 1);
                     //get our 2nd place winner
                     $spp = (int)Common::get($comp, "points", 1);
                     $spp *= $sp;
-                    $spp = round($spp, 0);//round to nearest whole number, see note above
+                    $spp = ceil($spp);//round up, see note above
                     $spw = next($users);//Common::get($users, 1, -1);
                     //add to winners array
-                    $winners[$spw] = [$spp, "2nd", $title];
+                    if($spw > 0) {
+                        $winners[$spw] = [$spp, "2nd", $title];
+                    }
                     if (round($fp + $sp, 1) == 1.0) {//again be careful
                         //ok we can stop
                     } else {
@@ -114,10 +118,12 @@ if(Common::get($result, "status", 400) == 200){
                         //get our 3rd place winner
                         $tpp = (int)Common::get($comp, "points", 1);
                         $tpp *= $tp;
-                        $tpp = round($tpp, 0);//round to nearest whole number, see note above
+                        $tpp = ceil($tpp);//round up, see note above
                         $tpw = next($users);//Common::get($users, 2, -1);
                         //add to winners array
-                        $winners[$tpw] = [$tpp, "3rd", $title];
+                        if($tpw > 0) {
+                            $winners[$tpw] = [$tpp, "3rd", $title];
+                        }
                     }
                 }
                 error_log("Winners");
