@@ -41,12 +41,15 @@ if(Common::get($result, "status", 400) == 200){
                 if (!array_key_exists($cid , $scoreboard)) {
                     //if key doesn't exist add it
                     array_push($scoreboard, [$cid=>[]]);
+                    error_log(var_export($scoreboard, true));
                     //scoreboard[cid]
                 }
                 //now we can push user-wins to the key
                 array_push($scoreboard[$cid], [
                     $uid => $wins
                 ]);
+                error_log("Scoreboard after winner appended");
+                error_log(var_export($scoreboard, true));
                 //scoreboard[cid][bob=>10, joe=>5]
             }
             //here our $scoreboard should be populated into unique competitions
