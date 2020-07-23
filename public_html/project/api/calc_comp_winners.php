@@ -70,7 +70,7 @@ if(Common::get($result, "status", 400) == 200){
                 //shouldn't need to do this since it should come from the DB in proper order
                 //but just being sure
                 //TODO put key/value pairs in desc order based on value
-                $users = arsort($users);//should have no more than 10 for each comp
+                arsort($users);//should have no more than 10 for each comp
                 $comp = Common::get($comps, $comp_id, []);//competition data for point award calc
                 $fp = (float)round(Common::get($comp, "first_place", 1), 1);
                 $winners = [];
