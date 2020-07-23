@@ -46,7 +46,7 @@ if(Common::get($result, "status", 400) == 200){
                     if($uid > -1) {
                         if (!array_key_exists($cid, $scoreboard)) {
                             //if key doesn't exist add it
-                            array_push($scoreboard, [$cid => []]);
+                            $scoreboard[$cid] = [];
                             error_log("Scoreboard after comp key added");
                             error_log(var_export($scoreboard, true));
                         }
