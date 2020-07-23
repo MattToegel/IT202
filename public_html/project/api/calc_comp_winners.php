@@ -51,9 +51,7 @@ if(Common::get($result, "status", 400) == 200){
                             error_log(var_export($scoreboard, true));
                         }
                         //now we can push user-wins to the key
-                        array_push($scoreboard[$cid], [
-                            $uid => $wins
-                        ]);
+                        $scoreboard[$cid][$uid] = $wins;
                         error_log("Scoreboard after winner appended");
                         error_log(var_export($scoreboard, true));
                     }
