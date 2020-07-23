@@ -89,13 +89,13 @@ if(Common::get($result, "status", 400) == 200){
                 //TODO likely there will be rounding errors and we may generate
                 //more points than necessary, but the amount should be small enough that we don't care
                 //you can do extra validation/math if it really matters
-                reset($users);
+
                 if ($fp == 1.0) {//be very careful with float comparison
                     //this is the easy one, just 1 winner
                     $fpp = (int)Common::get($comp, "points", 1);
                     $fpp *= $fp;
                     $fpp = ceil($fpp);//round up, see note above
-                    $fpw = current($users);//Common::get($users, 0, -1);
+                    $fpw = Common::get(array_keys($users), 0, -1);
                     //add to winners array
                     if($fpw > 0) {
                         $winners[$fpw] = [$fpp, "1st", $title];
@@ -107,7 +107,7 @@ if(Common::get($result, "status", 400) == 200){
                     $spp = (int)Common::get($comp, "points", 1);
                     $spp *= $sp;
                     $spp = ceil($spp);//round up, see note above
-                    $spw = next($users);//Common::get($users, 1, -1);
+                    $spw = Common::get(array_keys($users), 1, -1);
                     //add to winners array
                     if($spw > 0) {
                         $winners[$spw] = [$spp, "2nd", $title];
@@ -120,7 +120,7 @@ if(Common::get($result, "status", 400) == 200){
                         $tpp = (int)Common::get($comp, "points", 1);
                         $tpp *= $tp;
                         $tpp = ceil($tpp);//round up, see note above
-                        $tpw = next($users);//Common::get($users, 2, -1);
+                        $tpw = Common::get(array_keys($users), 2, -1);
                         //add to winners array
                         if($tpw > 0) {
                             $winners[$tpw] = [$tpp, "3rd", $title];
