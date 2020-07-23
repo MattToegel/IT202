@@ -117,6 +117,7 @@ if(Common::get($result, "status", 400) == 200){
                     error_log("Evaluating winner $winner_id for $reward[0] points, $reward[1] place");
                     if ($winner_id > -1 && $reward > 0) {
                         //this will generate a lot of DB calls depending on how many comps complete
+                        error_log(var_export($comp, true));
                         $title = Common::get($comp, "title", '');
                         $result = DBH::changePoints($winner_id, $reward[0], -1, "comp_winner", $title . ': ' . $reward[1] . " place");
                         if (Common::get($result, "status", 400) != 200) {
