@@ -74,9 +74,11 @@ if(Common::get($result, "status", 400) == 200){
                 arsort($users);//should have no more than 10 for each comp
                 $comp = null;// Common::get($comps, $comp_id, []);//competition data for point award calc
                 //https://www.php.net/manual/en/function.array-column.php
-                $index = array_search($comp_id, array_column($comps, 'id'));
-                if($index){
-                    $comp = $comps[$index];
+                foreach($comps as $comp){
+                    if(Common::get($comp, "id", -1) == $comp_id){
+                        $comp = $comp;
+                        break;
+                    }
                 }
                 error_log("comp: " . var_export($comp, true));
                 $title = Common::get($comp, "title", '');
