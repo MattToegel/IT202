@@ -65,6 +65,8 @@ if(Common::get($result, "status", 400) == 200){
             }
             //here our $scoreboard should be populated into unique competitions
             foreach ($scoreboard as $comp_id => $users) {
+                error_log("Users var");
+                error_log(var_export($users, true));
                 //shouldn't need to do this since it should come from the DB in proper order
                 //but just being sure
                 //TODO put key/value pairs in desc order based on value
@@ -112,7 +114,7 @@ if(Common::get($result, "status", 400) == 200){
                 $hadError = false;
                 foreach ($winners as $winner_id => $reward) {
                     //filter out invalid entries from above calculation
-                    error_log("Evaluating winner $winner_id for $reward points");
+                    error_log("Evaluating winner $winner_id for $reward[0] points, $reward[1] place");
                     if ($winner_id > -1 && $reward > 0) {
                         //this will generate a lot of DB calls depending on how many comps complete
                         $title = Common::get($comp, "title", '');
