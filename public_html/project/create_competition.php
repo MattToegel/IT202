@@ -115,7 +115,7 @@ if(Common::get($_POST, "submit", false)){
                    id="reward" name="reward" value="1" min="1" max="50" required/>
         </div>
         <div class="form-group">
-            <input type="submit" id="submit" name="submit" class="btn btn-primary" value="Create Competition (Cost: 1)"/>
+            <input type="submit" id="submit" name="submit" class="btn btn-primary" value="Create Competition (Cost: 2)"/>
         </div>
     </form>
     <script>
