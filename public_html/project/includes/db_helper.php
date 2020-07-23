@@ -466,7 +466,7 @@ class DBH{
                     $query .= ", (:question$ni, :user_id, :questionnaire_id)";
                 }
             }
-            error_log(var_export($query));
+            error_log(var_export($query, true));
             $stmt = DBH::getDB()->prepare($query);
             $stmt->execute($params);
             DBH::verify_sql($stmt);
