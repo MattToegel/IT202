@@ -44,6 +44,7 @@ if(Common::get($_GET, "c", false)){
                                 $available -= $cost;
                                 $_SESSION["user"]["points"] = $available;
                             }
+                            Common::flash("You've successfully registered for the competition", "success");
                         }
                     } else {
                         Common::flash("Error registering for competition, likely you already registered", "warning");
