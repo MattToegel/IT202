@@ -94,7 +94,7 @@ if(isset($_POST["score"]) && isset($_POST["outcome"])) {
                 //only save if we have points to save
 
                 //give points
-                $p_resp = DBH::changePoints($user_id, $points);
+                $p_resp = DBH::changePoints($user_id, $points, -1, "earned", "won a round");
                 $points_response = Common::get($p_resp, "status", 400) == 200;
             }
             else{
