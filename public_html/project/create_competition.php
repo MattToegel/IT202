@@ -78,22 +78,22 @@ if(Common::get($_POST, "submit", false)){
         </div>
         <div class="form-group">
             <label for="fpp">First Place 100%</label>
-            <input class="form-control" type="range" id="fpp" onchange="updateDisplay(this);"
+            <input class="form-control" type="range" id="fpp" oninput="updateDisplay(this);"
                    name="fpp" value="100" min="0" max="100"/>
         </div>
         <div class="form-group">
             <label for="spp">Second Place 0%</label>
-            <input class="form-control" type="range" id="spp" onchange="updateDisplay(this);"
+            <input class="form-control" type="range" id="spp" oninput="updateDisplay(this);"
                    name="spp" value="0" min="0" max="100"/>
         </div>
         <div class="form-group">
             <label for="tpp">Third Place 0%</label>
-            <input class="form-control" type="range" id="tpp" onchange="updateDisplay(this);"
+            <input class="form-control" type="range" id="tpp" oninput="updateDisplay(this);"
                    name="tpp" value="0" min="0" max="100"/>
         </div>
         <div class="form-group">
             <label for="entry_fee">Entry Fee (points)</label>
-            <input class="form-control" type="number" id="entry_fee" name="entry_fee" value="0" min="0"/>
+            <input class="form-control" type="number" id="entry_fee" name="entry_fee" value="0" min="0" required/>
         </div>
         <div class="form-group">
             <label for="increment_entry">Increment On Entry</label>
@@ -102,7 +102,7 @@ if(Common::get($_POST, "submit", false)){
         </div>
         <div class="form-group eci" style="display:none;">
             <label for="eci">Entry Point-Increment %</label>
-            <input class="form-control" type="range" id="eci" onchange="updateDisplay(this);"
+            <input class="form-control" type="range" id="eci" oninput="updateDisplay(this);"
                    name="eci" value="0" min="0" max="100"/>
         </div>
         <div class="form-group">
@@ -111,7 +111,7 @@ if(Common::get($_POST, "submit", false)){
         </div>
         <div class="form-group">
             <label for="reward">Points Reward</label>
-            <input class="form-control" type="number" onchange="updateCost(this);"
+            <input class="form-control" type="number" oninput="updateCost(this);"
                    id="reward" name="reward" value="1" min="1" max="50" required/>
         </div>
         <div class="form-group">
