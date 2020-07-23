@@ -72,6 +72,7 @@ if(Common::get($result, "status", 400) == 200){
                 //TODO put key/value pairs in desc order based on value
                 arsort($users);//should have no more than 10 for each comp
                 $comp = Common::get($comps, $comp_id, []);//competition data for point award calc
+                $title = Common::get($comp, "title", '');
                 $fp = (float)round(Common::get($comp, "first_place", 1), 1);
                 $winners = [];
                 //TODO likely there will be rounding errors and we may generate
@@ -84,7 +85,7 @@ if(Common::get($result, "status", 400) == 200){
                     $fpp = round($fpp, 0);//round to nearest whole number, see note above
                     $fpw = current($users);//Common::get($users, 0, -1);
                     //add to winners array
-                    $winners[$fpw] = [$fpp, "1st"];
+                    $winners[$fpw] = [$fpp, "1st", $title];
 
                 } else {
                     $sp = (float)round(Common::get($comp, "second_place", 0), 1);
@@ -94,7 +95,7 @@ if(Common::get($result, "status", 400) == 200){
                     $spp = round($spp, 0);//round to nearest whole number, see note above
                     $spw = next($users);//Common::get($users, 1, -1);
                     //add to winners array
-                    $winners[$spw] = [$spp, "2nd"];
+                    $winners[$spw] = [$spp, "2nd", $title];
                     if (round($fp + $sp, 1) == 1.0) {//again be careful
                         //ok we can stop
                     } else {
@@ -105,27 +106,26 @@ if(Common::get($result, "status", 400) == 200){
                         $tpp = round($tpp, 0);//round to nearest whole number, see note above
                         $tpw = next($users);//Common::get($users, 2, -1);
                         //add to winners array
-                        $winners[$tpw] = [$tpp, "3rd"];
+                        $winners[$tpw] = [$tpp, "3rd", $title];
                     }
                 }
                 error_log("Winners");
                 error_log(var_export($winners, true));
                 //TODO award our winners
                 $hadError = false;
-                foreach ($winners as $winner_id => $reward) {
+                foreach ($winners as $winner_id => $reward_data) {
                     //filter out invalid entries from above calculation
-                    error_log("Evaluating winner $winner_id for $reward[0] points, $reward[1] place");
-                    if ($winner_id > -1 && $reward > 0) {
+                    error_log("Evaluating winner $winner_id for $reward_data[0] points, $reward_data[1] place");
+                    if ($winner_id > -1 && $reward_data > 0) {
                         //this will generate a lot of DB calls depending on how many comps complete
-                        error_log(var_export($comp, true));
-                        $title = Common::get($comp, "title", '');
-                        $result = DBH::changePoints($winner_id, $reward[0], -1, "comp_winner", $title . ': ' . $reward[1] . " place");
+                        $result = DBH::changePoints($winner_id, $reward_data[0], -1, "comp_winner",
+                            $reward_data[2] . ': ' . $reward_data[1] . " place");
                         if (Common::get($result, "status", 400) != 200) {
-                            error_log("Error awarding user[$winner_id] $reward[0] points for $reward[1] place");
+                            error_log("Error awarding user[$winner_id] $reward_data[0] points for $reward_data[1] place");
                             $hadError = true;
                         }
                         else{
-                            error_log("Awarded user[$winner_id] $reward[0] points for $reward[1] place");
+                            error_log("Awarded user[$winner_id] $reward_data[0] points for $reward_data[1] place");
                         }
                     }
                 }
