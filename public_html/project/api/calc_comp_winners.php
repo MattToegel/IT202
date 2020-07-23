@@ -83,6 +83,7 @@ if(Common::get($result, "status", 400) == 200){
                     $fpw = Common::get($users, 0, -1);
                     //add to winners array
                     $winners[$fpw] = [$fpp, "1st"];
+                    
                 } else {
                     $sp = (float)round(Common::get($comp, "second_place", 0), 1);
                     //get our 2nd place winner
@@ -105,17 +106,23 @@ if(Common::get($result, "status", 400) == 200){
                         $winners[$tpw] = [$tpp, "3rd"];
                     }
                 }
+                error_log("Winners");
+                error_log(var_export($winners, true));
                 //TODO award our winners
                 $hadError = false;
                 foreach ($winners as $winner_id => $reward) {
                     //filter out invalid entries from above calculation
-                    if ($winner_id > -1) {
+                    error_log("Evaluating winner $winner_id for $reward points");
+                    if ($winner_id > -1 && $reward > 0) {
                         //this will generate a lot of DB calls depending on how many comps complete
                         $title = Common::get($comp, "title", '');
                         $result = DBH::changePoints($winner_id, $reward[0], -1, "comp_winner", $title . ': ' . $reward[1] . " place");
                         if (Common::get($result, "status", 400) != 200) {
                             error_log("Error awarding user[$winner_id] $reward[0] points for $reward[1] place");
                             $hadError = true;
+                        }
+                        else{
+                            error_log("Awarded user[$winner_id] $reward[0] points for $reward[1] place");
                         }
                     }
                 }
