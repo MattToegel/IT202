@@ -34,14 +34,16 @@ if(Common::get($_GET, "c", false)){
                         $stat_result = DBH::get_competition_stats($comp_id);
                         if (Common::get($stat_result, "status", 400) == 200) {
                             $data = Common::get($stat_result, "data", []);
-                            $participant_count = Common::get($data, "participants", 1);
+                            $participant_count = Common::get($data, "participants", 0);
                             if ($ioe) {
                                 $points = (int)round(($cost * $participant_count) * $poe, 0);
                             }
                             DBH::update_competition_data($comp_id, $points, $participant_count);
                             //immediately update session to prevent a needed db call
-                            $available -= $cost;
-                            $_SESSION["user"]["points"] = $available;
+                            if($cost > 0) {
+                                $available -= $cost;
+                                $_SESSION["user"]["points"] = $available;
+                            }
                         }
                     } else {
                         Common::flash("Error registering for competition, likely you already registered", "warning");
