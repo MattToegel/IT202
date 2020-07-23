@@ -89,6 +89,7 @@ if(Common::get($result, "status", 400) == 200){
                 //TODO likely there will be rounding errors and we may generate
                 //more points than necessary, but the amount should be small enough that we don't care
                 //you can do extra validation/math if it really matters
+                reset($users);
                 if ($fp == 1.0) {//be very careful with float comparison
                     //this is the easy one, just 1 winner
                     $fpp = (int)Common::get($comp, "points", 1);
