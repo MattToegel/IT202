@@ -38,18 +38,28 @@ if(Common::get($result, "status", 400) == 200){
                 $cid = Common::get($d, "competition_id", -1);
                 $uid = Common::get($d, "user_id", -1);
                 $wins = Common::get($d, "wins", 0);//technically will not exist since only wins are pulled
-                if (!array_key_exists($cid , $scoreboard)) {
-                    //if key doesn't exist add it
-                    array_push($scoreboard, [$cid=>[]]);
-                    error_log(var_export($scoreboard, true));
-                    //scoreboard[cid]
+                if($cid > -1) {
+                    if($uid > -1) {
+                        if (!array_key_exists($cid, $scoreboard)) {
+                            //if key doesn't exist add it
+                            array_push($scoreboard, [$cid => []]);
+                            error_log(var_export($scoreboard, true));
+                            //scoreboard[cid]
+                        }
+                        //now we can push user-wins to the key
+                        array_push($scoreboard[$cid], [
+                            $uid => $wins
+                        ]);
+                        error_log("Scoreboard after winner appended");
+                        error_log(var_export($scoreboard, true));
+                    }
+                    else{
+                        error_log("User id for Competition $cid is -1 during scoreboard loop");
+                    }
                 }
-                //now we can push user-wins to the key
-                array_push($scoreboard[$cid], [
-                    $uid => $wins
-                ]);
-                error_log("Scoreboard after winner appended");
-                error_log(var_export($scoreboard, true));
+                else{
+                    error_log("Competition id is -1 during scoreboard loop");
+                }
                 //scoreboard[cid][bob=>10, joe=>5]
             }
             //here our $scoreboard should be populated into unique competitions
@@ -129,7 +139,7 @@ if(Common::get($result, "status", 400) == 200){
         if (Common::get($result, "status", 400) != 200) {
             error_log("Error marking competition as calc completed for invalid comps");
         } else {
-            error_log("Marked Invalid Competitions (" . ',' . join($comp_ids_invalid) . ") as completed");
+            error_log("Marked Invalid Competitions (" . (','.join($comp_ids_invalid)) . ") as completed");
         }
     }
     else{
