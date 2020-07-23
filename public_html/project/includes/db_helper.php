@@ -348,6 +348,19 @@ class DBH{
             return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
         }
     }
+    public static function update_item_quantity($item_id, $quantity){
+        try{
+            $query =  file_get_contents(__DIR__ . "/../sql/queries/update_item_quantity.sql");
+            $stmt = DBH::getDB()->prepare($query);
+            $stmt->execute([":id"=>$item_id, ":q"=>$quantity]);
+            DBH::verify_sql($stmt);
+            return DBH::response(NULL,200, "success");
+        }
+        catch(Exception $e){
+            error_log($e->getMessage());
+            return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
+        }
+    }
     public static function save_order($data){
         try {
             $query = file_get_contents(__DIR__ . "/../sql/queries/get_max_order_id.sql");
@@ -369,8 +382,10 @@ class DBH{
                         ":quantity"=>$item["quantity"],
                         ":price"=>$item["cost"]
                     ]);
+                    //TODO update item quantity (really should verify it worked)
+                    DBH::update_item_quantity($item["id"], $item["quantity"]);
                 }
-                return DBH::response($result,200, "success");
+                return DBH::response(NULL,200, "success");
             }
             else{
                 return DBH::response(NULL, 400, "error");
