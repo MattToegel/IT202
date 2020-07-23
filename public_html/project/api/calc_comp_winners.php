@@ -28,12 +28,13 @@ if(Common::get($result, "status", 400) == 200){
             error_log("Comp ID is -1 during competitions loop");
         }
     }
-    //TODO take a look at this function, decent bit of magic happens inside
-    //goal: for each competition get the top 10 (only counts if there were wins during the competition active period
+
     if(count($comp_ids) <= 0){
         error_log("No valid competitions to process");
     }
     else{
+        //TODO take a look at this function, decent bit of magic happens inside
+        //goal: for each competition get the top 10 (only counts if there were wins during the competition active period
         $result = DBH::get_competitions_scoreboard($comp_ids);
         if(Common::get($result, "status", 400) == 200) {
             $scoreboard = [];
