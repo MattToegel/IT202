@@ -89,21 +89,20 @@ if(Common::get($result, "status", 400) == 200){
                 //TODO likely there will be rounding errors and we may generate
                 //more points than necessary, but the amount should be small enough that we don't care
                 //you can do extra validation/math if it really matters
-
+                $fpp = (int)Common::get($comp, "points", 1);
+                $fpp *= $fp;
+                $fpp = ceil($fpp);//round up, see note above
+                $fpw = Common::get(array_keys($users), 0, -1);
+                error_log(var_export(array_keys($users), true));
+                error_log($fpw);
+                //add to winners array
+                if($fpw > 0) {
+                    $winners[$fpw] = [$fpp, "1st", $title];
+                }
                 if ($fp == 1.0) {//be very careful with float comparison
                     //this is the easy one, just 1 winner
-                    $fpp = (int)Common::get($comp, "points", 1);
-                    $fpp *= $fp;
-                    $fpp = ceil($fpp);//round up, see note above
-                    $fpw = Common::get(array_keys($users), 0, -1);
-                    error_log(var_export(array_keys($users), true));
-                    error_log($fpw);
-                    //add to winners array
-                    if($fpw > 0) {
-                        $winners[$fpw] = [$fpp, "1st", $title];
-                    }
-
-                } else {
+                }
+                else {
                     $sp = (float)round(Common::get($comp, "second_place", 0), 1);
                     //get our 2nd place winner
                     $spp = (int)Common::get($comp, "points", 1);
