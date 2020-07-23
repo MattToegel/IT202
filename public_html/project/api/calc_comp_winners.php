@@ -40,7 +40,7 @@ if(Common::get($result, "status", 400) == 200){
                 $wins = Common::get($d, "wins", 0);//technically will not exist since only wins are pulled
                 if (!array_key_exists($cid , $scoreboard)) {
                     //if key doesn't exist add it
-                    array_push($scoreboard, $cid);
+                    array_push($scoreboard, [$cid=>[]]);
                     //scoreboard[cid]
                 }
                 //now we can push user-wins to the key
