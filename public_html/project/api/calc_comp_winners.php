@@ -14,13 +14,17 @@ if(Common::get($result, "status", 400) == 200){
         $participants = (int)Common::get($comp, "participants", 0);
         $min_participants = (int)Common::get($comp, "min_participants", 3);
         $comp_id = Common::get($comp, "id", -1);
-        if($participants < $min_participants){
-            //save these for later so we can process them separately
-            //no need to waste resources calculating scores and all for these.
-            array_push($comp_ids_invalid, $comp_id);
+        if($comp_id > -1) {
+            if ($participants < $min_participants) {
+                //save these for later so we can process them separately
+                //no need to waste resources calculating scores and all for these.
+                array_push($comp_ids_invalid, $comp_id);
+            } else {
+                array_push($comp_ids, $comp_id);
+            }
         }
-        else {
-            array_push($comp_ids, $comp_id);
+        else{
+            error_log("Comp ID is -1 during competitions loop");
         }
     }
     //TODO take a look at this function, decent bit of magic happens inside
@@ -43,8 +47,8 @@ if(Common::get($result, "status", 400) == 200){
                         if (!array_key_exists($cid, $scoreboard)) {
                             //if key doesn't exist add it
                             array_push($scoreboard, [$cid => []]);
+                            error_log("Scoreboard after comp key added");
                             error_log(var_export($scoreboard, true));
-                            //scoreboard[cid]
                         }
                         //now we can push user-wins to the key
                         array_push($scoreboard[$cid], [
@@ -60,7 +64,6 @@ if(Common::get($result, "status", 400) == 200){
                 else{
                     error_log("Competition id is -1 during scoreboard loop");
                 }
-                //scoreboard[cid][bob=>10, joe=>5]
             }
             //here our $scoreboard should be populated into unique competitions
             foreach ($scoreboard as $comp_id => $users) {
