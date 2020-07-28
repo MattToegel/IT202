@@ -12,8 +12,8 @@ if(isset($comp_id)) {
     //alternatively we could pass an array of comp_ids but then we'd have to adjust our processing
     $results = DBH::get_competitions_scoreboard([$comp_id]);
     $board = [];
-    if(Common::get($result, "status", 400) == 200){
-        $board = Common::get($result, "data", []);
+    if(Common::get($results, "status", 400) == 200){
+        $board = Common::get($results, "data", []);
         error_log(var_export($board, true));
     }
 }
@@ -23,22 +23,28 @@ if(isset($comp_id)) {
     <div class="list-group">
         <div class="list-group-item">
             <div class="row">
-                <div class="col-6">
+                <div class="col-4">
                     User
                 </div>
-                <div class="col-6">
+                <div class="col-4">
                     Score
+                </div>
+                <div class="col-4">
+                    Rank
                 </div>
             </div>
         </div>
         <?php foreach($board as $result):?>
         <div class="list-group-item">
             <div class="row">
-                <div class="col-6">
+                <div class="col-4">
                     <?php echo "user#" . Common::get($result, "user_id", -1);?>
                 </div>
-                <div class="col-6">
+                <div class="col-4">
                     <?php echo Common::get($result, "wins", 0);?>
+                </div>
+                <div class="col-4">
+                    <?php echo Common::get($result, "rnk", 0);?>
                 </div>
             </div>
         </div>
