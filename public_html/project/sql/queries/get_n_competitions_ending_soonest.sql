@@ -1,0 +1,1 @@
+SELECT id, title, participants, expires, points FROM Competitions where calced_winner = 0 order by expires asc limit :n

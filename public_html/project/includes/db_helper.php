@@ -849,4 +849,18 @@ class DBH{
             return DBH::response(NULL, 400, "error");
         }
     }
+    public static function get_n_competitions_ending_soonest($n = 3){
+        $query = file_get_contents(__DIR__ . "/../sql/queries/get_n_competitions_ending_soonest.sql");
+        $stmt = DBH::getDB()->prepare($query);
+        $stmt->bindValue(":n", $n, PDO::PARAM_INT);
+        $result = $stmt->execute();
+        DBH::verify_sql($stmt);
+        if($result){
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            return DBH::response($results,200, "success");
+        }
+        else{
+            return DBH::response(NULL, 400, "error");
+        }
+    }
 }
