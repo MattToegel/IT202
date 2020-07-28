@@ -852,7 +852,7 @@ class DBH{
     public static function get_n_competitions_ending_soonest($n = 3){
         $query = file_get_contents(__DIR__ . "/../sql/queries/get_n_competitions_ending_soonest.sql");
         $stmt = DBH::getDB()->prepare($query);
-        $stmt->bindValue(":n", $n, PDO::PARAM_INT);
+        $stmt->bindParam(":n", $n, PDO::PARAM_INT);
         $result = $stmt->execute();
         DBH::verify_sql($stmt);
         if($result){
