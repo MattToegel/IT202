@@ -383,7 +383,8 @@ class DBH{
                         ":price"=>$item["cost"]
                     ]);
                     //TODO update item quantity (really should verify it worked)
-                    DBH::update_item_quantity($item["id"], $item["quantity"]);
+                    //fixed issue where it was adding quantity instead of subtracting :)
+                    DBH::update_item_quantity($item["id"], -$item["quantity"]);
                 }
                 return DBH::response(NULL,200, "success");
             }
