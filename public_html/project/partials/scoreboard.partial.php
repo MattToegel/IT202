@@ -14,6 +14,7 @@ if(isset($comp_id)) {
     $board = [];
     if(Common::get($result, "status", 400) == 200){
         $board = Common::get($result, "data", []);
+        error_log(var_export($board, true));
     }
 }
 ?>
