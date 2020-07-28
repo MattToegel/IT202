@@ -21,6 +21,9 @@ $logged_in = Common::is_logged_in(false);
             <a class="nav-link" href="<?php echo Common::url_for("game");?>">Game</a>
         </li>
         <li class="nav-item">
+            <a class="nav-link" href="<?php echo Common::url_for("rankings");?>">Rankings</a>
+        </li>
+        <li class="nav-item">
             <a class="nav-link" href="<?php echo Common::url_for("shop");?>">Shop</a>
         </li>
         <?php if (Common::has_role("Admin")):?>
