@@ -18,7 +18,7 @@ if(isset($comp_id)) {
     }
 }
 ?>
-<?php if(isset($board) && count($board) > 0):?>
+
 <div class="container-fluid">
     <div class="list-group">
         <div class="list-group-item">
@@ -34,21 +34,27 @@ if(isset($comp_id)) {
                 </div>
             </div>
         </div>
-        <?php foreach($board as $result):?>
-        <div class="list-group-item">
-            <div class="row">
-                <div class="col-4">
-                    <?php echo "user#" . Common::get($result, "user_id", -1);?>
-                </div>
-                <div class="col-4">
-                    <?php echo Common::get($result, "wins", 0);?>
-                </div>
-                <div class="col-4">
-                    <?php echo Common::get($result, "rnk", 0);?>
+        <?php if(isset($board) && count($board) > 0):?>
+            <?php foreach($board as $result):?>
+            <div class="list-group-item">
+                <div class="row">
+                    <div class="col-4">
+                        <?php echo "user#" . Common::get($result, "user_id", -1);?>
+                    </div>
+                    <div class="col-4">
+                        <?php echo Common::get($result, "wins", 0);?>
+                    </div>
+                    <div class="col-4">
+                        <?php echo Common::get($result, "rnk", 0);?>
+                    </div>
                 </div>
             </div>
-        </div>
-        <?php endforeach;?>
+            <?php endforeach;?>
+        <?php else:?>
+            <div class="list-group-item">
+                No participants registered yet
+            </div>
+        <?php endif;?>
     </div>
 </div>
-<?php endif;?>
+

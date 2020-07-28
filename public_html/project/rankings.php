@@ -29,17 +29,19 @@ if(Common::is_logged_in()){
             ]);
         ?>
         <div class="list-group-item">
-            <div>
-                <div><?php echo Common::get($c, "title");?></div>
-                <div>Reward: <?php echo Common::get($c, "points", 1);?></div>
+            <div class="row">
+                <div class="col-4">
+                    <div><?php echo Common::get($c, "title");?></div>
+                    <div>Reward: <?php echo Common::get($c, "points", 1);?></div>
+                </div>
+                <div class="col-4">
+                    <div>Expires: <?php echo Common::get($c, "expires");?></div>
+                </div>
+                <div class="col-4">
+                    <div>Participants: <?php echo $participants;?></div>
+                </div>
             </div>
-            <div>
-                <div>Expires: <?php echo Common::get($c, "expires");?></div>
-            </div>
-            <div>
-                <div>Participants: <?php echo $participants;?></div>
-            </div>
-            <div>
+            <div class="row">
                 <?php $comp_id = Common::get($c, "id", -1);?>
                 <?php include(__DIR__."/partials/scoreboard.partial.php");?>
             </div>
