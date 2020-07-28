@@ -11,9 +11,13 @@ if(isset($comp_id)) {
     //and including a new instance of this script.
     //alternatively we could pass an array of comp_ids but then we'd have to adjust our processing
     $results = DBH::get_competitions_scoreboard([$comp_id]);
+    $board = [];
+    if(Common::get($result, "status", 400) == 200){
+        $board = Common::get($result, "data", []);
+    }
 }
 ?>
-<?php if(isset($results) && count($results) > 0):?>
+<?php if(isset($board) && count($board) > 0):?>
 <div class="container-fluid">
     <div class="list-group">
         <div class="list-group-item">
@@ -26,7 +30,7 @@ if(isset($comp_id)) {
                 </div>
             </div>
         </div>
-        <?php foreach($results as $result):?>
+        <?php foreach($board as $result):?>
         <div class="list-group-item">
             <div class="row">
                 <div class="col-6">
