@@ -59,6 +59,11 @@ $logged_in = Common::is_logged_in(false);
             </li>
         <?php endif; ?>
     </ul>
+    <?php if($logged_in):?>
+    <span class="navbar-text">
+      Balance: <?php echo Common::get($_SESSION["user"], "points", 0);?>
+    </span>
+    <?php endif;?>
 </nav>
 <div id="messages">
     <?php $flash_messages = Common::getFlashMessages();?>
