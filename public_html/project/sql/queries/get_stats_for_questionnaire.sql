@@ -1,5 +1,4 @@
 SELECT
-       :qid,
     question_id,
     (select question from Questions where id = question_id limit 1) as question,
     answer_id,
