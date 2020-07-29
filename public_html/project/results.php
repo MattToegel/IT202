@@ -12,3 +12,18 @@ if(Common::is_logged_in()) {
     }
 }
 ?>
+<div class="list-group">
+    <div class="list-group-item">
+    <?php foreach($stats as $question):?>
+        <?php echo Common::get($question[0], "question","");?>
+        <div class="list-group">
+            <?php foreach($question as $answer):?>
+                <div class="list-group-item">
+                    <?php echo Common::get($answer, "answer", "");?>
+                    <?php echo Common::get($answer, "total", 0);?>
+                </div>
+            <?php endforeach;?>
+        </div>
+    <?php endforeach;?>
+    </div>
+</div>
