@@ -13,12 +13,16 @@ if(Common::is_logged_in()) {
         $result = DBH::get_questionnaire_by_id($survey_id);
         if(Common::get($result, "status", 400) == 200){
             $survey = Common::get($result, "data", []);
+            if(count($survey) == 1){
+                $survey = $survey[0];
+            }
             error_log(var_export($survey, true));
         }
     }
 }
 ?>
-<h3><?php echo Common::get($survey, "title", "");?></h3>
+<h3><?php echo Common::get($survey, "name", "");?></h3>
+<h5><?php echo Common::get($survey, "description", "");?></h5>
 <div class="list-group">
     <div class="list-group-item">
     <?php foreach($stats as $question):?>
