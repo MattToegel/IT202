@@ -39,7 +39,7 @@ if(Common::is_logged_in()) {
                 }
             ?>
             <?php foreach($question as $answer):?>
-                <?php if(Common::get($answer, "answer_id", false)):?>
+                <?php if(Common::get($answer, "group", 0)==0):?>
                 <div class="list-group-item">
 
                     <?php echo Common::get($answer, "answer", "");?>
