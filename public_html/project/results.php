@@ -41,13 +41,14 @@ if(Common::is_logged_in()) {
             <?php foreach($question as $answer):?>
                 <?php if(Common::get($answer, "group", 0)==0):?>
                 <div class="list-group-item">
-
+                    <?php
+                        $p = (float)Common::get($answer,"total", 0) / (float)$max;
+                    ?>
                     <?php echo Common::get($answer, "answer", "");?>
-
-                    <input class="form-control" type="range" disabled min="0"
-                           max="<?php echo $max;?>"
-                           value="<?php echo Common::get($answer, "total", 0);?>"/>
-                    Total: <?php echo Common::get($answer, "total", 0);?>
+                    <div class="progress">
+                        <div class="progress-bar" role="progressbar" style="width: <?php echo $p;?>%;"
+                             aria-valuenow="<?php echo $p;?>" aria-valuemin="0" aria-valuemax="100"><?php echo $p;?>%</div>
+                    </div>
                 </div>
             <?php endif;?>
             <?php endforeach;?>
