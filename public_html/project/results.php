@@ -15,6 +15,7 @@ if(Common::is_logged_in()) {
 <div class="list-group">
     <div class="list-group-item">
     <?php foreach($stats as $question):?>
+        <?php if(Common::get($question[0], "question_id", false) || Common::get($question[0], "answer_id", false)):?>
         <?php echo Common::get($question[0], "question","");?>
         <div class="list-group">
             <?php
@@ -27,15 +28,15 @@ if(Common::is_logged_in()) {
                 }
             ?>
             <?php foreach($question as $answer):?>
-                <?php if(Common::get($answer, "question_id", false) || Common::get($answer, "answer_id", false)):?>
+
                 <div class="list-group-item">
                     <?php echo Common::get($answer, "answer", "");?>
                     <?php echo Common::get($answer, "total", 0);?>
                     Max: <?php echo $max;?>
                 </div>
-                <?php endif;?>
             <?php endforeach;?>
         </div>
+        <?php endif;?>
     <?php endforeach;?>
     </div>
 </div>
