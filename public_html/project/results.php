@@ -27,11 +27,13 @@ if(Common::is_logged_in()) {
                 }
             ?>
             <?php foreach($question as $answer):?>
+                <?php if(Common::get($answer, "question_id", false) && Common::get($answer, "answer_id", false)):?>
                 <div class="list-group-item">
                     <?php echo Common::get($answer, "answer", "");?>
                     <?php echo Common::get($answer, "total", 0);?>
                     Max: <?php echo $max;?>
                 </div>
+                <?php endif;?>
             <?php endforeach;?>
         </div>
     <?php endforeach;?>
