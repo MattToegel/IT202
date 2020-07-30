@@ -39,7 +39,7 @@ if(Common::is_logged_in()) {
                 }
             ?>
             <?php foreach($question as $answer):?>
-
+                <?php if(Common::get($answer, "answer_id", false)):?>
                 <div class="list-group-item">
 
                     <?php echo Common::get($answer, "answer", "");?>
@@ -47,8 +47,9 @@ if(Common::is_logged_in()) {
                     <input class="form-control" type="range" disabled min="0"
                            max="<?php echo $max;?>"
                            value="<?php echo Common::get($answer, "total", 0);?>"/>
-                    Max: <?php echo $max;?>
+                    Total: <?php echo Common::get($answer, "total", 0);?>
                 </div>
+            <?php endif;?>
             <?php endforeach;?>
         </div>
         <?php endif;?>
