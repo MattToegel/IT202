@@ -24,6 +24,7 @@ if(Common::get($response, "status", 400) == 200){
                     <div>Daily Attempts: <?php echo Common::get($s, "attempts_per_day", 0);?></div>
                 <?php endif; ?>
                 <a href="survey.php?s=<?php echo Common::get($s, 'id', -1);?>" class="btn btn-secondary">Participate</a>
+                <a href="results.php?survey_id=<?php echo Common::get($s, 'id', -1);?>" class="btn btn-secondary">Results</a>
             </div>
         <?php endforeach; ?>
         <?php if(count($available) == 0):?>
