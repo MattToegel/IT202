@@ -9,6 +9,7 @@ if(Common::is_logged_in()){
     }
 }
 ?>
+<div class="container-fluid">
 <h4>Top 3 Competitions</h4>
 <div class="list-group">
 <?php if(isset($comps) && count($comps) > 0):?>
@@ -50,4 +51,5 @@ if(Common::is_logged_in()){
 <?php else:?>
     <div class="list-group-item">No competitions available</div>
 <?php endif;?>
+</div>
 </div>

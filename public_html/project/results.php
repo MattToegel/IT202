@@ -21,6 +21,7 @@ if(Common::is_logged_in()) {
     }
 }
 ?>
+<div class="container-fluid">
 <h3><?php echo Common::get($survey, "name", "");?></h3>
 <h5><?php echo Common::get($survey, "description", "");?></h5>
 <div class="list-group">
@@ -56,4 +57,5 @@ if(Common::is_logged_in()) {
         <?php endif;?>
     <?php endforeach;?>
     </div>
+</div>
 </div>

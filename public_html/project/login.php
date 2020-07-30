@@ -1,7 +1,7 @@
 <?php
 include_once(__DIR__."/partials/header.partial.php");
 ?>
-    <div>
+    <div class="container-fluid">
         <h4>Login</h4>
         <form method="POST">
             <div>

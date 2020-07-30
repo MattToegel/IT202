@@ -4,6 +4,7 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 include_once(__DIR__."/partials/header.partial.php");
 ?>
+<div class="container-fluid">
 <div class="jumbotron">
     <h1 class="display-4">Welcome to <u>Tanks For Playing!</u></h1>
     <p class="lead">This is a sample project by Matt Toegel for his IT202 Summer class.</p>
@@ -26,4 +27,5 @@ include_once(__DIR__."/partials/header.partial.php");
         </div>
     </div>
     <a class="btn btn-primary btn-lg" href="register.php" role="button">Join the Fun!</a>
+</div>
 </div>
