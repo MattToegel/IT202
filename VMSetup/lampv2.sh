@@ -13,6 +13,12 @@ sudo apt update -y
 #Upgrade packages
 sudo apt upgrade -y
 
+sudo fallocate -l 2G /swapfile
+sudo chmod 600 /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfile
+echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+
 #install apache2
 sudo apt install -y apache2 apache2-utils
 
@@ -59,8 +65,8 @@ sudo systemctl restart apache2
 db_root_password=$(generatePassword)
 #install mysql
 export DEBIAN_FRONTEND="noninteractive"  
- debconf-set-selections <<< "mysql-server mysql-server/root_password password $db_root_password"  
- debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $db_root_password"
+debconf-set-selections <<< "mysql-server mysql-server/root_password password $db_root_password"  
+debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $db_root_password"
 sudo apt-get install -y mysql-server
 
 
