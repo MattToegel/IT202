@@ -42,7 +42,7 @@ if(Common::is_logged_in()) {
                 <?php if(Common::get($answer, "group", 0)==0):?>
                 <div class="list-group-item">
                     <?php
-                        $p = ((float)Common::get($answer,"total", 0) / (float)$max) * 100;
+                        $p = round(((float)Common::get($answer,"total", 0) / (float)$max) * 100, 2);
                     ?>
                     <?php echo Common::get($answer, "answer", "");?>
                     <div class="progress">
