@@ -9,9 +9,15 @@ if(Common::is_logged_in()) {
             $stats = Common::get($result, "data", []);
             error_log(var_export($stats, true));
         }
+        //not really necessary if the above call is crafted well, but got lazy here
+        $result = DBH::get_questionnaire_by_id($survey_id);
+        if(Common::get($result, "status", 400) == 200){
+            $survey = Common::get($result, "data", []);
+        }
     }
 }
 ?>
+<h3><?php echo Common::get($survey, "title", "");?></h3>
 <div class="list-group">
     <div class="list-group-item">
     <?php foreach($stats as $question):?>
