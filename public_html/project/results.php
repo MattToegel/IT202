@@ -13,6 +13,7 @@ if(Common::is_logged_in()) {
         $result = DBH::get_questionnaire_by_id($survey_id);
         if(Common::get($result, "status", 400) == 200){
             $survey = Common::get($result, "data", []);
+            error_log(var_export($survey, true));
         }
     }
 }
