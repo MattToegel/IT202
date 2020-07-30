@@ -41,8 +41,12 @@ if(Common::is_logged_in()) {
             <?php foreach($question as $answer):?>
 
                 <div class="list-group-item">
+
                     <?php echo Common::get($answer, "answer", "");?>
-                    <?php echo Common::get($answer, "total", 0);?>
+
+                    <input class="form-control" type="range" disabled min="0"
+                           max="<?php echo $max;?>"
+                           value="<?php echo Common::get($answer, "total", 0);?>"/>
                     Max: <?php echo $max;?>
                 </div>
             <?php endforeach;?>
