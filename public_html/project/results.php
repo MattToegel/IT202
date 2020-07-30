@@ -17,10 +17,20 @@ if(Common::is_logged_in()) {
     <?php foreach($stats as $question):?>
         <?php echo Common::get($question[0], "question","");?>
         <div class="list-group">
+            <?php
+                $max = 0;
+                foreach($question as $a){
+                    if(Common::get($a, "group", 0) == 1){
+                        $max = Common::get($a, "total", 0);
+                        break;
+                    }
+                }
+            ?>
             <?php foreach($question as $answer):?>
                 <div class="list-group-item">
                     <?php echo Common::get($answer, "answer", "");?>
                     <?php echo Common::get($answer, "total", 0);?>
+                    Max: <?php echo $max;?>
                 </div>
             <?php endforeach;?>
         </div>
