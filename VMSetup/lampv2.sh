@@ -28,6 +28,9 @@ sudo systemctl start apache2
 #enable apache2 on boot
 sudo systemctl enable apache2
 
+#install firewall
+sudo apt install ufw -y
+
 #open firewall for apache2 (may also need to do this through Provider's UI)
 # if so keep these firewall rules in sync
 sudo ufw allow in "Apache Full"
@@ -57,6 +60,10 @@ sudo a2enmod proxy_fcgi setenvif
 
 #enable config /etc/apache2/conf-available/php7.4-fpm.conf
 sudo a2enconf php7.4-fpm
+
+#enable user directory
+sudo a2enmod userdir
+
 
 #restart apache
 sudo systemctl restart apache2
@@ -88,14 +95,7 @@ sudo apt-get install -y mysql-server
     fi
  }
  
-#setup mysql vars
- BIN_MYSQL=$(which mysql)
-
- DB_HOST='localhost'
- DB_NAME=$sshuser
- DB_USER=$sshuser
- DB_PASS=$(generatePassword)
-  # Find or Get user to assign to www-data group 
+   # Find or Get user to assign to www-data group 
  echo "Fetching non-root user"
  user=$(w -shf)
  IFS=' '
@@ -111,13 +111,54 @@ sudo apt-get install -y mysql-server
     echo "Using given user $sshuser"
  fi
  
+#setup mysql vars
+ BIN_MYSQL=$(which mysql)
+
+ DB_HOST='localhost'
+ DB_NAME=$sshuser
+ DB_USER=$sshuser
+ DB_PASS=$(generatePassword)
+
+ 
  createMysqlDbUser
  
  sudo mkdir /home/$sshuser/.emergency
  sudo chmod 600 /home/$sshuser/.emergency
- echo "DBR: $db_root_password" >> /home/$sshuser/.emergency/.privatecreds
+ echo "DBR: $db_root_password" > /home/$sshuser/.emergency/.privatecreds
  echo "DBUU: $DB_USER" >> /home/$sshuser/.emergency/.privatecreds
  echo "DBUP: $DB_PASS" >> /home/$sshuser/.emergency/.privatecreds
  sudo chmod 600 /home/$sshuser/.emergency/.privatecreds
+ 
+ #setup local dir
+ sudo mkdir /home/$sshuser/public_html
+ sudo chmod -R 755 /home/$sshuser/public_html
+ sudo chown -R $sshuser:www-data /home/$sshuser/public_html
+ 
+ #tuning apache
+ sudo echo "StartServers 1" > /etc/apache2/conf-available/low-res.conf
+ sudo echo "MinSpareServers 1" >> /etc/apache2/conf-available/low-res.conf
+ sudo echo "MaxSpareServers 5" >> /etc/apache2/conf-available/low-res.conf
+ sudo echo "ServerLimit 64" >> /etc/apache2/conf-available/low-res.conf
+ sudo echo "MaxClients 64" >> /etc/apache2/conf-available/low-res.conf
+ sudo echo "MaxRequestsPerChild 4000" >> /etc/apache2/conf-available/low-res.conf
+ 
+ #enable it
+ sudo ln -s /etc/apache2/conf-available/low-res.conf /etc/apache2/conf-enabled/low-res.conf
+ sudo systemctl restart apache2
+ 
+ #tuning mysql
+ sudo echo "[mysqld]" > /etc/mysql/my.cnf
+sudo echo "port = 3306" >> /etc/mysql/my.cnf
+sudo echo "socket = /var/lib/mysql/mysql.sock" >> /etc/mysql/my.cnf
+sudo echo "skip-locking" >> /etc/mysql/my.cnf
+sudo echo "set-variable = key_buffer=16K" >> /etc/mysql/my.cnf
+sudo echo "set-variable = max_allowed_packet=1M" >> /etc/mysql/my.cnf
+sudo echo "set-variable = thread_stack=64K" >> /etc/mysql/my.cnf
+sudo echo "set-variable = table_cache=4" >> /etc/mysql/my.cnf
+sudo echo "set-variable = sort_buffer=64K" >> /etc/mysql/my.cnf
+sudo echo "set-variable = net_buffer_length=2K" >> /etc/mysql/my.cnf
+
+sudo systemctl restart mysql
+ 
  
  sudo apt install -y git nano
