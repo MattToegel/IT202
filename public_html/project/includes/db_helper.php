@@ -383,7 +383,8 @@ class DBH{
                         ":price"=>$item["cost"]
                     ]);
                     //TODO update item quantity (really should verify it worked)
-                    DBH::update_item_quantity($item["id"], $item["quantity"]);
+                    //fixed issue where it was adding quantity instead of subtracting :)
+                    DBH::update_item_quantity($item["id"], -$item["quantity"]);
                 }
                 return DBH::response(NULL,200, "success");
             }
@@ -546,6 +547,27 @@ class DBH{
         }
     }
     public static function get_questionnaire_by_id($questionnaire_id){
+        try {
+            //need to use a workaround for PDO
+            $query = file_get_contents(__DIR__ . "/../sql/queries/get_questionnaire.sql");
+            $stmt = DBH::getDB()->prepare($query);
+            $result = $stmt->execute([":questionnaire_id"=>$questionnaire_id]);//not using associative array here
+            DBH::verify_sql($stmt);
+            if ($result) {
+                $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                error_log(var_export($result, true));
+                return DBH::response($result,200, "success");
+            }
+            else{
+                return DBH::response($result,400, "error");
+            }
+        }
+        catch(Exception $e){
+            error_log($e->getMessage());
+            return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
+        }
+    }
+    public static function get_full_questionnaire_by_id($questionnaire_id){
         try {
             //need to use a workaround for PDO
             $query = file_get_contents(__DIR__ . "/../sql/queries/get_full_questionnaire.sql");
@@ -835,10 +857,31 @@ class DBH{
         }
     }
     public static function get_latest_transactions($user_id){
-        $query = file_get_contents(__DIR__ . "/../sql/queries/get_latest_transactions.sql");
+        try {
+            $query = file_get_contents(__DIR__ . "/../sql/queries/get_latest_transactions.sql");
+            $stmt = DBH::getDB()->prepare($query);
+            //pass in our array of ids (it should seamlessly map to our $in
+            $result = $stmt->execute([":uid" => $user_id]);
+            DBH::verify_sql($stmt);
+            if ($result) {
+                $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                return DBH::response($results, 200, "success");
+            } else {
+                return DBH::response(NULL, 400, "error");
+            }
+
+        }
+        catch(Exception $e){
+            error_log($e->getMessage());
+            return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
+        }
+    }
+    public static function get_n_competitions_ending_soonest($n = 3){
+        try{
+        $query = file_get_contents(__DIR__ . "/../sql/queries/get_n_competitions_ending_soonest.sql");
         $stmt = DBH::getDB()->prepare($query);
-        //pass in our array of ids (it should seamlessly map to our $in
-        $result = $stmt->execute([":uid"=>$user_id]);
+        $stmt->bindParam(":n", $n, PDO::PARAM_INT);
+        $result = $stmt->execute();
         DBH::verify_sql($stmt);
         if($result){
             $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -846,6 +889,67 @@ class DBH{
         }
         else{
             return DBH::response(NULL, 400, "error");
+        }
+        }
+        catch(Exception $e){
+            error_log($e->getMessage());
+            return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
+        }
+    }
+    public static function get_stats_for_questionnaire($questionnaire_id){
+        try{
+            $query = file_get_contents(__DIR__ . "/../sql/queries/get_stats_for_questionnaire.sql");
+            $stmt = DBH::getDB()->prepare($query);
+            $result = $stmt->execute([":qid"=>$questionnaire_id]);
+            DBH::verify_sql($stmt);
+            if($result){
+                $results = $stmt->fetchAll(PDO::FETCH_GROUP);
+                return DBH::response($results,200, "success");
+            }
+            else{
+                return DBH::response(NULL, 400, "error");
+            }
+        }
+        catch(Exception $e){
+            error_log($e->getMessage());
+            return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
+        }
+    }
+    public static function get_top_10_users_wins($start = null, $end = null){
+        try{
+            $query = file_get_contents(__DIR__ . "/../sql/queries/get_top_10_user_aggregated_wins.sql");
+            if(isset($start) && isset($end)){
+                error_log($start);
+                error_log($end);
+                $s = explode("'win'", $query);
+                $query = ''.join([
+                    $s[0],
+                    " 'win' ",
+                    "and created BETWEEN :start and :end",
+                    " ",
+                    $s[1]
+                    ]);
+            }
+            error_log(var_export($query, true));
+            $stmt = DBH::getDB()->prepare($query);
+            if(isset($s)) {
+                $result = $stmt->execute([":start"=>$start, ":end"=>$end]);
+            }
+            else{
+                $result = $stmt->execute();
+            }
+            DBH::verify_sql($stmt);
+            if($result){
+                $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                return DBH::response($results,200, "success");
+            }
+            else{
+                return DBH::response(NULL, 400, "error");
+            }
+        }
+        catch(Exception $e){
+            error_log($e->getMessage());
+            return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
         }
     }
 }

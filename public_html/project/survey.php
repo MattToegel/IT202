@@ -38,7 +38,7 @@ if(!Common::get($_POST, "submit", false)){
     }
 }
 //TODO: Note, internally calling them questionnaires (and for admin), user facing they're called surveys.
-$response = DBH::get_questionnaire_by_id($questionnaire_id);
+$response = DBH::get_full_questionnaire_by_id($questionnaire_id);
 $available = [];
 if(Common::get($response, "status", 400) == 200){
     $available = Common::get($response, "data", []);

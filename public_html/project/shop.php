@@ -13,7 +13,7 @@ if(Common::is_logged_in()){
 }
 $last_updated = Common::get($_SESSION, "last_sync", false);
 ?>
-<div>
+<div class="container-fluid">
     <h4>Shop</h4>
     <?php if($last_updated):?>
         <p>Points Last Updated: <?php echo $last_updated->format('Y-m-d H:i:s');;?></p>
@@ -150,7 +150,7 @@ $last_updated = Common::get($_SESSION, "last_sync", false);
         console.log(data);
         console.log(JSON.stringify(data));
         $.post("api/complete_purchase.php", {"order": JSON.stringify(data)}, function(data, status){
-            alert("Data: " + data + "\nStatus: " + status);
+            //alert("Data: " + data + "\nStatus: " + status);
             //reload the page
             window.location.replace("shop.php");
         });

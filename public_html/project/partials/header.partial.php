@@ -13,12 +13,18 @@ $logged_in = Common::is_logged_in(false);
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+            <a class="nav-link" href="<?php echo Common::url_for("index");?>">Home</a>
+        </li>
         <?php if($logged_in):?>
         <li class="nav-item">
-            <a class="nav-link" href="<?php echo Common::url_for("home");?>">Home</a>
+            <a class="nav-link" href="<?php echo Common::url_for("dashboard");?>">Dashboard</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" href="<?php echo Common::url_for("game");?>">Game</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="<?php echo Common::url_for("rankings");?>">Rankings</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" href="<?php echo Common::url_for("shop");?>">Shop</a>
@@ -56,6 +62,11 @@ $logged_in = Common::is_logged_in(false);
             </li>
         <?php endif; ?>
     </ul>
+    <?php if($logged_in):?>
+    <span class="navbar-text">
+      Balance: <?php echo Common::get($_SESSION["user"], "points", 0);?>
+    </span>
+    <?php endif;?>
 </nav>
 <div id="messages">
     <?php $flash_messages = Common::getFlashMessages();?>

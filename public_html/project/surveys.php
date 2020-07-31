@@ -23,7 +23,10 @@ if(Common::get($response, "status", 400) == 200){
                 <?php else:?>
                     <div>Daily Attempts: <?php echo Common::get($s, "attempts_per_day", 0);?></div>
                 <?php endif; ?>
+                <?php if(Common::get($s, "available", 0) == 1):?>
                 <a href="survey.php?s=<?php echo Common::get($s, 'id', -1);?>" class="btn btn-secondary">Participate</a>
+                <?php endif;?>
+                <a href="results.php?survey_id=<?php echo Common::get($s, 'id', -1);?>" class="btn btn-secondary">Results</a>
             </div>
         <?php endforeach; ?>
         <?php if(count($available) == 0):?>

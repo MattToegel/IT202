@@ -5,6 +5,7 @@ if(Common::is_logged_in()){
     //this will auto redirect if user isn't logged in
 }
 ?>
+<div class="container-fluid">
 <div class="jumbotron">
     <?php $outcome = Common::get($_SESSION, "outcome", false);?>
     <?php if($outcome):?>
@@ -22,4 +23,5 @@ if(Common::is_logged_in()){
         <p class="lead">Try again?</p>
         <a class="btn btn-secondary" href="game.php">Let's go!</a>
     </div>
+</div>
 </div>
