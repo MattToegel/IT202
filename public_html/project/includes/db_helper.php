@@ -926,6 +926,7 @@ class DBH{
                     $s[1]
                     ]);
             }
+            error_log(var_export($query, true));
             $stmt = DBH::getDB()->prepare($query);
             if(isset($s)) {
                 $result = $stmt->execute([":start"=>$start, ":end"=>$end]);
