@@ -1,4 +1,27 @@
 #!/bin/bash
+
+#The MIT License (MIT)
+
+#Copyright (c) 2020 Matt Toegel
+
+#Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+#The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+#THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+#Purpose: This script installs apache2, mysql, and phpmyadmin. It sets up some things automatically for the logged in user.
+#It should only require 1 entry from the user to confirm that it found the correct ssh user.
+#This script will also apply some configurations to apache2 and mysql to help reduce resource consumption on low mem/low cpu systems.
+#It will generate a random password for mysql and creates 
+
+
+#TL;DR: Not responsible if this borks your existing setup. This script was originally thrown together for my IT202 class to easily get a dev environment
+#spun up on any debian based machine (i.e., Google F1 Micro Instance or AWS EC2 t2.micro, etc)
+#If you're looking for the Heroku one this isn't it.
+#It's not advised to run this script more than once unless you know what you're doing and know how to update things I didn't account for.
+#THIS SCRIPT IS NOT FOR PRODUCTION
+
 # Check if running as root  
 if [ "$(id -u)" != "0" ]; then  
 echo "This script must be run as root" 1>&2  
@@ -13,6 +36,7 @@ sudo apt update -y
 #Upgrade packages
 sudo apt upgrade -y
 
+#You may adjust this as necessary, 1G is fine, I upped it to 2G
 sudo fallocate -l 2G /swapfile
 sudo chmod 600 /swapfile
 sudo mkswap /swapfile
