@@ -9,8 +9,9 @@ if(Common::get($result, "status", 400) == 200){
     $lifetime = Common::get($result, "data", []);
 }
 $now = new DateTime;
+$previous_week = new DateTime();
 $interval = new DateInterval('P1W');
-$previous_week = $now->sub($interval);
+$previous_week = $previous_week->sub($interval);
 $result = DBH::get_top_10_users_wins($previous_week->format("Y-m-d"), $now->format("Y-m-d"));
 $weekly = [];
 if(Common::get($result, "status", 400) == 200){
