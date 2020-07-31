@@ -152,20 +152,40 @@ sudo apt-get install -y mysql-server
  sudo ln -s /etc/apache2/conf-available/low-res.conf /etc/apache2/conf-enabled/low-res.conf
  sudo systemctl restart apache2
  
- #tuning mysql
- sudo echo "[mysqld]" > /etc/mysql/my.cnf
-sudo echo "port = 3306" >> /etc/mysql/my.cnf
-sudo echo "socket = /var/lib/mysql/mysql.sock" >> /etc/mysql/my.cnf
-sudo echo "skip-locking" >> /etc/mysql/my.cnf
-sudo echo "set-variable = key_buffer=16K" >> /etc/mysql/my.cnf
-sudo echo "set-variable = max_allowed_packet=1M" >> /etc/mysql/my.cnf
-sudo echo "set-variable = thread_stack=64K" >> /etc/mysql/my.cnf
-sudo echo "set-variable = table_cache=4" >> /etc/mysql/my.cnf
-sudo echo "set-variable = sort_buffer=64K" >> /etc/mysql/my.cnf
-sudo echo "set-variable = net_buffer_length=2K" >> /etc/mysql/my.cnf
+ #tuning mysql for low mem environment
+sudo echo "[mysqld]" > /etc/mysql/my.cnf
+sudo echo "innodb_buffer_pool_size=5M" >> /etc/mysql/my.cnf
+sudo echo "innodb_log_buffer_size=256K" >> /etc/mysql/my.cnf
+sudo echo "max_connections=10" >> /etc/mysql/my.cnf
+sudo echo "key_buffer_size=8" >> /etc/mysql/my.cnf
+sudo echo "thread_cache_size=0" >> /etc/mysql/my.cnf
+sudo echo "host_cache_size=0" >> /etc/mysql/my.cnf
+sudo echo "innodb_ft_cache_size=1600000" >> /etc/mysql/my.cnf
+sudo echo "innodb_ft_total_cache_size=32000000" >> /etc/mysql/my.cnf
+
+sudo echo "# per thread or per operation settings" >> /etc/mysql/my.cnf
+sudo echo "thread_stack=131072" >> /etc/mysql/my.cnf
+sudo echo "sort_buffer_size=32K" >> /etc/mysql/my.cnf
+sudo echo "read_buffer_size=8200" >> /etc/mysql/my.cnf
+sudo echo "read_rnd_buffer_size=8200" >> /etc/mysql/my.cnf
+sudo echo "max_heap_table_size=16K" >> /etc/mysql/my.cnf
+sudo echo "tmp_table_size=1K" >> /etc/mysql/my.cnf
+sudo echo "bulk_insert_buffer_size=0" >> /etc/mysql/my.cnf
+sudo echo "join_buffer_size=128" >> /etc/mysql/my.cnf
+sudo echo "net_buffer_length=1K" >> /etc/mysql/my.cnf
+sudo echo "innodb_sort_buffer_size=64K" >> /etc/mysql/my.cnf
+
+sudo echo "#settings that relate to the binary log (if enabled)" >> /etc/mysql/my.cnf
+sudo echo "binlog_cache_size=4K" >> /etc/mysql/my.cnf
 
 sudo systemctl restart mysql
 
+debconf-set-selections <<< "phpmyadmin phpmyadmin/dbconfig-install boolean true"
+debconf-set-selections <<< "phpmyadmin phpmyadmin/app-password-confirm password $DB_PASS"
+debconf-set-selections <<< "phpmyadmin phpmyadmin/mysql/admin-pass password $DB_PASS"
+debconf-set-selections <<< "phpmyadmin phpmyadmin/mysql/app-pass password $DB_PASS"
+debconf-set-selections <<< "phpmyadmin phpmyadmin/reconfigure-webserver multiselect apache2"
+sudo apt install phpmyadmin
 
  
  sudo apt install -y git nano
