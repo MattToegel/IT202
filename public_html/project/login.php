@@ -54,7 +54,7 @@ if (Common::get($_POST, "submit", false)){
             }
             //end get tanks
 
-            die(header("Location: " . Common::url_for("home")));
+            die(header("Location: " . Common::url_for("dashboard")));
         }
         else{
             Common::flash(Common::get($result, "message", "Error logging in"));
