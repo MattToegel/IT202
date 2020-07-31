@@ -118,9 +118,15 @@ sudo apt-get install -y mysql-server
  DB_NAME=$sshuser
  DB_USER=$sshuser
  DB_PASS=$(generatePassword)
+ 
 
  
  createMysqlDbUser
+ 
+ CON_STRING="mysql://$DB_USER:$DB_PASS@$DB_HOST:3306/$DB_NAME";
+ echo "#DO NOT COMMIT TO REPOSITORY, DO NOT MAKE THIS PUBLIC" > /home/$sshuser/config.ini
+ echo "MYSQL_CONNECTION=$CON_STRING" >> /home/$sshuser/config.ini
+ sudo chmod 644 /home/$sshuser/config.ini
  
  sudo mkdir /home/$sshuser/.emergency
  sudo chmod 600 /home/$sshuser/.emergency
@@ -159,6 +165,7 @@ sudo echo "set-variable = sort_buffer=64K" >> /etc/mysql/my.cnf
 sudo echo "set-variable = net_buffer_length=2K" >> /etc/mysql/my.cnf
 
 sudo systemctl restart mysql
- 
+
+
  
  sudo apt install -y git nano
