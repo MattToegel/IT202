@@ -915,4 +915,36 @@ class DBH{
             return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
         }
     }
+    public static function get_top_10_users_wins($start = null, $end = null){
+        try{
+            $query = file_get_contents(__DIR__ . "/../sql/queries/get_top_10_user_aggregated_wins.sql");
+            if(isset($start) && isset($end)){
+                $s = explode('win', $query);
+                $query = ''.join([
+                    $s[0],
+                    "created BETWEEN :start and :end",
+                    $s[1]
+                    ]);
+            }
+            $stmt = DBH::getDB()->prepare($query);
+            if(isset($s)) {
+                $result = $stmt->execute([":start"=>$start, ":end"=>$end]);
+            }
+            else{
+                $result = $stmt->execute();
+            }
+            DBH::verify_sql($stmt);
+            if($result){
+                $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                return DBH::response($results,200, "success");
+            }
+            else{
+                return DBH::response(NULL, 400, "error");
+            }
+        }
+        catch(Exception $e){
+            error_log($e->getMessage());
+            return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
+        }
+    }
 }
