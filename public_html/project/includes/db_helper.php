@@ -919,7 +919,7 @@ class DBH{
         try{
             $query = file_get_contents(__DIR__ . "/../sql/queries/get_top_10_user_aggregated_wins.sql");
             if(isset($start) && isset($end)){
-                $s = explode('win', $query);
+                $s = explode("'win'", $query);
                 $query = ''.join([
                     $s[0],
                     " 'win' ",
