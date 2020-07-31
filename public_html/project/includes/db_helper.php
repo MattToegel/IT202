@@ -923,7 +923,7 @@ class DBH{
                 $query = ''.join([
                     $s[0],
                     " 'win' ",
-                    "created BETWEEN :start and :end",
+                    "and created BETWEEN :start and :end",
                     " ",
                     $s[1]
                     ]);
