@@ -70,6 +70,15 @@ if(Common::get($result, "status", 400) == 200){
                                 </div>
                             </div>
                         <?php endforeach;?>
+                        <?php if(count($weekly) == 0):?>
+                            <div class="list-group-item">
+                                <div class="row">
+                                    <div class="col">
+                                        No participants yet
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endif;?>
                     </div>
                 </div>
                 <div class="list-group-item">
@@ -97,6 +106,15 @@ if(Common::get($result, "status", 400) == 200){
                                 </div>
                             </div>
                         <?php endforeach;?>
+                        <?php if(count($lifetime) == 0):?>
+                            <div class="list-group-item">
+                                <div class="row">
+                                    <div class="col">
+                                        No participants yet
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endif;?>
                     </div>
                 </div>
             </div>
