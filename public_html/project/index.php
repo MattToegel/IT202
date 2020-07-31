@@ -12,7 +12,7 @@ $now = new DateTime;
 $previous_week = new DateTime();
 $interval = new DateInterval('P1W');
 $previous_week = $previous_week->sub($interval);
-$result = DBH::get_top_10_users_wins($previous_week->format("Y-m-d"), $now->format("Y-m-d"));
+$result = DBH::get_top_10_users_wins($previous_week->format("Y-m-d"), $now->format("Y-m-d H:i:s"));
 $weekly = [];
 if(Common::get($result, "status", 400) == 200){
     $weekly = Common::get($result, "data", []);
