@@ -209,7 +209,7 @@ debconf-set-selections <<< "phpmyadmin phpmyadmin/app-password-confirm password 
 debconf-set-selections <<< "phpmyadmin phpmyadmin/mysql/admin-pass password $DB_PASS"
 debconf-set-selections <<< "phpmyadmin phpmyadmin/mysql/app-pass password $DB_PASS"
 debconf-set-selections <<< "phpmyadmin phpmyadmin/reconfigure-webserver multiselect apache2"
-sudo apt install phpmyadmin
+sudo apt install -y phpmyadmin
 
  
  sudo apt install -y git nano
