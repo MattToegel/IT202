@@ -2,7 +2,7 @@
 /***
  * array_key_first only available in php >7.3.0 so we poly fill it
  */
-if (!function_exists('array_key_first')) {
+ if (!function_exists('array_key_first')) {
     function array_key_first(array $arr) {
         foreach($arr as $key => $unused) {
             return $key;
@@ -12,9 +12,14 @@ if (!function_exists('array_key_first')) {
 }
 
 //attempt at crude router
-if (count($_GET) > 0) {
+//08/24/2020 removed $_GET check so we can route user to home if nothing was specified
+if (1==1) {
     $BASE = "templates";
     $path = array_key_first($_GET);
+    //08/24/2020 added a default value to pass the next if condition
+    if(!isset($path)){
+        $path = "home";
+    }
     if (isset($path)) {
         //Utils::flash($path);
         switch ($path) {
@@ -71,6 +76,7 @@ if (count($_GET) > 0) {
                 include ($BASE . "/delete_arc.php");
                 break;
             default:
+                include ($BASE . "/home.php");
                 break;
         }
     }
