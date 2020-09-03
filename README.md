@@ -24,5 +24,3 @@ git pull origin master
 
 Test
 
-
-Test 2
