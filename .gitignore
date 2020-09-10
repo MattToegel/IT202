@@ -1,3 +1,7 @@
 myprivatecreds.*
 *.log
 nevercommitme.txt
+*log*
+my.log.file
+my.log.2
+login.php
