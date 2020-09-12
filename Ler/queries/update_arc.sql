@@ -1,1 +1,0 @@
-UPDATE Arcs set title = :title, content=:content, visibility=:visibility where id = :arc_id

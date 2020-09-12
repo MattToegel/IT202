@@ -1,1 +1,0 @@
-SELECT s.id as story_id,s.* from Stories s where author = :author

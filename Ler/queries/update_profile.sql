@@ -1,1 +1,0 @@
-UPDATE StoryUsers SET email=:email, username=:username where id=:id

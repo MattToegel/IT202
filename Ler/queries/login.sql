@@ -1,1 +1,0 @@
-SELECT * from StoryUsers WHERE email = :email OR username = :email LIMIT 1

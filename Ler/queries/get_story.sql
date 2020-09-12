@@ -1,1 +1,0 @@
-SELECT *, (select username from StoryUsers where id = Stories.author LIMIT 1) as username from Stories where id = :story_id
