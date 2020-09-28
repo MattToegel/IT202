@@ -1,0 +1,21 @@
+<html>
+<head>
+<script>
+var ele = document.getElementById("hello");
+console.log("We found ", ele);
+
+function getEleAfterPageLoad(){
+	ele = document.getElementById("hello");
+	console.log("On page load we found ", ele);
+}
+</script>
+</head>
+<body onload="getEleAfterPageLoad()">
+<p id="hello">Hello world</p>
+<p id="hello">Goodbye</p>
+<script>
+var ele2 = document.getElementById("hello");
+console.log("At the end of body we found", ele2);
+</script>
+</body>
+</html>

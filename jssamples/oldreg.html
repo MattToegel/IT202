@@ -1,0 +1,61 @@
+<html>
+<head>
+<script>
+function validate(){
+	let form = document.forms[0];
+	let isValid = true;
+	//poor/basic email validation
+	let email = form.email.value;
+	if(email.length > 0){//simulates require check
+		let at = email.indexOf("@");
+		let period = email.indexOf(".");
+		//this fails for many scenarios but should catch a basic email
+		if(at > -1 && period > -1 && period > at){
+			console.log("email is good");
+		}
+		else{
+			isValid = false;
+			console.log("email is bad");
+		}
+	}
+	else{
+		isValid = false;
+		console.log("Email is missing");
+	}
+	//simulates require check for passwords
+	let pw = form.password.value;
+	let confirm = form.confirm.value;
+	if(pw.length == 0){
+		isValid = false;
+		console.log("Password is missing");
+	}
+	if(confirm.length == 0){
+		isValid = false;
+		console.log("Confirm password is missing");
+	}
+	if(isValid){
+		if(pw != confirm){
+			isValid = false;
+			console.log("Passwords don't match");
+		}
+		else{
+			console.log("Passwords match");
+		}
+	}
+	//we must return a boolean to allow/reject the form submission
+	//and the onsubmit of form must take this value as a return
+	return isValid;
+}
+</script>
+</head>
+<body>
+<p>Run this sample with dev tools open to see the output</p>
+<form method="POST" onsubmit="return validate();">
+	<input name="email"/>
+	<!-- we won't do the placeholder sample in this lesson, it's more of a hassle-->
+	<input type="password" name="password"/>
+	<input type="password" name="confirm"/>
+	<input type="submit" name="register"/>
+</form>
+</body>
+</html>
