@@ -1,4 +1,3 @@
-
 <?php
 //for this we'll turn on error output so we can try to see any problems on the screen
 //this will be active for any script that includes/requires this one

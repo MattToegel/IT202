@@ -28,11 +28,14 @@ if(isset($_POST["login"])){
     echo "<br>Invalid email<br>";
   }
   if($isValid){
-    require_once("db.php");
+    require_once(__DIR__ . "/../lib/db.php");
     $db = getDB();
 	if(isset($db)){
 		//here we'll use placeholders to let PDO map and sanitize our data
-		$stmt = $db->prepare("SELECT email, password from Users WHERE email = :email LIMIT 1");
+    //in this sample with session we're going to want some extra details to save
+    //typically id for lookups in other tables, but anything else helpful that'll 
+    //prevent the need from requerying the Users table may be good to pull too (like username once we deal with that)
+		$stmt = $db->prepare("SELECT id, email, password from Users WHERE email = :email LIMIT 1");
 		//here's the data map for the parameter to data
 		$params = array(":email"=>$email);
 		$r = $stmt->execute($params);
@@ -48,7 +51,14 @@ if(isset($_POST["login"])){
 		if($result && isset($result["password"])){
 			$password_hash_from_db = $result["password"];
 			if(password_verify($password, $password_hash_from_db)){
+        session_start();//we only need to active session when it's worth activating it
+        unset($result["password"]);//remove password so we don't leak it beyond this page
+        //let's create a session for our user based on the other data we pulled from the table
+        $_SESSION["user"] = $result;//we can save the entire result array since we removed password
 			 echo "<br>Welcome! You're logged in!<br>"; 
+        //in this part we'll just show that we have the session set, the next example we'll actually
+        //navigate the user
+        echo "<pre>" . var_export($_SESSION, true) . "</pre>";
 			}
 			else{
 			 echo "<br>Invalid password, get out!<br>"; 

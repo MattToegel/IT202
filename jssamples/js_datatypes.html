@@ -1,0 +1,24 @@
+<script>
+//https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/typeof
+var x = 1;
+console.log("x is ", typeof x);
+x = 1.0;
+console.log("x is ", typeof x);
+x = "hi"
+console.log("x is ", typeof x);
+x = true;
+console.log("x is ", typeof x);
+x = null;
+console.log("x is ", typeof x);
+x = undefined;
+console.log("x is ", typeof x);
+x = function(){};
+console.log("x is ", typeof x);
+//https://stackoverflow.com/questions/12996871/why-does-typeof-array-with-objects-return-object-and-not-array
+x = [];
+console.log("x is ", typeof x);
+x = [1,2,3];
+console.log("x is ", typeof x);
+x = {name: "hi"};//this would be an object
+console.log("x is ", typeof x);
+</script>

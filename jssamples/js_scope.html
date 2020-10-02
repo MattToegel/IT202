@@ -1,0 +1,26 @@
+<script>
+var x = 1;
+let y = 2;
+
+function test(){
+	let z = 3;
+	var a = 4;
+	console.log("x is ", x);
+	console.log("y is ", y);
+	console.log("z is ", z);
+	console.log("a is ", a);
+	x = 6;
+	y = 7;
+}
+test();
+console.log("2) x is ", x);
+console.log("2) y is ", y);
+
+const val = 1;
+
+val = 2;//this will give an error if not commented out
+
+//these will be undefined
+//console.log("2) a is ", a);
+console.log("2) z is ", z);
+</script>
