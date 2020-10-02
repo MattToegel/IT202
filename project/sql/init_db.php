@@ -17,7 +17,7 @@ try{
     foreach(glob(__DIR__ . "/*.sql") as $filename){
         $sql[$filename] = file_get_contents($filename);
     }
-    if(isset($sql) && $sql && len($sql) > 0){
+    if(isset($sql) && $sql && count($sql) > 0){
         /***
          * Sort the array so queries are executed in anticipated order.
          * Be careful with naming, 1-9 is fine, 1-10 has 10 run after #1 due to string sorting.
