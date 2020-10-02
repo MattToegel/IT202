@@ -1,1 +1,1 @@
-Hey there, don't forget the config.php we need but aren't committing ; )
+Don't forget to create a file called config.php and follow the example from here: https://gist.github.com/MattToegel/78e8248503d3d698617c5b24021576d8#file-config-php
