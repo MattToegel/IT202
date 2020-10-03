@@ -1,6 +1,3 @@
-<?php
-session_start();
-?>
 <?php require_once(__DIR__ . "/partials/nav.php"); ?>
 <?php
 //we use this to safely get the email to display
