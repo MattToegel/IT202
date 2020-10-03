@@ -26,7 +26,6 @@ if (isset($_POST["login"])) {
         echo "<br>Invalid email<br>";
     }
     if ($isValid) {
-        require_once(__DIR__ . "/../lib/db.php");
         $db = getDB();
         if (isset($db)) {
             $stmt = $db->prepare("SELECT id, email, password from Users WHERE email = :email LIMIT 1");
@@ -46,12 +45,15 @@ if (isset($_POST["login"])) {
 SELECT Roles.* FROM Roles JOIN UserRoles on Roles.id = UserRoles.role_id where UserRoles.user_id = :user_id and Roles.is_active = 1 and UserRoles.is_active = 1");
                     $stmt->execute([":user_id" => $result["id"]]);
                     $roles = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                    session_start();//we only need to active session when it's worth activating it
+
                     unset($result["password"]);//remove password so we don't leak it beyond this page
                     //let's create a session for our user based on the other data we pulled from the table
                     $_SESSION["user"] = $result;//we can save the entire result array since we removed password
                     if ($roles) {
                         $_SESSION["user"]["roles"] = $roles;
+                    }
+                    else {
+                        $_SESSION["user"]["roles"] = [];
                     }
                     //on successful login let's serve-side redirect the user to the home page.
                     header("Location: home.php");
