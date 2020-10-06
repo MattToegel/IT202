@@ -1,5 +1,6 @@
 <?php
 session_start();//we can start our session here so we don't need to worry about it on other pages
+require_once(__DIR__."/db.php");
 //this file will contain any helpful functions we create
 //I have provided two for you
 function is_logged_in() {
