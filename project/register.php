@@ -61,7 +61,13 @@ if (isset($_POST["register"])) {
         echo "There was a validation issue";
     }
 }
-//
+//safety measure to prevent php warnings
+if (!isset($email)) {
+    $email = "";
+}
+if (!isset($username)) {
+    $username = "";
+}
 ?>
 <form method="POST">
     <label for="email">Email:</label>
