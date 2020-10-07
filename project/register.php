@@ -61,12 +61,13 @@ if (isset($_POST["register"])) {
         echo "There was a validation issue";
     }
 }
+//
 ?>
 <form method="POST">
     <label for="email">Email:</label>
-    <input type="email" id="email" name="email" required value="<?php echo $email; ?>"/>
+    <input type="email" id="email" name="email" required value="<?php safer_echo($email); ?>"/>
     <label for="user">Username:</label>
-    <input type="text" id="user" name="username" required maxlength="60" value="<?php echo $username; ?>"/>
+    <input type="text" id="user" name="username" required maxlength="60" value="<?php safer_echo($username); ?>"/>
     <label for="p1">Password:</label>
     <input type="password" id="p1" name="password" required/>
     <label for="p2">Confirm Password:</label>
