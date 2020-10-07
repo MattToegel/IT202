@@ -42,7 +42,7 @@ if (isset($_POST["saved"])) {
         $inUse = 1;//default it to a failure scenario
         if ($result && isset($result["InUse"])) {
             try {
-                $inUse = intval($result["inuse"]);
+                $inUse = intval($result["inUse"]);
             }
             catch (Exception $e) {
 
