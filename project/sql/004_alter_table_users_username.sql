@@ -1,1 +1,2 @@
-ALTER TABLE IF NOT EXISTS Users ADD username varchar(60) default '';
+ALTER TABLE Users
+    ADD COLUMN username varchar(60) default '';
