@@ -60,14 +60,14 @@ SELECT Roles.name FROM Roles JOIN UserRoles on Roles.id = UserRoles.role_id wher
                     }
                     //on successful login let's serve-side redirect the user to the home page.
                     flash("Log in successful");
-                    header("Location: home.php");
+                    die(header("Location: home.php"));
                 }
                 else {
-                    echo "<br>Invalid password, get out!<br>";
+                    flash("Invalid password");
                 }
             }
             else {
-                echo "<br>Invalid user<br>";
+                flash("Invalid user");
             }
         }
     }
