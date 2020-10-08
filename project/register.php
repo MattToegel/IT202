@@ -21,10 +21,11 @@ if (isset($_POST["register"])) {
     $isValid = true;
     //check if passwords match on the server side
     if ($password == $confirm) {
-        echo "Passwords match <br>";
+        //not necessary to show
+        //echo "Passwords match <br>";
     }
     else {
-        echo "Passwords don't match<br>";
+        flash("Passwords don't match");
         $isValid = false;
     }
     if (!isset($email) || !isset($password) || !isset($confirm)) {
@@ -41,18 +42,16 @@ if (isset($_POST["register"])) {
             //here's the data map for the parameter to data
             $params = array(":email" => $email, ":username" => $username, ":password" => $hash);
             $r = $stmt->execute($params);
-            //let's just see what's returned
-            echo "db returned: " . var_export($r, true);
             $e = $stmt->errorInfo();
             if ($e[0] == "00000") {
-                echo "<br>Welcome! You successfully registered, please login.";
+                flash("Successfully registered! Please login.");
             }
             else {
                 if ($e[0] == "23000") {//code for duplicate entry
-                    echo "<br>Either username or email is already registered, please try again";
+                    flash("Username or email already exists.");
                 }
                 else {
-                    echo "uh oh something went wrong: " . var_export($e, true);
+                    flash("An error occurred, please try again");
                 }
             }
         }
