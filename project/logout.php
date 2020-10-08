@@ -5,11 +5,9 @@ session_unset();
 // destroy the session
 session_destroy();
 ?>
-<?php require_once(__DIR__ . "/partials/nav.php"); ?>
+<?php require_once(__DIR__ . "/partials/nav.php");/*ultimately, this is just here for the function to be loaded now*/ ?>
 <?php
-//since this function call is included we can omit it here. Having multiple calls to session_start() will cause errors/warnings
-//session_start();
-
-echo "You're logged out (proof by dumping the session)<br>";
-echo "<pre>" . var_export($_SESSION, true) . "</pre>";
+//this flash likely won't work, but will put it here anyway
+flash("You have been logged out");
+die(header("Location: login.php"));
 ?>
