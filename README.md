@@ -14,7 +14,7 @@ It'll only ask for 1 prompt which is to confirm if the detected user is the corr
 The user must exist before this script is ran. \
 It'll allow them to use a public_html folder in their home directory to host their website content and will generate a DB account/password for them to use locally\
 The base installation seems to use approximately ~400MB / 576MB RAM. \
-It'll also setup a 2GB Swapfile with an initally swappiness of 10. \
+It'll also setup a 2GB Swapfile with an initial swappiness of 10. \
 If there are still memory issues, a further MySQL optimization has been included below. \
 
 # my.cnf
