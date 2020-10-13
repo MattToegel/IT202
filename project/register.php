@@ -57,7 +57,7 @@ if (isset($_POST["register"])) {
         }
     }
     else {
-        echo "There was a validation issue";
+        flash("There was a validation issue");
     }
 }
 //safety measure to prevent php warnings
