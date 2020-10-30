@@ -33,6 +33,10 @@ I'll update with further optimizations as necessary.
 This is to attempt to fix issues from lampv2.sh where some mysql tuning may not be correct and causes the innoDB disk files to grow quicker than expected. Since these files don't normally shrink eventually the VM would run out of storage space. And you can't delete these otherwise your table data is gone. \
 Since it's a single file in our setup we also couldn't take advantage of ```sql optimize table name``` to try to clean up the files. \
 Due to this we'll rebuild our mysql install (but we also need to redo a few other parts too since the uninstall will mess up other areas). \
+To use this script run the following commands: \n
+- ```bash wget https://raw.githubusercontent.com/MattToegel/IT202/VMSetup/patch.sh```
+- ```bash sudo chmod +x patch.sh```
+- ```bash sudo ./patch.sh```
 This script will do the following, please be sure you're ok with this:
 - It'll ask two questions (if the user is the correct user, and if the initial steps were ok) Just hit y for both to confirm and hit enter.
 - Attempt to fetch the existing db user, pass, and root pass from our file (otherwise prompts for it)
