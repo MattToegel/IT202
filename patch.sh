@@ -125,6 +125,7 @@ sudo a2enconf php7.4-fpm
 
 #enable user directory
 sudo a2enmod userdir
+sudo systemctl restart apache2
 echo "Restoring backup"
 mysql -u root -p$db_root_password < backup.sql
 echo "Patch and restoration complete"
