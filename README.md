@@ -28,3 +28,23 @@ To enable the features run the following commands \
 Then you should see the changes take affect. \
 With this configuration at idle on a GCE f1 micro instance the memory should be around 230MB / 576MB \
 I'll update with further optimizations as necessary. 
+
+# patch.sh
+This is to attempt to fix issues from lampv2.sh where some mysql tuning may not be correct and causes the innoDB disk files to grow quicker than expected. Since these files don't normally shrink eventually the VM would run out of storage space. And you can't delete these otherwise your table data is gone. \
+Since it's a single file in our setup we also couldn't take advantage of ```sql optimize table name``` to try to clean up the files. \
+Due to this we'll rebuild our mysql install (but we also need to redo a few other parts too since the uninstall will mess up other areas). \
+This script will do the following, please be sure you're ok with this:
+- It'll ask two questions (if the user is the correct user, and if the initial steps were ok) Just hit y for both to confirm and hit enter.
+- Attempt to fetch the existing db user, pass, and root pass from our file (otherwise prompts for it)
+- Attempts to backup the existing mysql db data (if it fails it should exist so make sure you have enough disk space (about <2MB for our class))
+- Stops MySQL
+- Uninstalls MySQL related components and phpMyAdmin
+- Deletes any residual data (once gone, it's gone)
+- Reinstalls MySQL stuff
+- Restores the root and current user with the previous passwords
+- Fetches the latest my.cnf from this repo
+- Backs up and overwrites the my.cnf and reloads mysql
+- Attempts to fix debconfig, for some reason that may have gotten corrupted and caused the phpmyadmin to fail in earlier tests
+- Reinstalls phpmyadmin and rebuilds the settings for it
+- Ensures the previous php settings are set for apache (since uninstalling phpmyadmin seems to uninstall stuff we want :/)
+- Finally attempts to restore the backup of your DB data from the generated backup.sql file
