@@ -37,6 +37,7 @@ To use this script run the following commands: \n
 - ```bash wget https://raw.githubusercontent.com/MattToegel/IT202/VMSetup/patch.sh```
 - ```bash sudo chmod +x patch.sh```
 - ```bash sudo ./patch.sh```
+\
 This script will do the following, please be sure you're ok with this:
 - It'll ask two questions (if the user is the correct user, and if the initial steps were ok) Just hit y for both to confirm and hit enter.
 - Attempt to fetch the existing db user, pass, and root pass from our file (otherwise prompts for it)
