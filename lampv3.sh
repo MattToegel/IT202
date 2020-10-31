@@ -177,6 +177,7 @@ sudo apt-get install -y mysql-server
  sudo ln -s /etc/apache2/conf-available/low-res.conf /etc/apache2/conf-enabled/low-res.conf
  sudo systemctl restart apache2
  
+sudo apt install wget -y
  #tuning mysql for low mem environment
 wget https://raw.githubusercontent.com/MattToegel/IT202/VMSetup/my.cnf
 sudo mv /etc/mysql/my.cnf /etc/mysql/my.cnf.backup
