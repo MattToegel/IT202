@@ -42,7 +42,7 @@ else
    echo "Terminating Script"
    exit 1
 fi
-
+sudo apt install wget -y
 
 echo "Backing up existing db"
 mysqldump -u root -p$db_root_password --all-databases > backup.sql
