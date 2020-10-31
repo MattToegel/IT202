@@ -17,6 +17,10 @@ The base installation seems to use approximately ~400MB / 576MB RAM. \
 It'll also setup a 2GB Swapfile with an initial swappiness of 10. \
 If there are still memory issues, a further MySQL optimization has been included below. \
 
+# lampv3.sh
+Updated version based on #2 that attempts to fix some mysql configs to prevent or help mitigate the .idb files from growing too quickly and eating up HD space. \n
+Also has some settings to update the log cleaning policy to help keep disk space lower
+
 # my.cnf
 This file does a bit more extra tuning of the MySQL install. It's geared towards light traffic and low memory. \
 To enable the features run the following commands \
