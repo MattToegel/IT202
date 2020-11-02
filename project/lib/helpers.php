@@ -69,4 +69,25 @@ function getMessages() {
 }
 
 //end flash
+
+function getState($n) {
+    switch ($n) {
+        case 0:
+            echo "Incubating";
+            break;
+        case 1:
+            echo "Hatching";
+            break;
+        case 2:
+            echo "Hatched";
+            break;
+        case 3:
+            echo "Expired";
+            break;
+        default:
+            echo "Unsupported state: " . safer_echo($n);
+            break;
+    }
+}
+
 ?>
