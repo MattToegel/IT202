@@ -20,6 +20,10 @@ if (isset($id)) {
     $stmt = $db->prepare("SELECT Eggs.id,name,state,base_rate,mod_min,mod_max,next_stage_time, user_id, user.username FROM F20_Eggs as Eggs JOIN Users on Eggs.user_id = Users.id where id = :id");
     $r = $stmt->execute([":id" => $id]);
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    if (!$result) {
+        $e = $stmt->errorInfo();
+        flash($e[2]);
+    }
 }
 ?>
 <?php if (isset($result) && !empty($result)): ?>
