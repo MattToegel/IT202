@@ -17,7 +17,7 @@ if (isset($_GET["id"])) {
 $result = [];
 if (isset($id)) {
     $db = getDB();
-    $stmt = $db->prepare("SELECT Eggs.id,name,state,base_rate,mod_min,mod_max,next_stage_time, user_id, Users.username FROM F20_Eggs as Eggs JOIN Users on Eggs.user_id = Users.id where id = :id");
+    $stmt = $db->prepare("SELECT Eggs.id,name,state,base_rate,mod_min,mod_max,next_stage_time, user_id, Users.username FROM F20_Eggs as Eggs JOIN Users on Eggs.user_id = Users.id where Eggs.id = :id");
     $r = $stmt->execute([":id" => $id]);
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
     if (!$result) {
