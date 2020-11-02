@@ -14,7 +14,7 @@ if (isset($_POST["query"])) {
 }
 if (isset($_POST["submit"]) && !empty($query)) {
     $db = getDB();
-    $stmt = $db->prepare("SELECT id,name,state,base_rate,mod_min,mod_max,next_stage_time, user_id from F20_Eggs WHERE name like :q");
+    $stmt = $db->prepare("SELECT id,name,state,base_rate,mod_min,mod_max,next_stage_time, user_id from F20_Eggs WHERE name like :q LIMIT 10");
     $r = $stmt->execute([":q" => "%$query%"]);
     if ($r) {
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
