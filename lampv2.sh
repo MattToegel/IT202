@@ -189,7 +189,7 @@ sudo echo "innodb_ft_cache_size=1600000" >> /etc/mysql/my.cnf
 sudo echo "innodb_ft_total_cache_size=32000000" >> /etc/mysql/my.cnf
 
 sudo echo "# per thread or per operation settings" >> /etc/mysql/my.cnf
-sudo echo "thread_stack=131072" >> /etc/mysql/my.cnf
+sudo echo "thread_stack=400K" >> /etc/mysql/my.cnf
 sudo echo "sort_buffer_size=32K" >> /etc/mysql/my.cnf
 sudo echo "read_buffer_size=8200" >> /etc/mysql/my.cnf
 sudo echo "read_rnd_buffer_size=8200" >> /etc/mysql/my.cnf
