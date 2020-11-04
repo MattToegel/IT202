@@ -26,6 +26,7 @@ if (isset($id)) {
     }
 }
 ?>
+    <h3>View Egg</h3>
 <?php if (isset($result) && !empty($result)): ?>
     <div class="card">
         <div class="card-title">

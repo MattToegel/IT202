@@ -6,17 +6,10 @@ if (!has_role("Admin")) {
     die(header("Location: login.php"));
 }
 ?>
-    <h3>Create Egg</h3>
+    <h3>Create Incubator</h3>
     <form method="POST">
         <label>Name</label>
         <input name="name" placeholder="Name"/>
-        <label>State</label>
-        <select name="state">
-            <option value="0">Incubating</option>
-            <option value="1">Hatching</option>
-            <option value="2">Hatched</option>
-            <option value="3">Expired</option>
-        </select>
         <label>Base Rate</label>
         <input type="number" min="1" name="base_rate"/>
         <label>Mod Min</label>
@@ -30,21 +23,17 @@ if (!has_role("Admin")) {
 if (isset($_POST["save"])) {
     //TODO add proper validation/checks
     $name = $_POST["name"];
-    $state = $_POST["state"];
     $br = $_POST["base_rate"];
     $min = $_POST["mod_min"];
     $max = $_POST["mod_max"];
-    $nst = date('Y-m-d H:i:s');//calc
     $user = get_user_id();
     $db = getDB();
-    $stmt = $db->prepare("INSERT INTO F20_Eggs (name, state, base_rate, mod_min, mod_max, next_stage_time, user_id) VALUES(:name, :state, :br, :min,:max,:nst,:user)");
+    $stmt = $db->prepare("INSERT INTO F20_Incubators (name, base_rate, mod_min, mod_max, user_id) VALUES(:name, :br, :min,:max,:user)");
     $r = $stmt->execute([
         ":name" => $name,
-        ":state" => $state,
         ":br" => $br,
         ":min" => $min,
         ":max" => $max,
-        ":nst" => $nst,
         ":user" => $user
     ]);
     if ($r) {

@@ -1,7 +1,7 @@
 CREATE TABLE Accounts
 (
     id             int auto_increment,
-    account_number varchar(12) NOT NULL,
+    account_number varchar(12) NOT NULL unique,
     user_id        int,
     account_type   varchar(20),
     opened_date    DATETIME       default CURRENT_TIMESTAMP,
