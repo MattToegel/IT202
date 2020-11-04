@@ -73,7 +73,8 @@ $eggs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <select name="egg_id">
             <option value="-1">None</option>
             <?php foreach ($eggs as $egg): ?>
-                <option value="<?php safer_echo($egg["id"]); ?>"><?php safer_echo($egg["name"]); ?></option>
+                <option value="<?php safer_echo($egg["id"]); ?>" <?php ($result["egg_id"] == $egg["id"] ? 'selected="selected"' : ''); ?>
+                ><?php safer_echo($egg["name"]); ?></option>
             <?php endforeach; ?>
         </select>
         <label>Base Rate</label>
