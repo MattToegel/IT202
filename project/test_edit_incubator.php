@@ -70,10 +70,10 @@ $eggs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <label>Name</label>
         <input name="name" placeholder="Name" value="<?php echo $result["name"]; ?>"/>
         <label>Egg</label>
-        <select name="egg_id">
+        <select name="egg_id" value="<?php echo $result["egg_id"];?>" >
             <option value="-1">None</option>
             <?php foreach ($eggs as $egg): ?>
-                <option value="<?php safer_echo($egg["id"]); ?>" <?php ($result["egg_id"] == $egg["id"] ? 'selected="selected"' : ''); ?>
+                <option value="<?php safer_echo($egg["id"]); ?>" <?php echo ($result["egg_id"] == $egg["id"] ? 'selected="selected"' : ''); ?>
                 ><?php safer_echo($egg["name"]); ?></option>
             <?php endforeach; ?>
         </select>
