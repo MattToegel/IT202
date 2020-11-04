@@ -55,11 +55,11 @@ $result = [];
 if (isset($id)) {
     $id = $_GET["id"];
     $db = getDB();
-    $stmt = $db->prepare("SELECT * FROM F20_Incrubator where id = :id");
+    $stmt = $db->prepare("SELECT * FROM F20_Incubator where id = :id");
     $r = $stmt->execute([":id" => $id]);
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
 }
-
+//get eggs for dropdown
 $db = getDB();
 $stmt = $db->prepare("SELECT id,name from F20_Eggs LIMIT 10");
 $r = $stmt->execute();
