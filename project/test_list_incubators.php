@@ -14,13 +14,13 @@ if (isset($_POST["query"])) {
 }
 if (isset($_POST["search"]) && !empty($query)) {
     $db = getDB();
-    $stmt = $db->prepare("SELECT inc.id,inc.name,egg.name as egg, user_id from F20_Incubators as inc JOIN F20_Eggs as egg on inc.egg_id = egg.id WHERE inc.name like :q LIMIT 10");
+    $stmt = $db->prepare("SELECT incu.id,incu.name,egg.name as egg, Users.username from F20_Incubators as incu JOIN F20_Eggs as egg on incu.egg_id = egg.id JOIN Users on incu.user_id = Users.id WHERE incu.name like :q LIMIT 10");
     $r = $stmt->execute([":q" => "%$query%"]);
     if ($r) {
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     else {
-        flash("There was a problem fetching the results");
+        flash("There was a problem fetching the results " . var_export($stmt->errorInfo(), true));
     }
 }
 ?>
@@ -40,11 +40,11 @@ if (isset($_POST["search"]) && !empty($query)) {
                     </div>
                     <div>
                         <div>Egg:</div>
-                        <div><?php getState($r["egg"]); ?></div>
+                        <div><?php safer_echo($r["egg"]); ?></div>
                     </div>
                     <div>
-                        <div>Owner Id:</div>
-                        <div><?php safer_echo($r["user_id"]); ?></div>
+                        <div>Owner:</div>
+                        <div><?php safer_echo($r["username"]); ?></div>
                     </div>
                     <div>
                         <a type="button" href="test_edit_incubator.php?id=<?php safer_echo($r['id']); ?>">Edit</a>
