@@ -27,7 +27,7 @@ if (isset($_POST["save"])) {
     $user = get_user_id();
     $db = getDB();
     if (isset($id)) {
-        $stmt = $db->prepare("UPDATE F20_Incubators set name=:name, egg=:egg, base_rate=:br, mod_min=:min, mod_max=:max where id=:id");
+        $stmt = $db->prepare("UPDATE F20_Incubators set name=:name, egg_id=:egg, base_rate=:br, mod_min=:min, mod_max=:max where id=:id");
         $r = $stmt->execute([
             ":name" => $name,
             ":egg" => $egg,
@@ -69,7 +69,7 @@ $eggs = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <form method="POST">
         <label>Name</label>
         <input name="name" placeholder="Name" value="<?php echo $result["name"]; ?>"/>
-        <label>State</label>
+        <label>Egg</label>
         <select name="egg_id">
             <option value="-1">None</option>
             <?php foreach ($eggs as $egg): ?>
