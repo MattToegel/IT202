@@ -27,7 +27,7 @@ if (isset($_POST["save"])) {
     $user = get_user_id();
     $db = getDB();
     if (isset($id)) {
-        $stmt = $db->prepare("UPDATE F20_Incubator set name=:name, egg=:egg, base_rate=:br, mod_min=:min, mod_max=:max where id=:id");
+        $stmt = $db->prepare("UPDATE F20_Incubators set name=:name, egg=:egg, base_rate=:br, mod_min=:min, mod_max=:max where id=:id");
         $r = $stmt->execute([
             ":name" => $name,
             ":egg" => $egg,
@@ -55,7 +55,7 @@ $result = [];
 if (isset($id)) {
     $id = $_GET["id"];
     $db = getDB();
-    $stmt = $db->prepare("SELECT * FROM F20_Incubator where id = :id");
+    $stmt = $db->prepare("SELECT * FROM F20_Incubators where id = :id");
     $r = $stmt->execute([":id" => $id]);
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
 }
