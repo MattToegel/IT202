@@ -14,7 +14,7 @@ if (isset($_POST["query"])) {
 }
 if (isset($_POST["search"]) && !empty($query)) {
     $db = getDB();
-    $stmt = $db->prepare("SELECT incu.id,incu.name,egg.name as egg, Users.username from F20_Incubators as incu JOIN F20_Eggs as egg on incu.egg_id = egg.id JOIN Users on incu.user_id = Users.id WHERE incu.name like :q LIMIT 10");
+    $stmt = $db->prepare("SELECT incu.id,incu.name,egg.name as egg, Users.username from F20_Incubators as incu JOIN Users on incu.user_id = Users.id LEFT JOIN F20_Eggs as egg on incu.egg_id = egg.id WHERE incu.name like :q LIMIT 10");
     $r = $stmt->execute([":q" => "%$query%"]);
     if ($r) {
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
