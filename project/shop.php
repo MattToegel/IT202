@@ -16,7 +16,7 @@ if (!is_logged_in()) {
                     alert(this.responseText);
                 }
             };
-            xhttp.open("POST", "<?php getURL("/api/purchase_egg.php?test=true");?>", true);
+            xhttp.open("POST", "<?php echo getURL("api/purchase_egg.php");?>", true);
             //this is required for post ajax calls to submit it as a form
             xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
             //map any key/value data similar to query params
@@ -29,7 +29,7 @@ if (!is_logged_in()) {
             Purchase Random Egg
         </div>
         <div class="card-body">
-            <button type="button" class="btn btn-primary btn-lg">Purchase (Price)</button>
+            <button type="button" onclick="makePurchase();" class="btn btn-primary btn-lg">Purchase (Price)</button>
         </div>
     </div>
 <?php require(__DIR__ . "/partials/flash.php");

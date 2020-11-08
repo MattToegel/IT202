@@ -5,7 +5,7 @@ if (!is_logged_in()) {
     die(header(':', true, 403));
 }
 $testing = false;
-if ($_GET["test"]) {
+if (isset($_GET["test"])) {
     $testing = true;
 }
 
