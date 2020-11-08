@@ -39,6 +39,9 @@ $nst = date('Y-m-d H:i:s');//calc
 $days = $egg["base_rate"] + mt_rand($egg["mod_min"], $egg["mod_max"]);
 //https://stackoverflow.com/a/1286272
 $day_string = $days == 1 ? "+1 day" : "+$days days";
+if ($testing) {
+    echo "<br>$day_string<br>";
+}
 $nst = date('Y-m-d H:i:s', strtotime($day_string, $nst));
 $egg["next_stage_time"] = $nst;
 $user = get_user_id();
@@ -54,17 +57,18 @@ if (!$testing) {
         ":nst" => $egg["next_stage_time"],
         ":user" => $egg["user_id"]
     ]);
+    if ($r) {
+        echo json_encode($egg);
+        die();
+    }
+    else {
+        $e = $stmt->errorInfo();
+        echo json_encode($e);
+        die();
+    }
 }
 else {
     echo "<pre>" . var_export($egg, true) . "</pre>";
 }
-if ($r) {
-    echo json_encode($egg);
-    die();
-}
-else {
-    $e = $stmt->errorInfo();
-    echo json_encode($e);
-    die();
-}
+
 ?>
