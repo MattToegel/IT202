@@ -7,13 +7,23 @@ if (!is_logged_in()) {
 }
 ?>
     <script>
+        //php will exec first so just the value will be visible on js side
+        let balance = <?php echo get_balance();?>;
+
         function makePurchase() {
             //todo client side balance check
             //https://www.w3schools.com/xml/ajax_xmlhttprequest_send.asp
             let xhttp = new XMLHttpRequest();
             xhttp.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
-                    alert(this.responseText);
+                    let json = JSON.parse(this.responseText);
+                    if (json) {
+                        if (json.status == 200) {
+                            alert("Congrats you received 1 " + json.egg.name);
+                        } else {
+                            alert(json.error);
+                        }
+                    }
                 }
             };
             xhttp.open("POST", "<?php echo getURL("api/purchase_egg.php");?>", true);
