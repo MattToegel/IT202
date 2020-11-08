@@ -33,22 +33,24 @@ $egg["mod_max"] = mt_rand($egg["mod_min"], 20);
 $total = $egg["base_rate"] + $egg["mod_min"] + $egg["mod_max"];
 $max = 45;
 $percent = $total / $max;
-$eggTypes = ["Ancient", "Legendary", "Rare", "Uncommon", "Common"];
+//TODO egg base_rate, mod min/max should increase the time of hatching
+//Incubator stats should reduce time of hatching
+//$eggTypes = ["Ancient", "Legendary", "Rare", "Uncommon", "Common"];
+$eggTypes = ["Common", "Uncommon", "Rare", "Legendary", "Ancient"];
 $index = (int)(count($eggTypes) * $percent);
 $egg["name"] = $eggTypes[$index] . " Egg";
 
-
-//$nst = date('Y-m-d H:i:s');//calc
+//https://www.delftstack.com/howto/php/how-to-add-days-to-date-in-php/
+//https://stackoverflow.com/a/1286272
 $nst = new DateTime();
 $days = $egg["base_rate"] + mt_rand($egg["mod_min"], $egg["mod_max"]);
 $nst->add(new DateInterval("P" . $days . "D"));
+$nst = $nst->format("Y-m-d H:i:s");
 
-//https://stackoverflow.com/a/1286272
-$day_string = $days == 1 ? "+1 day" : "+$days days";
 if ($testing) {
-    echo "<br>$day_string<br>";
+    echo "<br>+$days<br>";
 }
-$nst = $nst->format("Y-m-d H:i:s");// date('Y-m-d H:i:s', strtotime($day_string, $nst));
+
 $egg["next_stage_time"] = $nst;
 $user = get_user_id();
 if (!$testing) {
@@ -64,12 +66,14 @@ if (!$testing) {
         ":user" => $egg["user_id"]
     ]);
     if ($r) {
-        echo json_encode($egg);
+        $response = ["status" => 200, "egg" => $egg];
+        echo json_encode($response);
         die();
     }
     else {
         $e = $stmt->errorInfo();
-        echo json_encode($e);
+        $response = ["status" => 400, "error" => $e];
+        echo json_encode($response);
         die();
     }
 }
