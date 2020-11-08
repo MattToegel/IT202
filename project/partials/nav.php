@@ -14,7 +14,7 @@ require_once(__DIR__ . "/../lib/helpers.php");
             <li><a href="<?php echo getURL("test/test_create_egg.php"); ?>">Create Egg</a></li>
             <li><a href="<?php echo getURL("test/test_list_egg.php"); ?>">View Eggs</a></li>
             <li><a href="<?php echo getURL("test/test_create_incubator.php"); ?>">Create Incubator</a></li>
-            <li><a href="<?php echo getURL("test/test_list_incrubators.php"); ?>">View Incubator</a></li>
+            <li><a href="<?php echo getURL("test/test_list_incubators.php"); ?>">View Incubator</a></li>
         <?php endif; ?>
         <?php if (is_logged_in()): ?>
             <li><a href="profile.php">Profile</a></li>
