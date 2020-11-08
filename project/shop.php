@@ -11,13 +11,14 @@ $cost = calcNextEggCost();
     <script>
         //php will exec first so just the value will be visible on js side
         let balance = <?php echo $balance;?>;
-	let cost = <?php echo $cost;?>;
+        let cost = <?php echo $cost;?>;
+
         function makePurchase() {
             //todo client side balance check
-		if(cost > balance){
-			alert("You can't afford this right now");
-			return;
-		}
+            if (cost > balance) {
+                alert("You can't afford this right now");
+                return;
+            }
             //https://www.w3schools.com/xml/ajax_xmlhttprequest_send.asp
             let xhttp = new XMLHttpRequest();
             xhttp.onreadystatechange = function () {
@@ -26,6 +27,7 @@ $cost = calcNextEggCost();
                     if (json) {
                         if (json.status == 200) {
                             alert("Congrats you received 1 " + json.egg.name);
+                            location.reload();
                         } else {
                             alert(json.error);
                         }
@@ -45,7 +47,9 @@ $cost = calcNextEggCost();
             Purchase Random Egg
         </div>
         <div class="card-body">
-            <button type="button" onclick="makePurchase();" class="btn btn-primary btn-lg">Purchase (Cost: <?php echo $cost;?>)</button>
+            <button type="button" onclick="makePurchase();" class="btn btn-primary btn-lg">Purchase
+                (Cost: <?php echo $cost; ?>)
+            </button>
         </div>
     </div>
 <?php require(__DIR__ . "/partials/flash.php");
