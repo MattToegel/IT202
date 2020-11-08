@@ -5,6 +5,13 @@ if (!is_logged_in()) {
     die(header(':', true, 403));
 }
 //TODO check if user can afford
+//get number of eggs in ownership
+//first egg is free
+//each egg extra is base_cost * #_of_eggs
+$eggs_owned = 0;
+$base_cost = 10;
+$cost = $eggs_owned * $base_cost;
+
 
 //super secret egg-generator
 $egg = [
@@ -20,6 +27,7 @@ $egg = [
 $db = getDB();
 $nst = date('Y-m-d H:i:s');//calc
 $days = $egg["base_rate"] + mt_rand($egg["mod_min"], $egg["mod_max"]);
+//https://stackoverflow.com/a/1286272
 $day_string = $days == 1 ? "+1 day" : "+$days days";
 $nst = date('Y-m-d H:i:s', strtotime($day_string, $nst));
 $egg["next_stage_time"] = $nst;
