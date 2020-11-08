@@ -73,15 +73,18 @@ function getMessages() {
 function getState($n) {
     switch ($n) {
         case 0:
-            echo "Incubating";
+            echo "Stasis";
             break;
         case 1:
-            echo "Hatching";
+            echo "Incubating";
             break;
         case 2:
-            echo "Hatched";
+            echo "Hatching";
             break;
         case 3:
+            echo "Hatched";
+            break;
+        case 4:
             echo "Expired";
             break;
         default:

@@ -12,10 +12,11 @@ if (!has_role("Admin")) {
         <input name="name" placeholder="Name"/>
         <label>State</label>
         <select name="state">
-            <option value="0">Incubating</option>
-            <option value="1">Hatching</option>
-            <option value="2">Hatched</option>
-            <option value="3">Expired</option>
+            <option value="0">Stasis</option>
+            <option value="1">Incubating</option>
+            <option value="2">Hatching</option>
+            <option value="3">Hatched</option>
+            <option value="4">Expired</option>
         </select>
         <label>Base Rate</label>
         <input type="number" min="1" name="base_rate"/>

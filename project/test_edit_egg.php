@@ -66,10 +66,11 @@ if (isset($id)) {
         <input name="name" placeholder="Name" value="<?php echo $result["name"]; ?>"/>
         <label>State</label>
         <select name="state" value="<?php echo $result["state"]; ?>">
-            <option value="0" <?php echo($result["state"] == "0" ? 'selected="selected"' : ''); ?>>Incubating</option>
-            <option value="1" <?php echo($result["state"] == "1" ? 'selected="selected"' : ''); ?>>Hatching</option>
-            <option value="2" <?php echo($result["state"] == "2" ? 'selected="selected"' : ''); ?>>Hatched</option>
-            <option value="3" <?php echo($result["state"] == "3" ? 'selected="selected"' : ''); ?>>Expired</option>
+            <option value="0" <?php echo($result["state"] == "0" ? 'selected="selected"' : ''); ?>>Stasis</option>
+            <option value="1" <?php echo($result["state"] == "1" ? 'selected="selected"' : ''); ?>>Incubating</option>
+            <option value="2" <?php echo($result["state"] == "2" ? 'selected="selected"' : ''); ?>>Hatching</option>
+            <option value="3" <?php echo($result["state"] == "3" ? 'selected="selected"' : ''); ?>>Hatched</option>
+            <option value="4" <?php echo($result["state"] == "4" ? 'selected="selected"' : ''); ?>>Expired</option>
         </select>
         <label>Base Rate</label>
         <input type="number" min="1" name="base_rate" value="<?php echo $result["base_rate"]; ?>"/>
