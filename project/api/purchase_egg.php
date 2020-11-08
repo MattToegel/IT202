@@ -38,14 +38,17 @@ $index = (int)(count($eggTypes) * $percent);
 $egg["name"] = $eggTypes[$index] . " Egg";
 
 
-$nst = date('Y-m-d H:i:s');//calc
+//$nst = date('Y-m-d H:i:s');//calc
+$nst = new DateTime();
 $days = $egg["base_rate"] + mt_rand($egg["mod_min"], $egg["mod_max"]);
+$nst->add(new DateInterval("P" . $days . "D"));
+
 //https://stackoverflow.com/a/1286272
 $day_string = $days == 1 ? "+1 day" : "+$days days";
 if ($testing) {
     echo "<br>$day_string<br>";
 }
-$nst = date('Y-m-d H:i:s', strtotime($day_string, $nst));
+$nst = $nst->format("Y-m-d H:i:s");// date('Y-m-d H:i:s', strtotime($day_string, $nst));
 $egg["next_stage_time"] = $nst;
 $user = get_user_id();
 if (!$testing) {
