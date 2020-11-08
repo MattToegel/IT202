@@ -22,10 +22,13 @@ $cost = $eggs_owned * $base_cost;
 $egg = [
     "name" => "Egg",
     "base_rate" => mt_rand(0, 5),
-    "mod_min" => mt_rand(1, 20),
-    "mod_max" => mt_rand(1, 20),
+    "mod_min" => mt_rand(1, 19),
     "state" => 0,
-    "user_id" => get_user_id()];
+    "user_id" => get_user_id()
+];
+//since this value depends on mod_min we can't quite initialized it all at once
+$egg["mod_max"] = mt_rand($egg["mod_min"], 20);
+
 //https://www.w3schools.com/php/func_math_mt_rand.asp
 $total = $egg["base_rate"] + $egg["mod_min"] + $egg["mod_max"];
 $max = 45;
