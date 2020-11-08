@@ -1,9 +1,9 @@
-<?php require_once(__DIR__ . "/partials/nav.php"); ?>
+<?php require_once(__DIR__ . "/../partials/nav.php"); ?>
 <?php
 if (!has_role("Admin")) {
     //this will redirect to login and kill the rest of this script (prevent it from executing)
     flash("You don't have permission to access this page");
-    die(header("Location: login.php"));
+    die(header("Location: ../login.php"));
 }
 ?>
     <h3>Create Egg</h3>
@@ -12,10 +12,11 @@ if (!has_role("Admin")) {
         <input name="name" placeholder="Name"/>
         <label>State</label>
         <select name="state">
-            <option value="0">Incubating</option>
-            <option value="1">Hatching</option>
-            <option value="2">Hatched</option>
-            <option value="3">Expired</option>
+            <option value="0">Stasis</option>
+            <option value="1">Incubating</option>
+            <option value="2">Hatching</option>
+            <option value="3">Hatched</option>
+            <option value="4">Expired</option>
         </select>
         <label>Base Rate</label>
         <input type="number" min="1" name="base_rate"/>
@@ -56,4 +57,4 @@ if (isset($_POST["save"])) {
     }
 }
 ?>
-<?php require(__DIR__ . "/partials/flash.php");
+<?php require(__DIR__ . "/../partials/flash.php");

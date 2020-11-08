@@ -1,9 +1,9 @@
-<?php require_once(__DIR__ . "/partials/nav.php"); ?>
+<?php require_once(__DIR__ . "/../partials/nav.php"); ?>
 <?php
 if (!has_role("Admin")) {
     //this will redirect to login and kill the rest of this script (prevent it from executing)
     flash("You don't have permission to access this page");
-    die(header("Location: login.php"));
+    die(header("Location: ../login.php"));
 }
 ?>
 <?php
@@ -70,10 +70,10 @@ $eggs = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <label>Name</label>
         <input name="name" placeholder="Name" value="<?php echo $result["name"]; ?>"/>
         <label>Egg</label>
-        <select name="egg_id" value="<?php echo $result["egg_id"];?>" >
+        <select name="egg_id" value="<?php echo $result["egg_id"]; ?>">
             <option value="-1">None</option>
             <?php foreach ($eggs as $egg): ?>
-                <option value="<?php safer_echo($egg["id"]); ?>" <?php echo ($result["egg_id"] == $egg["id"] ? 'selected="selected"' : ''); ?>
+                <option value="<?php safer_echo($egg["id"]); ?>" <?php echo($result["egg_id"] == $egg["id"] ? 'selected="selected"' : ''); ?>
                 ><?php safer_echo($egg["name"]); ?></option>
             <?php endforeach; ?>
         </select>
@@ -87,4 +87,4 @@ $eggs = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </form>
 
 
-<?php require(__DIR__ . "/partials/flash.php");
+<?php require(__DIR__ . "/../partials/flash.php");
