@@ -52,4 +52,14 @@ $cost = calcNextEggCost();
             </button>
         </div>
     </div>
+    <div class="card">
+        <div class="card-title">
+            Purchase Random Incubator
+        </div>
+        <div class="card-body">
+            <button type="button" onclick="alert('Coming soon');" class="btn btn-primary btn-lg">Purchase
+                (Cost: <?php echo $cost; ?>)
+            </button>
+        </div>
+    </div>
 <?php require(__DIR__ . "/partials/flash.php");
