@@ -42,24 +42,30 @@ $cost = calcNextEggCost();
 
         }
     </script>
-    <div class="card">
-        <div class="card-title">
-            Purchase Random Egg
+    <div class="container-fluid">
+        <div class="col-2">
+            <div class="card">
+                <div class="card-title">
+                    Purchase Random Egg
+                </div>
+                <div class="card-body">
+                    <button type="button" onclick="makePurchase();" class="btn btn-primary btn-lg">Purchase
+                        (Cost: <?php echo $cost; ?>)
+                    </button>
+                </div>
+            </div>
         </div>
-        <div class="card-body">
-            <button type="button" onclick="makePurchase();" class="btn btn-primary btn-lg">Purchase
-                (Cost: <?php echo $cost; ?>)
-            </button>
-        </div>
-    </div>
-    <div class="card">
-        <div class="card-title">
-            Purchase Random Incubator
-        </div>
-        <div class="card-body">
-            <button type="button" onclick="alert('Coming soon');" class="btn btn-primary btn-lg">Purchase
-                (Cost: <?php echo $cost; ?>)
-            </button>
+        <div class="col-2">
+            <div class="card">
+                <div class="card-title">
+                    Purchase Random Incubator
+                </div>
+                <div class="card-body">
+                    <button type="button" onclick="alert('Coming soon');" class="btn btn-primary btn-lg">Purchase
+                        (Cost: <?php echo $cost; ?>)
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 <?php require(__DIR__ . "/partials/flash.php");

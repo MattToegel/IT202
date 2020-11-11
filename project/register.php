@@ -68,25 +68,27 @@ if (!isset($username)) {
     $username = "";
 }
 ?>
-    <form method="POST">
-        <div class="form-group">
-            <label for="email">Email:</label>
-            <input class="form-control" type="email" id="email" name="email" required
-                   value="<?php safer_echo($email); ?>"/>
-        </div>
-        <div class="form-group">
-            <label for="user">Username:</label>
-            <input class="form-control" type="text" id="user" name="username" required maxlength="60"
-                   value="<?php safer_echo($username); ?>"/>
-        </div>
-        <div class="form-group">
-            <label for="p1">Password:</label>
-            <input class="form-control" type="password" id="p1" name="password" required/>
-        </div>
-        <div class="form-group">
-            <label for="p2">Confirm Password:</label>
-            <input class="form-control" type="password" id="p2" name="confirm" required/>
-        </div>
-        <input class="btn btn-primary" type="submit" name="register" value="Register"/>
-    </form>
+    <div class="container-fluid">
+        <form method="POST">
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input class="form-control" type="email" id="email" name="email" required
+                       value="<?php safer_echo($email); ?>"/>
+            </div>
+            <div class="form-group">
+                <label for="user">Username:</label>
+                <input class="form-control" type="text" id="user" name="username" required maxlength="60"
+                       value="<?php safer_echo($username); ?>"/>
+            </div>
+            <div class="form-group">
+                <label for="p1">Password:</label>
+                <input class="form-control" type="password" id="p1" name="password" required/>
+            </div>
+            <div class="form-group">
+                <label for="p2">Confirm Password:</label>
+                <input class="form-control" type="password" id="p2" name="confirm" required/>
+            </div>
+            <input class="btn btn-primary" type="submit" name="register" value="Register"/>
+        </form>
+    </div>
 <?php require(__DIR__ . "/partials/flash.php");
