@@ -17,15 +17,15 @@ if (isset($_GET["test"])) {
 //$base_cost = 10;
 //$cost = $eggs_owned * $base_cost;
 $cost = calcNextEggCost();
-if($cost < 0){
-	$response = ["status"=>400, "error"=>"Error calculating cost"];
-	echo json_encode($response);
-	die();
+if ($cost < 0) {
+    $response = ["status" => 400, "error" => "Error calculating cost"];
+    echo json_encode($response);
+    die();
 }
-if($cost > getBalance()){
-	$response = ["status"=>400, "error"=>"You can't afford this right now"];
-	echo json_encode($response);
-	die();
+if ($cost > getBalance()) {
+    $response = ["status" => 400, "error" => "You can't afford this right now"];
+    echo json_encode($response);
+    die();
 }
 //super secret egg-generator
 $egg = [
@@ -59,17 +59,15 @@ $nst = $nst->format("Y-m-d H:i:s");
 if ($testing) {
     echo "<br>+$days<br>";
 }
-
 $egg["next_stage_time"] = $nst;
-$user = get_user_id();
 if (!$testing) {
     $db = getDB();
-	$stmt = $db->prepare("SELECT MAX(id) as max from F20_Eggs");
-	$stmt->execute();
-	$result = $stmt->fetch(PDO::FETCH_ASSOC);
-	$max = (int)$result["max"];
-	$max++;
-	$egg["name"] .= " #$max";//forgot name was unique so just appending the "expected" id
+    $stmt = $db->prepare("SELECT MAX(id) as max from F20_Eggs");
+    $stmt->execute();
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    $max = (int)$result["max"];
+    $max++;
+    $egg["name"] .= " #$max";//forgot name was unique so just appending the "expected" id
     $stmt = $db->prepare("INSERT INTO F20_Eggs (name, state, base_rate, mod_min, mod_max, next_stage_time, user_id) VALUES(:name, :state, :br, :min,:max,:nst,:user)");
     $r = $stmt->execute([
         ":name" => $egg["name"],
