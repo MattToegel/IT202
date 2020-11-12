@@ -14,6 +14,12 @@ require_once(__DIR__ . "/../lib/helpers.php");
         integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
         crossorigin="anonymous"></script>
 
+<style>
+    .btn-primary {
+        background-color: aqua;
+    }
+</style>
+
 <div class="container-fluid">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <ul class="navbar-nav mr-auto">
