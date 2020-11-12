@@ -24,41 +24,45 @@ if (isset($_POST["search"]) && !empty($query)) {
     }
 }
 ?>
-    <h3>List Eggs</h3>
-    <form method="POST">
-        <input name="query" placeholder="Search" value="<?php safer_echo($query); ?>"/>
-        <input type="submit" value="Search" name="search"/>
-    </form>
-    <div class="results">
-        <?php if (count($results) > 0): ?>
-            <div class="list-group">
-                <?php foreach ($results as $r): ?>
-                    <div class="list-group-item">
-                        <div>
-                            <div>Name:</div>
-                            <div><?php safer_echo($r["name"]); ?></div>
+    <div class="container-fluid">
+        <h3>List Eggs</h3>
+        <form method="POST" class="form-inline">
+            <input class="form-control" name="query" placeholder="Search" value="<?php safer_echo($query); ?>"/>
+            <input class="btn btn-primary" type="submit" value="Search" name="search"/>
+        </form>
+        <div class="results">
+            <?php if (count($results) > 0): ?>
+                <div class="list-group">
+                    <?php foreach ($results as $r): ?>
+                        <div class="list-group-item">
+                            <div class="row">
+                                <div class="col">
+                                    <div>Name:</div>
+                                    <div><?php safer_echo($r["name"]); ?></div>
+                                </div>
+                                <div class="col">
+                                    <div>State:</div>
+                                    <div><?php getState($r["state"]); ?></div>
+                                </div>
+                                <div class="col">
+                                    <div>Next Stage:</div>
+                                    <div><?php safer_echo($r["next_stage_time"]); ?></div>
+                                </div>
+                                <div class="col">
+                                    <div>Owner Id:</div>
+                                    <div><?php safer_echo($r["user_id"]); ?></div>
+                                </div>
+                                <div class="col">
+                                    <a type="button" href="test_edit_egg.php?id=<?php safer_echo($r['id']); ?>">Edit</a>
+                                    <a type="button" href="test_view_egg.php?id=<?php safer_echo($r['id']); ?>">View</a>
+                                </div>
+                            </div>
                         </div>
-                        <div>
-                            <div>State:</div>
-                            <div><?php getState($r["state"]); ?></div>
-                        </div>
-                        <div>
-                            <div>Next Stage:</div>
-                            <div><?php safer_echo($r["next_stage_time"]); ?></div>
-                        </div>
-                        <div>
-                            <div>Owner Id:</div>
-                            <div><?php safer_echo($r["user_id"]); ?></div>
-                        </div>
-                        <div>
-                            <a type="button" href="test_edit_egg.php?id=<?php safer_echo($r['id']); ?>">Edit</a>
-                            <a type="button" href="test_view_egg.php?id=<?php safer_echo($r['id']); ?>">View</a>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-        <?php else: ?>
-            <p>No results</p>
-        <?php endif; ?>
+                    <?php endforeach; ?>
+                </div>
+            <?php else: ?>
+                <p>No results</p>
+            <?php endif; ?>
+        </div>
     </div>
 <?php require(__DIR__ . "/../partials/flash.php");
