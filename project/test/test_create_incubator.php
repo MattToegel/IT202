@@ -6,19 +6,28 @@ if (!has_role("Admin")) {
     die(header("Location: ../login.php"));
 }
 ?>
-    <h3>Create Incubator</h3>
-    <form method="POST">
-        <label>Name</label>
-        <input name="name" placeholder="Name"/>
-        <label>Base Rate</label>
-        <input type="number" min="1" name="base_rate"/>
-        <label>Mod Min</label>
-        <input type="number" min="1" name="mod_min"/>
-        <label>Mod Max</label>
-        <input type="number" min="1" name="mod_max"/>
-        <input type="submit" name="save" value="Create"/>
-    </form>
-
+    <div class="container-fluid">
+        <h3>Create Incubator</h3>
+        <form method="POST">
+            <div class="form-group">
+                <label>Name</label>
+                <input class="form-control" name="name" placeholder="Name"/>
+            </div>
+            <div class="form-group">
+                <label>Base Rate</label>
+                <input class="form-control" type="number" min="1" name="base_rate"/>
+            </div>
+            <div class="form-group">
+                <label>Mod Min</label>
+                <input class="form-control" type="number" min="1" name="mod_min"/>
+            </div>
+            <div class="form-group">
+                <label>Mod Max</label>
+                <input class="form-control" type="number" min="1" name="mod_max"/>
+            </div>
+            <input class="btn btn-primary" type="submit" name="save" value="Create"/>
+        </form>
+    </div>
 <?php
 if (isset($_POST["save"])) {
     //TODO add proper validation/checks
