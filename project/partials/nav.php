@@ -14,37 +14,40 @@ require_once(__DIR__ . "/../lib/helpers.php");
         integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
         crossorigin="anonymous"></script>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <ul class="navbar-nav mr-auto">
-        <li class="nav-item"><a class="nav-link" href="<?php echo getURL("home.php"); ?>">Home</a></li>
-        <?php if (!is_logged_in()): ?>
-            <li class="nav-item"><a class="nav-link" href="<?php echo getURL("login.php"); ?>">Login</a></li>
-            <li class="nav-item"><a class="nav-link" href="<?php echo getURL("register.php"); ?>">Register</a></li>
-        <?php endif; ?>
-        <?php if (has_role("Admin")): ?>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
-                   aria-haspopup="true" aria-expanded="false">
-                    Admin
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="nav-link" href="<?php echo getURL("test/test_create_egg.php"); ?>">Create
-                        Egg</a>
-                    <a class="nav-link" href="<?php echo getURL("test/test_list_egg.php"); ?>">View
-                        Eggs</a>
-                    <a class="nav-link" href="<?php echo getURL("test/test_create_incubator.php"); ?>">Create
-                        Incubator</a>
+<div class="container-fluid">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item"><a class="nav-link" href="<?php echo getURL("home.php"); ?>">Home</a></li>
+            <?php if (!is_logged_in()): ?>
+                <li class="nav-item"><a class="nav-link" href="<?php echo getURL("login.php"); ?>">Login</a></li>
+                <li class="nav-item"><a class="nav-link" href="<?php echo getURL("register.php"); ?>">Register</a></li>
+            <?php endif; ?>
+            <?php if (has_role("Admin")): ?>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                       data-toggle="dropdown"
+                       aria-haspopup="true" aria-expanded="false">
+                        Admin
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="nav-link" href="<?php echo getURL("test/test_create_egg.php"); ?>">Create
+                            Egg</a>
+                        <a class="nav-link" href="<?php echo getURL("test/test_list_egg.php"); ?>">View
+                            Eggs</a>
+                        <a class="nav-link" href="<?php echo getURL("test/test_create_incubator.php"); ?>">Create
+                            Incubator</a>
 
-                    <a class="nav-link" href="<?php echo getURL("test/test_list_incubators.php"); ?>">View
-                        Incubator</a>
-                </div>
-            </li>
-        <?php endif; ?>
-        <?php if (is_logged_in()): ?>
-            <li class="nav-item"><a class="nav-link" href="<?php echo getURL("shop.php"); ?>">Shop</a></li>
-            <li class="nav-item"><a class="nav-link" href="<?php echo getURL("profile.php"); ?>">Profile</a></li>
-            <li class="nav-item"><a class="nav-link" href="<?php echo getURL("logout.php"); ?>">Logout</a></li>
-        <?php endif; ?>
-    </ul>
-    <span class="navbar-text">Balance: <?php echo getBalance(); ?></span>
-</nav>
+                        <a class="nav-link" href="<?php echo getURL("test/test_list_incubators.php"); ?>">View
+                            Incubator</a>
+                    </div>
+                </li>
+            <?php endif; ?>
+            <?php if (is_logged_in()): ?>
+                <li class="nav-item"><a class="nav-link" href="<?php echo getURL("shop.php"); ?>">Shop</a></li>
+                <li class="nav-item"><a class="nav-link" href="<?php echo getURL("profile.php"); ?>">Profile</a></li>
+                <li class="nav-item"><a class="nav-link" href="<?php echo getURL("logout.php"); ?>">Logout</a></li>
+            <?php endif; ?>
+        </ul>
+        <span class="navbar-text">Balance: <?php echo getBalance(); ?></span>
+    </nav>
+</div>
