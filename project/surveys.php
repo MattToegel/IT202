@@ -17,16 +17,21 @@ if ($r) {
 else {
     flash("There was a problem fetching surveys: " . var_export($stmt->errorInfo(), true), "danger");
 }
+$count = 0;
+if (isset($results)) {
+    $count = count($results);
+}
 ?>
     <div class="container-fluid">
-        <?php if (isset($results) && count($results) > 0): ?>
+        <h3>Surveys (<?php echo $count; ?>)</h3>
+        <?php if (isset($results) && $count > 0): ?>
             <div class="list-group">
                 <?php foreach ($results as $s): ?>
                     <div class="list-group-item">
                         <div class="row">
                             <div class="col-8"><?php safer_echo($s["name"]); ?></div>
                             <div class="col">
-                                <a type="button" class="btn btn-succes"
+                                <a type="button" class="btn btn-success"
                                    href="<?php echo getURL("survey.php?id=" . $s["id"]); ?>">
                                     Take Survey
                                 </a>
