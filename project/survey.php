@@ -52,7 +52,7 @@ else {
             <div class="list-group-item">
                 <div><?php safer_echo($question["question"]); ?></div>
                 <div>
-                    <div class="btn-group-vertical btn-group-toggle" data-toggle="buttons">
+                    <div class="btn-group-vertical btn-group-toggle" role="group" data-toggle="buttons">
                         <?php foreach ($question["answers"] as $answer): ?>
 
                             <label class="btn btn-warning btn-block m-1">
