@@ -49,19 +49,19 @@ if (isset($_POST["submit"])) {
             //we don't get stuck in an infinite loop since while(true) is dangerous if not handled appropriately
             for ($index = 0; $index < $assumed_max_questions; $index++) {
                 $question = false;
-		if(isset($_POST["question_$index"])){
-			$question = $_POST["question_$index"];
-		}
+                if (isset($_POST["question_$index"])) {
+                    $question = $_POST["question_$index"];
+                }
                 if ($question) {
                     $assumed_max_answers = 100;//same as $assumed_max_questions (var sits here so it resets each loop)
                     $answers = [];//reset array each loop
                     for ($i = 0; $i < $assumed_max_answers; $i++) {
                         $check = "" . join(["question_", $index, "_answer_", $i]);
                         error_log("Checking for pattern $check");
-                       	$answer = false;
-			if(isset($_POST[$check])){
-			 $answer = $_POST[$check];
-			}
+                        $answer = false;
+                        if (isset($_POST[$check])) {
+                            $answer = $_POST[$check];
+                        }
                         if ($answer) {
                             array_push($answers, ["answer" => $answer]);
                         }
@@ -117,6 +117,7 @@ function save_questionnaire($questionnaire) {
     //this could be moved to a helper file if it's used elsewhere too
     //since I don't plan on implementing edit survey at this time, I'll keep it here
     $db = getDB();
+    $hadError = false;
     //insert survey
     $stmt = $db->prepare("INSERT INTO F20_Surveys (name, description, attempts_per_day, max_attempts,use_max, user_id) VALUES (:name, :desc, :apd, :ma, :um, :user_id)");
     $r = $stmt->execute([
@@ -135,7 +136,7 @@ function save_questionnaire($questionnaire) {
         //loop over each question, insert the question and respective answers
         foreach ($questionnaire["questions"] as $questionIndex => $q) {
             $stmt = $db->prepare("INSERT INTO F20_Questions(question, survey_id) VALUES (:q, :survey_id)");
-	//echo "<pre>" .var_export($q, true) . "</pre>";
+            //echo "<pre>" .var_export($q, true) . "</pre>";
             $r = $stmt->execute([":q" => $q["question"], ":survey_id" => $survey_id]);
             if ($r) {//insert answers
                 $question_id = $db->lastInsertId();
@@ -150,22 +151,30 @@ function save_questionnaire($questionnaire) {
                 }
                 //only need to map this once since it's the same for this batch of answers
                 $params[":qid"] = $question_id;
-	//echo "<br>Answer<br>";
-	//echo $query;
-	//echo var_export($params, true);
+                //echo "<br>Answer<br>";
+                //echo $query;
+                //echo var_export($params, true);
                 $stmt = $db->prepare($query);
                 $r = $stmt->execute($params);
                 if (!$r) {
+                    $hadError = true;
                     flash("Error creating answers: " . var_export($stmt->errorInfo(), true), "danger");
                 }
             }
             else {
+                $hadError = true;
                 flash("Error creating questions: " . var_export($stmt->errorInfo(), true), "danger");
             }
         }
     }
     else {
+        $hadError = true;
         flash("Error creating survey: " . var_export($stmt->errorInfo(), true), "danger");
+    }
+    if (!$hadError) {
+        flash("Successfully created Survey: " . $questionnaire["name"], "success");
+        //redirect to prevent duplicate form submission
+        die(header("Location: create_survey.php"));
     }
 }
 
