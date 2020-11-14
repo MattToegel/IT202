@@ -20,17 +20,17 @@ if (isset($_GET["id"])) {
         // echo "<br>";
         foreach ($results as $index => $group) {
             foreach ($group as $details) {
-		if(empty($name)){
-			$name = $details["SurveyName"];
-		}
-		$qid = $details["QuestionId"];
+                if (empty($name)) {
+                    $name = $details["SurveyName"];
+                }
+                $qid = $details["QuestionId"];
                 $answer = ["answerId" => $details["AnswerId"], "answer" => $details["answer"]];
-              if (!isset($questions[$qid]["answers"])) {
+                if (!isset($questions[$qid]["answers"])) {
                     $questions[$qid]["question"] = $details["question"];
-                   $questions[$qid]["answers"] = [];
+                    $questions[$qid]["answers"] = [];
                 }
                 array_push($questions[$qid]["answers"], $answer);
-               // echo "<br>" . $details["question"] . " " . $details["answer"] . "<br>";
+                // echo "<br>" . $details["question"] . " " . $details["answer"] . "<br>";
             }
         }
         //echo "<pre>" . var_export($questions, true) . "</pre>";
@@ -53,11 +53,17 @@ else {
                 <div><?php safer_echo($question["question"]); ?></div>
                 <div>
                     <div class="list-group">
-                        <?php foreach ($question["answers"] as $answer): ?>
-                            <div class="list-group-item">
-                                <?php safer_echo($answer["answer"]); ?>
-                            </div>
-                        <?php endforeach; ?>
+                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                            <?php foreach ($question["answers"] as $answer): ?>
+                                <div class="list-group-item">
+                                    <label class="btn btn-warning">
+                                        <input type="radio" name="options" id="option1" autocomplete="off"
+                                               value="<?php safer_echo($answer["AnswerId"]); ?>">
+                                        <?php safer_echo($answer["answer"]); ?>
+                                    </label>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
                     </div>
                 </div>
             </div>
