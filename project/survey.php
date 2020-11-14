@@ -52,10 +52,10 @@ else {
             <div class="list-group-item">
                 <div><?php safer_echo($question["question"]); ?></div>
                 <div>
-                    <div class="btn-group-vertical btn-group-toggle p-1" data-toggle="buttons">
+                    <div class="btn-group-vertical btn-group-toggle" data-toggle="buttons">
                         <?php foreach ($question["answers"] as $answer): ?>
 
-                            <label class="btn btn-warning">
+                            <label class="btn btn-warning btn-block m-1">
                                 <input type="radio" name="<?php safer_echo($index); ?>" id="option1"
                                        autocomplete="off"
                                        value="<?php safer_echo($answer["AnswerId"]); ?>">
