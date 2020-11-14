@@ -16,23 +16,24 @@ if (isset($_GET["id"])) {
     $questions = [];
     if ($r) {
         $results = $stmt->fetchAll(PDO::FETCH_GROUP);
-        // echo "<pre>" . var_export($results, true) . "</pre>";
+        //echo "<pre>" . var_export($results, true) . "</pre>";
         // echo "<br>";
         foreach ($results as $index => $group) {
             foreach ($group as $details) {
+		if(empty($name)){
+			$name = $details["SurveyName"];
+		}
+		$qid = $details["QuestionId"];
                 $answer = ["answerId" => $details["AnswerId"], "answer" => $details["answer"]];
-                if (in_array($details["QuestionId"], $questions)) {
-                    //array_push($questions[$details["QuestionId"]["answers"], ["answerId"=>$details["AnswerId"], "answer"=>$details["answer"]]);
+              if (!isset($questions[$qid]["answers"])) {
+                    $questions[$qid]["question"] = $details["question"];
+                   $questions[$qid]["answers"] = [];
                 }
-                else {
-                    $questions[$details["QuestionId"]]["question"] = $details["question"];
-                    $questions[$details["QuestionId"]]["answers"] = [];
-                }
-                array_push($questions[$details["QuestionId"]]["answers"], $answer);
-                //echo "<br>" . $details["question"] . " " . $details["answer"] . "<br>";
+                array_push($questions[$qid]["answers"], $answer);
+               // echo "<br>" . $details["question"] . " " . $details["answer"] . "<br>";
             }
         }
-        echo "<pre>" . var_export($questions, true) . "</pre>";
+        //echo "<pre>" . var_export($questions, true) . "</pre>";
 
     }
     else {
