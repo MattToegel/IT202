@@ -8,7 +8,7 @@ if (!has_role("Admin")) {
 ?>
 <?php
 if (isset($_POST["submit"])) {
-    echo "<pre>" . var_export($_POST, true) . "</pre>";
+    //echo "<pre>" . var_export($_POST, true) . "</pre>";
     //TODO this isn't going to be the best way to parse the form, and probably not the best form setup
     //so just use this as an example rather than what you should do.
     //this is based off of naming conversions used in Python WTForms (I like to try to see if I can get some
@@ -48,14 +48,20 @@ if (isset($_POST["submit"])) {
             $questions = [];
             //we don't get stuck in an infinite loop since while(true) is dangerous if not handled appropriately
             for ($index = 0; $index < $assumed_max_questions; $index++) {
-                $question = $_POST["question_$index"];
+                $question = false;
+		if(isset($_POST["question_$index"])){
+			$question = $_POST["question_$index"];
+		}
                 if ($question) {
                     $assumed_max_answers = 100;//same as $assumed_max_questions (var sits here so it resets each loop)
                     $answers = [];//reset array each loop
                     for ($i = 0; $i < $assumed_max_answers; $i++) {
                         $check = "" . join(["question_", $index, "_answer_", $i]);
                         error_log("Checking for pattern $check");
-                        $answer = $_POST[$check];
+                       	$answer = false;
+			if(isset($_POST[$check])){
+			 $answer = $_POST[$check];
+			}
                         if ($answer) {
                             array_push($answers, ["answer" => $answer]);
                         }
@@ -86,7 +92,7 @@ if (isset($_POST["submit"])) {
                 "use_max" => $use_max,
                 "questions" => $questions//contains answers
             ];
-            echo "<pre>" . var_export($questionnaire, true) . "</pre>";
+            //echo "<pre>" . var_export($questionnaire, true) . "</pre>";
             save_questionnaire($questionnaire);
             /*$response = DBH::save_questionnaire($questionnaire);
             if (Common::get($response, "status", 400) == 200) {
@@ -126,14 +132,14 @@ function save_questionnaire($questionnaire) {
         //we could bulk insert questions, but it'll be a bit complex to get the ids back out
         //for use in the Answers insert, so instead I'll do a less efficient route and insert a question and its
         //answers one at a time.
-        $query = "INSERT INTO F20_Questions(question, survey_id) VALUES (:q, :survey_id)";
         //loop over each question, insert the question and respective answers
         foreach ($questionnaire["questions"] as $questionIndex => $q) {
-            $stmt = $db->prepare($query);
+            $stmt = $db->prepare("INSERT INTO F20_Questions(question, survey_id) VALUES (:q, :survey_id)");
+	//echo "<pre>" .var_export($q, true) . "</pre>";
             $r = $stmt->execute([":q" => $q["question"], ":survey_id" => $survey_id]);
             if ($r) {//insert answers
                 $question_id = $db->lastInsertId();
-                $query = "INSERT INTO F20_Answers";
+                $query = "INSERT INTO F20_Answers(answer, question_id) VALUES";
                 $params = [];
                 foreach ($q["answers"] as $answerIndex => $a) {
                     if ($answerIndex > 0) {
@@ -144,6 +150,9 @@ function save_questionnaire($questionnaire) {
                 }
                 //only need to map this once since it's the same for this batch of answers
                 $params[":qid"] = $question_id;
+	//echo "<br>Answer<br>";
+	//echo $query;
+	//echo var_export($params, true);
                 $stmt = $db->prepare($query);
                 $r = $stmt->execute($params);
                 if (!$r) {
