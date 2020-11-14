@@ -50,15 +50,15 @@ else {
     <div class="list-group">
         <?php foreach ($questions as $index => $question): ?>
             <div class="list-group-item">
-                <div><?php safer_echo($question["question"]); ?></div>
+                <div class="h5 justify-content-center text-center"><?php safer_echo($question["question"]); ?></div>
                 <div>
-                    <div class="btn-group-vertical btn-group-toggle" role="group" data-toggle="buttons">
+                    <div class="d-flex btn-group-vertical btn-group-toggle w-50 text-center justify-content-center mx-auto" data-toggle="buttons">
                         <?php foreach ($question["answers"] as $answer): ?>
-
-                            <label class="btn btn-warning btn-block m-1">
-                                <input type="radio" name="<?php safer_echo($index); ?>" id="option1"
+				<?php $eleId = $index . '-' . $answer["answerId"];?>
+                            <label class="btn btn-primary m-1 btn-outline-light btn-block" style="border-radius: 0" role="button" for="option-<?php echo $eleId;?>">
+                                <input type="radio" name="<?php safer_echo($index); ?>" id="option-<?php echo $eleId;?>"
                                        autocomplete="off"
-                                       value="<?php safer_echo($answer["AnswerId"]); ?>">
+                                       value="<?php safer_echo($answer["answerId"]); ?>">
                                 <?php safer_echo($answer["answer"]); ?>
                             </label>
                         <?php endforeach; ?>
