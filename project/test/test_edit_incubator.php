@@ -65,26 +65,40 @@ $stmt = $db->prepare("SELECT id,name from F20_Eggs LIMIT 10");
 $r = $stmt->execute();
 $eggs = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
-    <h3>Edit Incubator</h3>
-    <form method="POST">
-        <label>Name</label>
-        <input name="name" placeholder="Name" value="<?php echo $result["name"]; ?>"/>
-        <label>Egg</label>
-        <select name="egg_id" value="<?php echo $result["egg_id"]; ?>">
-            <option value="-1">None</option>
-            <?php foreach ($eggs as $egg): ?>
-                <option value="<?php safer_echo($egg["id"]); ?>" <?php echo($result["egg_id"] == $egg["id"] ? 'selected="selected"' : ''); ?>
-                ><?php safer_echo($egg["name"]); ?></option>
-            <?php endforeach; ?>
-        </select>
-        <label>Base Rate</label>
-        <input type="number" min="1" name="base_rate" value="<?php echo $result["base_rate"]; ?>"/>
-        <label>Mod Min</label>
-        <input type="number" min="1" name="mod_min" value="<?php echo $result["mod_min"]; ?>"/>
-        <label>Mod Max</label>
-        <input type="number" min="1" name="mod_max" value="<?php echo $result["mod_max"]; ?>"/>
-        <input type="submit" name="save" value="Update"/>
-    </form>
-
+    <div class="container-fluid">
+        <h3>Edit Incubator</h3>
+        <form method="POST">
+            <div class="form-group">
+                <label>Name</label>
+                <input class="form-control" name="name" placeholder="Name" value="<?php echo $result["name"]; ?>"/>
+            </div>
+            <div class="form-group">
+                <label>Egg</label>
+                <select class="form-control" name="egg_id" value="<?php echo $result["egg_id"]; ?>">
+                    <option value="-1">None</option>
+                    <?php foreach ($eggs as $egg): ?>
+                        <option value="<?php safer_echo($egg["id"]); ?>" <?php echo($result["egg_id"] == $egg["id"] ? 'selected="selected"' : ''); ?>
+                        ><?php safer_echo($egg["name"]); ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Base Rate</label>
+                <input class="form-control" type="number" min="1" name="base_rate"
+                       value="<?php echo $result["base_rate"]; ?>"/>
+            </div>
+            <div class="form-group">
+                <label>Mod Min</label>
+                <input class="form-control" type="number" min="1" name="mod_min"
+                       value="<?php echo $result["mod_min"]; ?>"/>
+            </div>
+            <div class="form-group">
+                <label>Mod Max</label>
+                <input class="form-control" type="number" min="1" name="mod_max"
+                       value="<?php echo $result["mod_max"]; ?>"/>
+            </div>
+            <input class="btn btn-primary" type="submit" name="save" value="Update"/>
+        </form>
+    </div>
 
 <?php require(__DIR__ . "/../partials/flash.php");

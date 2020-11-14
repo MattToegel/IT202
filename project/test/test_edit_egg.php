@@ -60,26 +60,45 @@ if (isset($id)) {
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
 }
 ?>
-    <h3>Edit Egg</h3>
-    <form method="POST">
-        <label>Name</label>
-        <input name="name" placeholder="Name" value="<?php echo $result["name"]; ?>"/>
-        <label>State</label>
-        <select name="state" value="<?php echo $result["state"]; ?>">
-            <option value="0" <?php echo($result["state"] == "0" ? 'selected="selected"' : ''); ?>>Stasis</option>
-            <option value="1" <?php echo($result["state"] == "1" ? 'selected="selected"' : ''); ?>>Incubating</option>
-            <option value="2" <?php echo($result["state"] == "2" ? 'selected="selected"' : ''); ?>>Hatching</option>
-            <option value="3" <?php echo($result["state"] == "3" ? 'selected="selected"' : ''); ?>>Hatched</option>
-            <option value="4" <?php echo($result["state"] == "4" ? 'selected="selected"' : ''); ?>>Expired</option>
-        </select>
-        <label>Base Rate</label>
-        <input type="number" min="1" name="base_rate" value="<?php echo $result["base_rate"]; ?>"/>
-        <label>Mod Min</label>
-        <input type="number" min="1" name="mod_min" value="<?php echo $result["mod_min"]; ?>"/>
-        <label>Mod Max</label>
-        <input type="number" min="1" name="mod_max" value="<?php echo $result["mod_max"]; ?>"/>
-        <input type="submit" name="save" value="Update"/>
-    </form>
-
+    <div class="container-fluid">
+        <h3>Edit Egg</h3>
+        <form method="POST">
+            <div class="form-group">
+                <label>Name</label>
+                <input class="form-control" name="name" placeholder="Name" value="<?php echo $result["name"]; ?>"/>
+            </div>
+            <div class="form-group">
+                <label>State</label>
+                <select class="form-control" name="state" value="<?php echo $result["state"]; ?>">
+                    <option value="0" <?php echo($result["state"] == "0" ? 'selected="selected"' : ''); ?>>Stasis
+                    </option>
+                    <option value="1" <?php echo($result["state"] == "1" ? 'selected="selected"' : ''); ?>>Incubating
+                    </option>
+                    <option value="2" <?php echo($result["state"] == "2" ? 'selected="selected"' : ''); ?>>Hatching
+                    </option>
+                    <option value="3" <?php echo($result["state"] == "3" ? 'selected="selected"' : ''); ?>>Hatched
+                    </option>
+                    <option value="4" <?php echo($result["state"] == "4" ? 'selected="selected"' : ''); ?>>Expired
+                    </option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Base Rate</label>
+                <input class="form-control" type="number" min="1" name="base_rate"
+                       value="<?php echo $result["base_rate"]; ?>"/>
+            </div>
+            <div class="form-group">
+                <label>Mod Min</label>
+                <input class="form-control" type="number" min="1" name="mod_min"
+                       value="<?php echo $result["mod_min"]; ?>"/>
+            </div>
+            <div class="form-group">
+                <label>Mod Max</label>
+                <input class="form-control" type="number" min="1" name="mod_max"
+                       value="<?php echo $result["mod_max"]; ?>"/>
+            </div>
+            <input class="btn btn-primary" type="submit" name="save" value="Update"/>
+        </form>
+    </div>
 
 <?php require(__DIR__ . "/../partials/flash.php");
