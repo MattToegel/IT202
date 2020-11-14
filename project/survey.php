@@ -48,7 +48,7 @@ else {
 <div class="container-fluid">
     <h3><?php safer_echo($name); ?></h3>
     <div class="list-group">
-        <?php foreach ($questions as $question): ?>
+        <?php foreach ($questions as $index => $question): ?>
             <div class="list-group-item">
                 <div><?php safer_echo($question["question"]); ?></div>
                 <div>
@@ -57,7 +57,8 @@ else {
                             <?php foreach ($question["answers"] as $answer): ?>
                                 <div class="list-group-item">
                                     <label class="btn btn-warning">
-                                        <input type="radio" name="options" id="option1" autocomplete="off"
+                                        <input type="radio" name="<?php safer_echo($index); ?>" id="option1"
+                                               autocomplete="off"
                                                value="<?php safer_echo($answer["AnswerId"]); ?>">
                                         <?php safer_echo($answer["answer"]); ?>
                                     </label>
