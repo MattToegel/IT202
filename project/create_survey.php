@@ -110,7 +110,54 @@ if (isset($_POST["submit"])) {
 function save_questionnaire($questionnaire) {
     //this could be moved to a helper file if it's used elsewhere too
     //since I don't plan on implementing edit survey at this time, I'll keep it here
-    
+    $db = getDB();
+    //insert survey
+    $stmt = $db->prepare("INSERT INTO F20_Surveys (name, description, attempts_per_day, max_attempts,use_max, user_id) VALUES (:name, :desc, :apd, :ma, :um, :user_id)");
+    $r = $stmt->execute([
+        ":name" => $questionnaire["name"],
+        ":desc" => $questionnaire["description"],
+        ":apd" => $questionnaire["attempts_per_day"],
+        ":ma" => $questionnaire["max_attempts"],
+        ":um" => $questionnaire["use_max"],
+        ":user_id" => get_user_id()
+    ]);
+    if ($r) {//insert questions
+        $survey_id = $db->lastInsertId();
+        //we could bulk insert questions, but it'll be a bit complex to get the ids back out
+        //for use in the Answers insert, so instead I'll do a less efficient route and insert a question and its
+        //answers one at a time.
+        $query = "INSERT INTO F20_Questions(question, survey_id) VALUES (:q, :survey_id)";
+        //loop over each question, insert the question and respective answers
+        foreach ($questionnaire["questions"] as $questionIndex => $q) {
+            $stmt = $db->prepare($query);
+            $r = $stmt->execute([":q" => $q["question"], ":survey_id" => $survey_id]);
+            if ($r) {//insert answers
+                $question_id = $db->lastInsertId();
+                $query = "INSERT INTO F20_Answers";
+                $params = [];
+                foreach ($q["answers"] as $answerIndex => $a) {
+                    if ($answerIndex > 0) {
+                        $query .= ",";
+                    }
+                    $query .= "(:a$answerIndex, :qid)";
+                    $params[":a$answerIndex"] = $a["answer"];
+                }
+                //only need to map this once since it's the same for this batch of answers
+                $params[":qid"] = $question_id;
+                $stmt = $db->prepare($query);
+                $r = $stmt->execute($params);
+                if (!$r) {
+                    flash("Error creating answers: " . var_export($stmt->errorInfo(), true), "danger");
+                }
+            }
+            else {
+                flash("Error creating questions: " . var_export($stmt->errorInfo(), true), "danger");
+            }
+        }
+    }
+    else {
+        flash("Error creating survey: " . var_export($stmt->errorInfo(), true), "danger");
+    }
 }
 
 ?>
