@@ -87,6 +87,7 @@ if (isset($_POST["submit"])) {
                 "questions" => $questions//contains answers
             ];
             echo "<pre>" . var_export($questionnaire, true) . "</pre>";
+            save_questionnaire($questionnaire);
             /*$response = DBH::save_questionnaire($questionnaire);
             if (Common::get($response, "status", 400) == 200) {
                 Common::flash("Successfully saved questionnaire", "success");
@@ -106,6 +107,12 @@ if (isset($_POST["submit"])) {
         // die(header("Location: questionnaire.php"));
     }
 }
+function save_questionnaire($questionnaire) {
+    //this could be moved to a helper file if it's used elsewhere too
+    //since I don't plan on implementing edit survey at this time, I'll keep it here
+    
+}
+
 ?>
 <div class="container-fluid">
     <form method="POST">
