@@ -22,26 +22,26 @@ if (isset($results)) {
     $count = count($results);
 }
 ?>
-    <div class="container-fluid">
-        <h3>Surveys (<?php echo $count; ?>)</h3>
-        <?php if (isset($results) && $count > 0): ?>
-            <div class="list-group">
-                <?php foreach ($results as $s): ?>
-                    <div class="list-group-item">
-                        <div class="row">
-                            <div class="col-8"><?php safer_echo($s["name"]); ?></div>
-                            <div class="col">
-                                <a type="button" class="btn btn-success"
-                                   href="<?php echo getURL("survey.php?id=" . $s["id"]); ?>">
-                                    Take Survey
-                                </a>
-                            </div>
+<div class="container-fluid">
+    <h3>Surveys (<?php echo $count; ?>)</h3>
+    <?php if (isset($results) && $count > 0): ?>
+        <div class="list-group">
+            <?php foreach ($results as $s): ?>
+                <div class="list-group-item">
+                    <div class="row">
+                        <div class="col-8"><?php safer_echo($s["name"]); ?></div>
+                        <div class="col">
+                            <a type="button" class="btn btn-success"
+                               href="<?php echo getURL("survey.php?id=" . $s["id"]); ?>">
+                                Take Survey
+                            </a>
                         </div>
                     </div>
-                <?php endforeach; ?>
-            </div>
-        <?php else: ?>
-            <p>No surveys available</p>
-        <?php endif; ?>
-    </div>
-<?php require(__DIR__ . "/partials/flash.php");
+                </div>
+            <?php endforeach; ?>
+        </div>
+    <?php else: ?>
+        <p>No surveys available</p>
+    <?php endif; ?>
+</div>
+<?php require(__DIR__ . "/partials/flash.php"); ?>

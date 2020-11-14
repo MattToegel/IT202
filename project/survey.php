@@ -9,7 +9,6 @@ if (!is_logged_in()) {
 <?php
 if (isset($_GET["id"])) {
     $sid = $_GET["id"];
-    //get latest 10 surveys we haven't take
     $db = getDB();
     $stmt = $db->prepare("SELECT s.id as SurveyId, s.name as SurveyName, q.id as QuestionId, q.question, a.id as AnswerId, a.answer FROM F20_Surveys as s JOIN F20_Questions as q on s.id = q.survey_id JOIN F20_Answers as a on a.question_id = q.id WHERE :id not in (SELECT user_id from F20_Responses where user_id = :id and survey_id = :survey_id) and id = :survey_id");
     $r = $stmt->execute([":id" => get_user_id(), ":survey_id" => $sid]);
@@ -26,3 +25,4 @@ else {
     die(header("Location: " . getURL("surveys.php")));
 }
 ?>
+<?php require(__DIR__ . "/partials/flash.php"); ?>
