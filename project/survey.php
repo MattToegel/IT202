@@ -52,19 +52,16 @@ else {
             <div class="list-group-item">
                 <div><?php safer_echo($question["question"]); ?></div>
                 <div>
-                    <div class="list-group">
-                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                            <?php foreach ($question["answers"] as $answer): ?>
-                                <div class="list-group-item">
-                                    <label class="btn btn-warning">
-                                        <input type="radio" name="<?php safer_echo($index); ?>" id="option1"
-                                               autocomplete="off"
-                                               value="<?php safer_echo($answer["AnswerId"]); ?>">
-                                        <?php safer_echo($answer["answer"]); ?>
-                                    </label>
-                                </div>
-                            <?php endforeach; ?>
-                        </div>
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        <?php foreach ($question["answers"] as $answer): ?>
+                                
+                            <label class="btn btn-warning">
+                                <input type="radio" name="<?php safer_echo($index); ?>" id="option1"
+                                       autocomplete="off"
+                                       value="<?php safer_echo($answer["AnswerId"]); ?>">
+                                <?php safer_echo($answer["answer"]); ?>
+                            </label>
+                        <?php endforeach; ?>
                     </div>
                 </div>
             </div>
