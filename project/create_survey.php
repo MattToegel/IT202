@@ -118,7 +118,7 @@ function save_questionnaire($questionnaire) {
         ":desc" => $questionnaire["description"],
         ":apd" => $questionnaire["attempts_per_day"],
         ":ma" => $questionnaire["max_attempts"],
-        ":um" => $questionnaire["use_max"],
+        ":um" => $questionnaire["use_max"] ? "1" : "0",//Convert to 1 or 0 for insertion as tinyint 
         ":user_id" => get_user_id()
     ]);
     if ($r) {//insert questions
