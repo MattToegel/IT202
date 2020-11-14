@@ -15,6 +15,12 @@ if (isset($_GET["id"])) {
     if ($r) {
         $results = $stmt->fetchAll(PDO::FETCH_GROUP);
         echo "<pre>" . var_export($results, true) . "</pre>";
+        echo "<br>";
+        foreach ($results as $group) {
+            foreach ($group as $details) {
+                echo "<br>" . $group["question"] . " " . $details["answer"] . "<br>";
+            }
+        }
     }
     else {
         flash("There was a problem fetching the survey: " . var_export($stmt->errorInfo(), true), "danger");
