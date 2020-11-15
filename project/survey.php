@@ -7,6 +7,13 @@ if (!is_logged_in()) {
 }
 ?>
 <?php
+if (isset($_POST["submit"])) {
+    echo "<pre>" . var_export($_POST, true) . "</pre>";
+}
+?>
+
+
+<?php
 if (isset($_GET["id"])) {
     $sid = $_GET["id"];
     $db = getDB();
@@ -45,27 +52,34 @@ else {
     die(header("Location: " . getURL("surveys.php")));
 }
 ?>
+
 <div class="container-fluid">
     <h3><?php safer_echo($name); ?></h3>
-    <div class="list-group">
-        <?php foreach ($questions as $index => $question): ?>
-            <div class="list-group-item">
-                <div class="h5 justify-content-center text-center"><?php safer_echo($question["question"]); ?></div>
-                <div>
-                    <div class="d-flex btn-group-vertical btn-group-toggle w-50 text-center justify-content-center mx-auto" data-toggle="buttons">
-                        <?php foreach ($question["answers"] as $answer): ?>
-				<?php $eleId = $index . '-' . $answer["answerId"];?>
-                            <label class="btn btn-primary m-1 btn-outline-light btn-block" style="border-radius: 0" role="button" for="option-<?php echo $eleId;?>">
-                                <input type="radio" name="<?php safer_echo($index); ?>" id="option-<?php echo $eleId;?>"
-                                       autocomplete="off"
-                                       value="<?php safer_echo($answer["answerId"]); ?>">
-                                <?php safer_echo($answer["answer"]); ?>
-                            </label>
-                        <?php endforeach; ?>
+    <form method="POST">
+        <div class="list-group">
+            <?php foreach ($questions as $index => $question): ?>
+                <div class="list-group-item">
+                    <div class="h5 justify-content-center text-center"><?php safer_echo($question["question"]); ?></div>
+                    <div>
+                        <div class="d-flex btn-group-vertical btn-group-toggle w-50 text-center justify-content-center mx-auto"
+                             data-toggle="buttons">
+                            <?php foreach ($question["answers"] as $answer): ?>
+                                <?php $eleId = $index . '-' . $answer["answerId"]; ?>
+                                <label class="btn btn-primary m-1 btn-outline-light btn-block" style="border-radius: 0"
+                                       role="button" for="option-<?php echo $eleId; ?>">
+                                    <input type="radio" name="<?php safer_echo($index); ?>"
+                                           id="option-<?php echo $eleId; ?>"
+                                           autocomplete="off"
+                                           value="<?php safer_echo($answer["answerId"]); ?>">
+                                    <?php safer_echo($answer["answer"]); ?>
+                                </label>
+                            <?php endforeach; ?>
+                        </div>
                     </div>
                 </div>
-            </div>
-        <?php endforeach; ?>
-    </div>
+            <?php endforeach; ?>
+        </div>
+        <input type="submit" name="submit" class="btn btn-success btn-block" value="Submit Response"/>
+    </form>
 </div>
 <?php require(__DIR__ . "/partials/flash.php"); ?>
