@@ -38,6 +38,7 @@ if (isset($_POST["submit"])) {
     else {
         flash("There was an error recording your answers: " . var_export($stmt->errorInfo(), true), "danger");
     }
+    die(header("Location: " . getURL("surveys.php")));
 }
 ?>
 
@@ -73,12 +74,15 @@ if (isset($_GET["id"])) {
         }
         else {
             flash("Looks like you already took this survey", "warning");
+            die(header("Location: " . getURL("surveys.php")));
         }
         //echo "<pre>" . var_export($questions, true) . "</pre>";
 
     }
     else {
         flash("There was a problem fetching the survey: " . var_export($stmt->errorInfo(), true), "danger");
+        die(header("Location: " . getURL("surveys.php")));
+
     }
 }
 else {
