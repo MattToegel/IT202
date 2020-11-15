@@ -9,7 +9,7 @@ if (!is_logged_in()) {
 <?php
 //get latest 10 surveys we haven't take
 $db = getDB();
-$stmt = $db->prepare("SELECT id, name FROM F20_Surveys WHERE :id not in (SELECT user_id from F20_Responses where user_id = :id) order by created desc LIMIT 10");
+$stmt = $db->prepare("SELECT id, name FROM F20_Surveys WHERE (SELECT count(1) from F20_Responses where user_id = :id and survey_id = F20_Surveys.id) = 0 order by created desc LIMIT 10");
 $r = $stmt->execute([":id" => get_user_id()]);
 if ($r) {
     $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
