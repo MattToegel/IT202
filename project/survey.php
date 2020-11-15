@@ -12,7 +12,7 @@ if (isset($_POST["submit"])) {
     $survey_id = $_GET["id"];
     $user_id = get_user_id();
     $params = [];
-    $query = "INSERT INTO F20_Responses (survey_id, question_id, answer_id, user_id) VALUES";
+    $query = "INSERT INTO F20_Responses (survey_id, question_id, answer_id, user_id) VALUES";//ignore sql error hint
     $i = 0;//can't use $key here since it presents a question_id and will always be > 0, so using a temp var to count
     foreach ($_POST as $key => $item) {
         if (is_numeric($key)) {
@@ -52,22 +52,27 @@ if (isset($_GET["id"])) {
     $questions = [];
     if ($r) {
         $results = $stmt->fetchAll(PDO::FETCH_GROUP);
-        //echo "<pre>" . var_export($results, true) . "</pre>";
-        // echo "<br>";
-        foreach ($results as $index => $group) {
-            foreach ($group as $details) {
-                if (empty($name)) {
-                    $name = $details["SurveyName"];
+        if ($results) {
+            //echo "<pre>" . var_export($results, true) . "</pre>";
+            // echo "<br>";
+            foreach ($results as $index => $group) {
+                foreach ($group as $details) {
+                    if (empty($name)) {
+                        $name = $details["SurveyName"];
+                    }
+                    $qid = $details["QuestionId"];
+                    $answer = ["answerId" => $details["AnswerId"], "answer" => $details["answer"]];
+                    if (!isset($questions[$qid]["answers"])) {
+                        $questions[$qid]["question"] = $details["question"];
+                        $questions[$qid]["answers"] = [];
+                    }
+                    array_push($questions[$qid]["answers"], $answer);
+                    // echo "<br>" . $details["question"] . " " . $details["answer"] . "<br>";
                 }
-                $qid = $details["QuestionId"];
-                $answer = ["answerId" => $details["AnswerId"], "answer" => $details["answer"]];
-                if (!isset($questions[$qid]["answers"])) {
-                    $questions[$qid]["question"] = $details["question"];
-                    $questions[$qid]["answers"] = [];
-                }
-                array_push($questions[$qid]["answers"], $answer);
-                // echo "<br>" . $details["question"] . " " . $details["answer"] . "<br>";
             }
+        }
+        else {
+            flash("Looks like you already took this survey", "warning");
         }
         //echo "<pre>" . var_export($questions, true) . "</pre>";
 
