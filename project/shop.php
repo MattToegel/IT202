@@ -10,7 +10,7 @@ $cost = calcNextEggCost();
 ?>
 <?php
 $db = getDB();
-$stmt = $db->prepare("SELECT * FROM Products ORDER BY CREATED DESC LIMIT 10");
+$stmt = $db->prepare("SELECT * FROM F20_Products ORDER BY CREATED DESC LIMIT 10");
 $stmt->execute();
 $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
