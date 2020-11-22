@@ -5,14 +5,14 @@ if(isset($_POST["update"])){
     $stmt = $db->prepare("UPDATE F20_Cart set quantity = :q where id = :id");
     $r = $stmt->execute([":id"=>$_POST["cartId"], ":q"=>$_POST["quantity"]]);
     if($r){
-        flash("Updated quantity");
+        flash("Updated quantity", "success");
     }
 }
 if(isset($_POST["delete"])){
     $stmt = $db->prepare("DELETE FROM F20_Cart where id = :id");
     $r = $stmt->execute([":id"=>$_POST["cartId"]]);
     if($r){
-        flash("Deleted item from cart");
+        flash("Deleted item from cart", "success");
     }
 }
 
