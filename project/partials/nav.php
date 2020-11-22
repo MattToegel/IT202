@@ -44,6 +44,7 @@ require_once(__DIR__ . "/../lib/helpers.php");
             <?php endif; ?>
             <?php if (is_logged_in()): ?>
                 <li class="nav-item"><a class="nav-link" href="<?php echo getURL("shop.php"); ?>">Shop</a></li>
+                <li class="nav-item"><a class="nav-link" href="<?php echo getURL("my_cart.php"); ?>">Cart</a></li>
                 <li class="nav-item"><a class="nav-link" href="<?php echo getURL("profile.php"); ?>">Profile</a></li>
                 <li class="nav-item"><a class="nav-link" href="<?php echo getURL("logout.php"); ?>">Logout</a></li>
             <?php endif; ?>

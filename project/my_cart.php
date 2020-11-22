@@ -71,11 +71,11 @@ $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     </div>
                     <div class="col">
                         <!-- form split was on purpose-->
-                        <input type="submit" name="update" value="Update"/>
+                        <input type="submit" class="btn btn-success" name="update" value="Update"/>
                         </form>
                         <form method="POST">
                             <input type="hidden" name="cartId" value="<?php echo $r["id"];?>"/>
-                            <input type="submit" name="delete" value="Delete Cart Item/>
+                            <input type="submit" class="btn btn-danger" name="delete" value="Delete Cart Item"/>
                         </form>
                     </div>
                 </div>
