@@ -5,14 +5,28 @@ if (!is_logged_in()) {
     flash("You must be logged in to access this page");
     die(header("Location: login.php"));
 }
-$balance = getBalance();
-$cost = calcNextEggCost();
+
 ?>
 <?php
 $db = getDB();
+//fetch and update latest user's balance
+$stmt = $db->prepare("SELECT points from Users where id = :id");
+$r = $stmt->execute([":id"=>get_user_id()]);
+if($r){
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    if($result){
+        $balance = $result["points"];
+        $_SESSION["user"]["balance"] = $balance;
+    }
+}
+//fetch item list
 $stmt = $db->prepare("SELECT * FROM F20_Products ORDER BY CREATED DESC LIMIT 10");
 $stmt->execute();
 $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+
+$balance = getBalance();
+$cost = calcNextEggCost();
 ?>
     <script>
         //php will exec first so just the value will be visible on js side
