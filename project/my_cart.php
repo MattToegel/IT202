@@ -55,10 +55,9 @@ $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     </div>
                     <div class="col">
 
-                            <input type="number" min="0" name="q" value="<?php echo $r["quantity"];?>"/>
+                            <input type="number" min="0" name="quantity" value="<?php echo $r["quantity"];?>"/>
                             <input type="hidden" name="cartId" value="<?php echo $r["id"];?>"/>
 
-                        <?php echo $r["quantity"];?>
                     </div>
                     <div class="col">
                         <?php echo $r["sub"];?>
