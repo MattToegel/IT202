@@ -1,7 +1,22 @@
 <?php require_once(__DIR__ . "/partials/nav.php"); ?>
 <?php
 $db = getDB();
-$stmt = $db->prepare("SELECT p.name, c.price, c.quantity, (c.price * c.quantity) as sub from F20_Cart c JOIN F20_Products p on c.product_id = p.id where c.user_id = :id");
+if(isset($_POST["update"])){
+    $stmt = $db->prepare("UPDATE F20_Cart set quantity = :q where id = :id");
+    $r = $stmt->execute([":id"=>$_POST["cartId"], ":q"=>$_POST["quantity"]]);
+    if($r){
+        flash("Updated quantity");
+    }
+}
+if(isset($_POST["delete"])){
+    $stmt = $db->prepare("DELETE FROM F20_Cart where id = :id");
+    $r = $stmt->execute([":id"=>$_POST["cartId"]]);
+    if($r){
+        flash("Deleted item from cart");
+    }
+}
+
+$stmt = $db->prepare("SELECT c.id, p.name, c.price, c.quantity, (c.price * c.quantity) as sub from F20_Cart c JOIN F20_Products p on c.product_id = p.id where c.user_id = :id");
 $stmt->execute([":id"=>get_user_id()]);
 $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -23,10 +38,14 @@ $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <div class="col">
                         Subtotal
                     </div>
+                    <div class="col">
+                        Actions
+                    </div>
                 </div>
             </div>
             <?php foreach($results as $r):?>
             <div class="list-group-item">
+                <form method="POST">
                 <div class="row">
                     <div class="col">
                         <?php echo $r["name"];?>
@@ -35,10 +54,23 @@ $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <?php echo $r["price"];?>
                     </div>
                     <div class="col">
-                        <?php echo $r["quantity"];?>?
+
+                            <input type="number" min="0" name="q" value="<?php echo $r["quantity"];?>"/>
+                            <input type="hidden" name="cartId" value="<?php echo $r["id"];?>"/>
+
+                        <?php echo $r["quantity"];?>
                     </div>
                     <div class="col">
                         <?php echo $r["sub"];?>
+                    </div>
+                    <div class="col">
+                        <!-- form split was on purpose-->
+                        <input type="submit" name="update" value="Update"/>
+                        </form>
+                        <form method="POST">
+                            <input type="hidden" name="cartId" value="<?php echo $r["id"];?>"/>
+                            <input type="submit" name="delete"/>
+                        </form>
                     </div>
                 </div>
             </div>
