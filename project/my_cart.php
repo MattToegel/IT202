@@ -68,7 +68,7 @@ $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         </form>
                         <form method="POST">
                             <input type="hidden" name="cartId" value="<?php echo $r["id"];?>"/>
-                            <input type="submit" name="delete"/>
+                            <input type="submit" name="delete" value="Delete Cart Item/>
                         </form>
                     </div>
                 </div>
