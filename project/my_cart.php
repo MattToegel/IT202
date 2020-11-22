@@ -2,7 +2,7 @@
 <?php
 $db = getDB();
 $stmt = $db->prepare("SELECT p.name, c.price, c.quantity, (c.price * c.quantity) as sub from F20_Cart c JOIN F20_Products p on c.product_id = p.id where c.user_id = :id");
-$stmt->execute();
+$stmt->execute([":id"=>get_user_id()]);
 $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
     <div class="container-fluid">
