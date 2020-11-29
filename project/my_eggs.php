@@ -29,6 +29,10 @@ $total_pages = ceil($total / $per_page);
 $offset = ($page-1) * $per_page;
 $stmt = $db->prepare("SELECT e.*, i.name as inc from F20_Eggs e LEFT JOIN F20_Incubators i on e.id = i.egg_id where e.user_id = :id LIMIT :offset, :count");
 $stmt->execute([":id"=>get_user_id(), ":offset"=>$offset, ":count"=>$per_page]);
+$e = $stmt->errorInfo();
+if($e[0] != "00000"){
+    flash(var_export($e, true), "alert");
+}
 $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
     <div class="container-fluid">
