@@ -88,9 +88,10 @@ $cost = calcNextEggCost();
         }
     </script>
     <div class="container-fluid">
+        <div class="row">
         <?php foreach($items as $item):?>
-            <div class="col">
-                <div class="card">
+            <div class="col-auto">
+                <div class="card" style="width: 18rem;">
                     <div class="card-body">
                         <div class="card-title">
                             <?php echo $item["name"];?>
@@ -107,6 +108,8 @@ $cost = calcNextEggCost();
                 </div>
             </div>
         <?php endforeach;?>
+        </div>
+        <div class="row">
         <div class="col-2">
             <div class="card">
                 <div class="card-body">
@@ -134,6 +137,7 @@ $cost = calcNextEggCost();
                 </div>
                 </div>
             </div>
+        </div>
         </div>
     </div>
 <?php require(__DIR__ . "/partials/flash.php");
