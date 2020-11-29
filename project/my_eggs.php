@@ -28,7 +28,12 @@ if($result){
 $total_pages = ceil($total / $per_page);
 $offset = ($page-1) * $per_page;
 $stmt = $db->prepare("SELECT e.*, i.name as inc from F20_Eggs e LEFT JOIN F20_Incubators i on e.id = i.egg_id where e.user_id = :id LIMIT :offset, :count");
-$stmt->execute([":id"=>get_user_id(), ":offset"=>$offset, ":count"=>$per_page]);
+//need to use bindValue to tell PDO to create these as ints
+//otherwise it fails when being converted to strings (the default behavior)
+$stmt->bindValue(":offset", $offset, PDO::PARAM_INT);
+$stmt->bindValue(":count", $per_page, PDO::PARAM_INT);
+$stmt->bindValue(":id", get_user_id());
+$stmt->execute();
 $e = $stmt->errorInfo();
 if($e[0] != "00000"){
     flash(var_export($e, true), "alert");
@@ -74,14 +79,14 @@ $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </div>
         <nav aria-label="My Eggs">
             <ul class="pagination justify-content-center">
-                <li class="page-item <?php echo $page < 1?"disabled":"";?>">
-                    <a class="page-link" href="#" tabindex="-1">Previous</a>
+                <li class="page-item <?php echo ($page-1) < 1?"disabled":"";?>">
+                    <a class="page-link" href="?page=<?php echo $page-1;?>" tabindex="-1">Previous</a>
                 </li>
                 <?php for($i = 0; $i < $total_pages; $i++):?>
-                <li class="page-item <?php echo ($page-1) == $i?"active":"";?>"><a class="page-link" href="#"><?php echo ($i+1);?></a></li>
+                <li class="page-item <?php echo ($page-1) == $i?"active":"";?>"><a class="page-link" href="?page=<?php echo ($i+1);?>"><?php echo ($i+1);?></a></li>
                 <?php endfor; ?>
-                <li class="page-item <?php echo $page >= $total_pages?"disabled":"";?>>">
-                    <a class="page-link" href="#">Next</a>
+                <li class="page-item <?php echo ($page+1) >= $total_pages?"disabled":"";?>">
+                    <a class="page-link" href="?page=<?php echo $page+1;?>">Next</a>
                 </li>
             </ul>
         </nav>
