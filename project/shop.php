@@ -87,10 +87,12 @@ $cost = calcNextEggCost();
             xhttp.send("itemId="+itemId);
         }
     </script>
-    <div class="container-fluid">
+    <div class="container">
+<h1>Shop</h1>
         <div class="row">
+	<div class="card-deck">
         <?php foreach($items as $item):?>
-            <div class="col-auto">
+            <div class="col-auto mb-3">
                 <div class="card" style="width: 18rem;">
                     <div class="card-body">
                         <div class="card-title">
@@ -109,9 +111,11 @@ $cost = calcNextEggCost();
             </div>
         <?php endforeach;?>
         </div>
+	</div>
         <div class="row">
-        <div class="col-2">
-            <div class="card">
+	<div class="card-deck">
+        <div class="col-auto">
+            <div class="card" style="width: 18rem;">
                 <div class="card-body">
                 <div class="card-title">
                     Purchase Random Egg
@@ -124,8 +128,8 @@ $cost = calcNextEggCost();
                 </div>
             </div>
         </div>
-        <div class="col-2">
-            <div class="card">
+        <div class="col-auto">
+            <div class="card" style="width:18rem;">
                 <div class="card-body">
                 <div class="card-title">
                     Purchase Random Incubator
@@ -139,5 +143,6 @@ $cost = calcNextEggCost();
             </div>
         </div>
         </div>
+</div>
     </div>
 <?php require(__DIR__ . "/partials/flash.php");

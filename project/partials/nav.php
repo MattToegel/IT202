@@ -27,9 +27,9 @@ require_once(__DIR__ . "/../lib/helpers.php");
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                        data-toggle="dropdown"
                        aria-haspopup="true" aria-expanded="false">
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdown
                         Admin
-                    </a>">
+                    </a>
+			<div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a class="nav-link" href="<?php echo getURL("test/test_create_egg.php"); ?>">Create
                             Egg</a>
                         <a class="nav-link" href="<?php echo getURL("test/test_list_egg.php"); ?>">View
