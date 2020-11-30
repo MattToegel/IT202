@@ -77,6 +77,6 @@ $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <?php endif;?>
     </div>
     </div>
-        <?php include(getURL("partials/pagination.php"));?>
+        <?php include("partials/pagination.php");?>
     </div>
 <?php require(__DIR__ . "/partials/flash.php");
