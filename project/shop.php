@@ -166,6 +166,6 @@ $cost = calcNextEggCost();
         </div>
         </div>
 </div>
-        <?php include(__DIR__ . "partials/pagination.php");?>
+        <?php include(__DIR__ . "/partials/pagination.php");?>
     </div>
 <?php require(__DIR__ . "/partials/flash.php");
