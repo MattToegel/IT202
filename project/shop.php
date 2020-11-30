@@ -19,8 +19,30 @@ if($r){
         $_SESSION["user"]["balance"] = $balance;
     }
 }
+//pagination stuff
+$page = 1;
+$per_page = 10;
+if(isset($_GET["page"])){
+    try {
+        $page = (int)$_GET["page"];
+    }
+    catch(Exception $e){
+
+    }
+}
+$stmt = $db->prepare("SELECT count(*) as total FROM F20_Products WHERE quantity > 0 ORDER BY CREATED DESC");
+$stmt->execute();
+$result = $stmt->fetch(PDO::FETCH_ASSOC);
+$total = 0;
+if($result){
+    $total = (int)$result["total"];
+}
+$total_pages = ceil($total / $per_page);
+$offset = ($page-1) * $per_page;
 //fetch item list
-$stmt = $db->prepare("SELECT * FROM F20_Products WHERE quantity > 0 ORDER BY CREATED DESC LIMIT 10");
+$stmt = $db->prepare("SELECT * FROM F20_Products WHERE quantity > 0 ORDER BY CREATED DESC LIMIT :offset,:count");
+$stmt->bindValue(":offset", $offset, PDO::PARAM_INT);
+$stmt->bindValue(":count", $per_page, PDO::PARAM_INT);
 $stmt->execute();
 $items = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -144,5 +166,6 @@ $cost = calcNextEggCost();
         </div>
         </div>
 </div>
+        <?php include(__DIR__ . "partials/pagination.php");?>
     </div>
 <?php require(__DIR__ . "/partials/flash.php");
