@@ -22,14 +22,9 @@ if($r){
 //pagination stuff
 $page = 1;
 $per_page = 10;
-if(isset($_GET["page"])){
-    try {
-        $page = (int)$_GET["page"];
-    }
-    catch(Exception $e){
-
-    }
-}
+$query = "SELECT count(*) as total FROM F20_Products WHERE quantity > 0 ORDER BY CREATED DESC";
+paginate($query, [], $page, $per_page);
+/*
 $stmt = $db->prepare("SELECT count(*) as total FROM F20_Products WHERE quantity > 0 ORDER BY CREATED DESC");
 $stmt->execute();
 $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -38,7 +33,7 @@ if($result){
     $total = (int)$result["total"];
 }
 $total_pages = ceil($total / $per_page);
-$offset = ($page-1) * $per_page;
+$offset = ($page-1) * $per_page;*/
 //fetch item list
 $stmt = $db->prepare("SELECT * FROM F20_Products WHERE quantity > 0 ORDER BY CREATED DESC LIMIT :offset,:count");
 $stmt->bindValue(":offset", $offset, PDO::PARAM_INT);

@@ -122,7 +122,24 @@ function calcNextEggCost() {
     }
     return -1;//-1 will be invalid
 }
-function paginate($query, $params, $page,$per_page){
+
+/***
+ * @param $query must have a column called "total"
+ * @param array $params
+ * @param int $page
+ * @param int $per_page
+ */
+function paginate($query, $params = [], $page = 0,$per_page = 10){
+    if($page < 1){
+        if(isset($_GET["page"])){
+            try {
+                $page = (int)$_GET["page"];
+            }
+            catch(Exception $e){
+
+            }
+        }
+    }
     $db = getDB();
     $stmt = $db->prepare($query);
     $stmt->execute($params);
