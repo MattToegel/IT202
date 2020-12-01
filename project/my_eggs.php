@@ -37,7 +37,7 @@ if($e[0] != "00000"){
 $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
     <div class="container-fluid">
-    <h3>My Cart</h3>
+    <h3>My Eggs</h3>
     <div class="row">
     <div class="card-group">
 <?php if($results && count($results) > 0):?>

@@ -123,36 +123,36 @@ function calcNextEggCost() {
     return -1;//-1 will be invalid
 }
 
-/***
+/**
  * @param $query must have a column called "total"
  * @param array $params
- * @param int $page
  * @param int $per_page
  */
-function paginate($query, $params = [],$per_page = 10){
+function paginate($query, $params = [], $per_page = 10) {
     global $page;
-    if($page < 1){
-        if(isset($_GET["page"])){
-            try {
-                $page = (int)$_GET["page"];
-            }
-            catch(Exception $e){
-                $page = 1;
-            }
+    if (isset($_GET["page"])) {
+        try {
+            $page = (int)$_GET["page"];
         }
-	else{	$page = 1;}
+        catch (Exception $e) {
+            $page = 1;
+        }
+    }
+    else {
+        $page = 1;
     }
     $db = getDB();
     $stmt = $db->prepare($query);
     $stmt->execute($params);
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
     $total = 0;
-    if($result){
+    if ($result) {
         $total = (int)$result["total"];
     }
     global $total_pages;
     $total_pages = ceil($total / $per_page);
     global $offset;
-    $offset = ($page-1) * $per_page;
+    $offset = ($page - 1) * $per_page;
 }
+
 ?>
