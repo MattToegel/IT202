@@ -129,7 +129,11 @@ function calcNextEggCost() {
  * @param int $page
  * @param int $per_page
  */
-function paginate($query, $params = [], $page = 0,$per_page = 10){
+function paginate($query, $params = [],$per_page = 10){
+    global $page;
+    if(!isset($page) || empty($page)){
+        $page = 1;
+    }
     if($page < 1){
         if(isset($_GET["page"])){
             try {

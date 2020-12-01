@@ -20,10 +20,9 @@ if($r){
     }
 }
 //pagination stuff
-$page = 1;
 $per_page = 10;
 $query = "SELECT count(*) as total FROM F20_Products WHERE quantity > 0 ORDER BY CREATED DESC";
-paginate($query, [], $page, $per_page);
+paginate($query, [], $per_page);
 /*
 $stmt = $db->prepare("SELECT count(*) as total FROM F20_Products WHERE quantity > 0 ORDER BY CREATED DESC");
 $stmt->execute();

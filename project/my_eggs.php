@@ -7,20 +7,13 @@ if (!is_logged_in()) {
     die(header("Location: login.php"));
 }
 //https://www.digitalocean.com/community/tutorials/how-to-implement-pagination-in-mysql-with-php-on-ubuntu-18-04
-$page = 1;
-$per_page = 10;
-if(isset($_GET["page"])){
-    try {
-        $page = (int)$_GET["page"];
-    }
-    catch(Exception $e){
 
-    }
-}
+$per_page = 10;
+
 $db = getDB();
 $query = "SELECT count(*) as total from F20_Eggs e LEFT JOIN F20_Incubators i on e.id = i.egg_id where e.user_id = :id";
 $params = [":id"=>get_user_id()];
-paginate($query, $params, $page, $per_page);
+paginate($query, $params, $per_page);
 /*$stmt = $db->prepare("SELECT count(*) as total from F20_Eggs e LEFT JOIN F20_Incubators i on e.id = i.egg_id where e.user_id = :id");
 $stmt->execute([":id"=>get_user_id()]);
 $result = $stmt->fetch(PDO::FETCH_ASSOC);
