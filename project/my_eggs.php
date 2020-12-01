@@ -26,6 +26,7 @@ $offset = ($page-1) * $per_page;*/
 $stmt = $db->prepare("SELECT e.*, i.name as inc from F20_Eggs e LEFT JOIN F20_Incubators i on e.id = i.egg_id where e.user_id = :id LIMIT :offset, :count");
 //need to use bindValue to tell PDO to create these as ints
 //otherwise it fails when being converted to strings (the default behavior)
+//$offset is defined in paginate(), safe to ignore IDE error
 $stmt->bindValue(":offset", $offset, PDO::PARAM_INT);
 $stmt->bindValue(":count", $per_page, PDO::PARAM_INT);
 $stmt->bindValue(":id", get_user_id());
