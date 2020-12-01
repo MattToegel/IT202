@@ -140,6 +140,7 @@ function paginate($query, $params = [],$per_page = 10){
                 $page = 1;
             }
         }
+	else{	$page = 1;}
     }
     $db = getDB();
     $stmt = $db->prepare($query);
