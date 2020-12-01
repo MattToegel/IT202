@@ -122,5 +122,18 @@ function calcNextEggCost() {
     }
     return -1;//-1 will be invalid
 }
-
+function paginate($query, $params, $page,$per_page){
+    $db = getDB();
+    $stmt = $db->prepare($query);
+    $stmt->execute($params);
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    $total = 0;
+    if($result){
+        $total = (int)$result["total"];
+    }
+    global $total_pages;
+    $total_pages = ceil($total / $per_page);
+    global $offset;
+    $offset = ($page-1) * $per_page;
+}
 ?>

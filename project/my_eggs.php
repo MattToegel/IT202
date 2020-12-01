@@ -18,7 +18,10 @@ if(isset($_GET["page"])){
     }
 }
 $db = getDB();
-$stmt = $db->prepare("SELECT count(*) as total from F20_Eggs e LEFT JOIN F20_Incubators i on e.id = i.egg_id where e.user_id = :id");
+$query = "SELECT count(*) as total from F20_Eggs e LEFT JOIN F20_Incubators i on e.id = i.egg_id where e.user_id = :id";
+$params = [":id"=>get_user_id()];
+paginate($query, $params, $page, $per_page);
+/*$stmt = $db->prepare("SELECT count(*) as total from F20_Eggs e LEFT JOIN F20_Incubators i on e.id = i.egg_id where e.user_id = :id");
 $stmt->execute([":id"=>get_user_id()]);
 $result = $stmt->fetch(PDO::FETCH_ASSOC);
 $total = 0;
@@ -26,7 +29,7 @@ if($result){
     $total = (int)$result["total"];
 }
 $total_pages = ceil($total / $per_page);
-$offset = ($page-1) * $per_page;
+$offset = ($page-1) * $per_page;*/
 $stmt = $db->prepare("SELECT e.*, i.name as inc from F20_Eggs e LEFT JOIN F20_Incubators i on e.id = i.egg_id where e.user_id = :id LIMIT :offset, :count");
 //need to use bindValue to tell PDO to create these as ints
 //otherwise it fails when being converted to strings (the default behavior)
