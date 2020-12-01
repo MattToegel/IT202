@@ -76,7 +76,7 @@ if (isset($_POST["saved"])) {
         //if so, then check if it's a valid reset request
         if (!empty($_POST["password"]) && !empty($_POST["confirm"]) && !empty($_POST["current_password"])) {
             $current = $_POST["current_password"];
-            $stmt = $db->prepare("SELECT password from Users WHERE email = :id LIMIT 1");
+            $stmt = $db->prepare("SELECT password from Users WHERE id = :id LIMIT 1");
 
             $params = array(":id" => get_user_id());
             $r = $stmt->execute($params);
@@ -135,7 +135,7 @@ if (isset($_POST["saved"])) {
             </div>
             <div class="form-group">
                 <!-- DO NOT PRELOAD PASSWORD-->
-                <label for="pwc">Password</label>
+                <label for="pwc">Current Password</label>
                 <input id="pwc" class="form-control" type="password" name="current_password"/>
             </div>
             <div class="form-group">
