@@ -50,7 +50,7 @@ else {
 }
 ?>
     <div class="container-fluid">
-        <h3>Competitions</h3>
+        <h3>My Competitions (Created and Registered)</h3>
         <div class="list-group">
             <?php if (isset($results) && count($results)): ?>
                 <div class="list-group-item font-weight-bold">
