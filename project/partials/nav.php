@@ -53,6 +53,8 @@ require_once(__DIR__ . "/../lib/helpers.php");
                         Competition</a></li>
                 <li class="nav-item"><a class="nav-link" href="<?php echo getURL("competitions.php"); ?>">Active
                         Competitions</a></li>
+                <li class="nav-item"><a class="nav-link" href="<?php echo getURL("my_competitions.php"); ?>">My
+                        Competitions</a></li>
                 <li class="nav-item"><a class="nav-link" href="<?php echo getURL("profile.php"); ?>">Profile</a></li>
                 <li class="nav-item"><a class="nav-link" href="<?php echo getURL("logout.php"); ?>">Logout</a></li>
             <?php endif; ?>
