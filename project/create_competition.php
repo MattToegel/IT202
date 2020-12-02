@@ -33,7 +33,8 @@ if (isset($_POST["name"])) {
             ":expires" => $expires,
             ":cost" => $cost,
             ":min_score" => $_POST["min_score"],
-            ":uid" => get_user_id()
+            ":uid" => get_user_id(),
+		":fee"=>$_POST["fee"]
         ];
         switch ((int)$_POST["split"]) {
             /* case 0:
@@ -87,7 +88,7 @@ if (isset($_POST["name"])) {
         </div>
         <div class="form-group">
             <label for="s">Minimum Required Score</label>
-            <input id="s" name="score" type="number" class="form-control"/>
+            <input id="s" name="min_score" type="number" class="form-control"/>
         </div>
         <div class="form-group">
             <label for="r">Reward Split (First, Second, Third)</label>
@@ -110,3 +111,4 @@ if (isset($_POST["name"])) {
         <input type="submit" class="btn btn-success" value="Create (Cost: 1)"/>
     </form>
 </div>
+<?php require(__DIR__ . "/partials/flash.php");
