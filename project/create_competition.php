@@ -1,6 +1,6 @@
 <?php require_once(__DIR__ . "/partials/nav.php"); ?>
 <?php
-if (!has_role("Admin")) {
+if (!is_logged_in()) {
     //this will redirect to login and kill the rest of this script (prevent it from executing)
     flash("You don't have permission to access this page");
     die(header("Location: login.php"));
@@ -34,7 +34,7 @@ if (isset($_POST["name"])) {
             ":cost" => $cost,
             ":min_score" => $_POST["min_score"],
             ":uid" => get_user_id(),
-		":fee"=>$_POST["fee"]
+            ":fee" => $_POST["fee"]
         ];
         switch ((int)$_POST["split"]) {
             /* case 0:
@@ -76,39 +76,40 @@ if (isset($_POST["name"])) {
     }
 }
 ?>
-<div class="container-fluid">
-    <form method="POST">
-        <div class="form-group">
-            <label for="name">Name</label>
-            <input id="name" name="name" class="form-control"/>
-        </div>
-        <div class="form-group">
-            <label for="d">Duration (in days)</label>
-            <input id="d" name="duration" type="number" class="form-control"/>
-        </div>
-        <div class="form-group">
-            <label for="s">Minimum Required Score</label>
-            <input id="s" name="min_score" type="number" class="form-control"/>
-        </div>
-        <div class="form-group">
-            <label for="r">Reward Split (First, Second, Third)</label>
-            <select id="r" name="split" type="number" class="form-control">
-                <option value="0">100%</option>
-                <option value="1">80%/20%</option>
-                <option value="2">70%/30%</option>
-                <option value="3">70%/20%/10%</option>
-                <option value="4">60%/30%/10%</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="rw">Reward/Payout</label>
-            <input id="rw" name="reward" type="number" class="form-control"/>
-        </div>
-        <div class="form-group">
-            <label for="f">Entry Fee</label>
-            <input id="f" name="fee" type="number" class="form-control"/>
-        </div>
-        <input type="submit" class="btn btn-success" value="Create (Cost: 1)"/>
-    </form>
-</div>
+    <div class="container-fluid">
+        <h3>Create Competition</h3>
+        <form method="POST">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input id="name" name="name" class="form-control"/>
+            </div>
+            <div class="form-group">
+                <label for="d">Duration (in days)</label>
+                <input id="d" name="duration" type="number" class="form-control"/>
+            </div>
+            <div class="form-group">
+                <label for="s">Minimum Required Score</label>
+                <input id="s" name="min_score" type="number" class="form-control"/>
+            </div>
+            <div class="form-group">
+                <label for="r">Reward Split (First, Second, Third)</label>
+                <select id="r" name="split" type="number" class="form-control">
+                    <option value="0">100%</option>
+                    <option value="1">80%/20%</option>
+                    <option value="2">70%/30%</option>
+                    <option value="3">70%/20%/10%</option>
+                    <option value="4">60%/30%/10%</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="rw">Reward/Payout</label>
+                <input id="rw" name="reward" type="number" class="form-control"/>
+            </div>
+            <div class="form-group">
+                <label for="f">Entry Fee</label>
+                <input id="f" name="fee" type="number" class="form-control"/>
+            </div>
+            <input type="submit" class="btn btn-success" value="Create (Cost: 1)"/>
+        </form>
+    </div>
 <?php require(__DIR__ . "/partials/flash.php");
