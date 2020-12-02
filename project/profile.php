@@ -74,18 +74,32 @@ if (isset($_POST["saved"])) {
         }
         //password is optional, so check if it's even set
         //if so, then check if it's a valid reset request
-        if (!empty($_POST["password"]) && !empty($_POST["confirm"])) {
-            if ($_POST["password"] == $_POST["confirm"]) {
-                $password = $_POST["password"];
-                $hash = password_hash($password, PASSWORD_BCRYPT);
-                //this one we'll do separate
-                $stmt = $db->prepare("UPDATE Users set password = :password where id = :id");
-                $r = $stmt->execute([":id" => get_user_id(), ":password" => $hash]);
-                if ($r) {
-                    flash("Reset Password");
+        if (!empty($_POST["password"]) && !empty($_POST["confirm"]) && !empty($_POST["current_password"])) {
+            $current = $_POST["current_password"];
+            $stmt = $db->prepare("SELECT password from Users WHERE id = :id LIMIT 1");
+
+            $params = array(":id" => get_user_id());
+            $r = $stmt->execute($params);
+            if($r) {
+                $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                $_current = $result["password"];
+                if(password_verify($current, $_current)) {
+                    if ($_POST["password"] == $_POST["confirm"]) {
+                        $password = $_POST["password"];
+                        $hash = password_hash($password, PASSWORD_BCRYPT);
+                        //this one we'll do separate
+                        $stmt = $db->prepare("UPDATE Users set password = :password where id = :id");
+                        $r = $stmt->execute([":id" => get_user_id(), ":password" => $hash]);
+                        if ($r) {
+                            flash("Reset Password");
+                        }
+                        else {
+                            flash("Error resetting password");
+                        }
+                    }
                 }
-                else {
-                    flash("Error resetting password");
+                else{
+                    flash("Invalid current password, please try again", "danger");
                 }
             }
         }
@@ -121,12 +135,17 @@ if (isset($_POST["saved"])) {
             </div>
             <div class="form-group">
                 <!-- DO NOT PRELOAD PASSWORD-->
+                <label for="pwc">Current Password</label>
+                <input id="pwc" class="form-control" type="password" name="current_password"/>
+            </div>
+            <div class="form-group">
+                <!-- DO NOT PRELOAD PASSWORD-->
                 <label for="pw">Password</label>
-                <input class="form-control" type="password" name="password"/>
+                <input id="pw" class="form-control" type="password" name="password"/>
             </div>
             <div class="form-group">
                 <label for="cpw">Confirm Password</label>
-                <input class="form-control" type="password" name="confirm"/>
+                <input id="cpw" class="form-control" type="password" name="confirm"/>
             </div>
             <input class="btn btn-primary" type="submit" name="saved" value="Save Profile"/>
         </form>
