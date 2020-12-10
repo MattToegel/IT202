@@ -29,7 +29,7 @@ require_once(__DIR__ . "/../lib/helpers.php");
                        aria-haspopup="true" aria-expanded="false">
                         Admin
                     </a>
-			<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a class="nav-link" href="<?php echo getURL("test/test_create_egg.php"); ?>">Create
                             Egg</a>
                         <a class="nav-link" href="<?php echo getURL("test/test_list_egg.php"); ?>">View
@@ -43,9 +43,18 @@ require_once(__DIR__ . "/../lib/helpers.php");
                 </li>
             <?php endif; ?>
             <?php if (is_logged_in()): ?>
-		                <li class="nav-item"><a class="nav-link" href="<?php echo getURL("my_eggs.php"); ?>">My Eggs</a></li>
+                <li class="nav-item"><a class="nav-link" href="<?php echo getURL("my_eggs.php"); ?>">My Eggs</a></li>
                 <li class="nav-item"><a class="nav-link" href="<?php echo getURL("shop.php"); ?>">Shop</a></li>
                 <li class="nav-item"><a class="nav-link" href="<?php echo getURL("my_cart.php"); ?>">Cart</a></li>
+                <li class="nav-item"><a class="nav-link" href="<?php echo getURL("create_survey.php"); ?>">Create
+                        Survey</a></li>
+                <li class="nav-item"><a class="nav-link" href="<?php echo getURL("surveys.php"); ?>">Surveys</a></li>
+                <li class="nav-item"><a class="nav-link" href="<?php echo getURL("create_competition.php"); ?>">Create
+                        Competition</a></li>
+                <li class="nav-item"><a class="nav-link" href="<?php echo getURL("competitions.php"); ?>">Active
+                        Competitions</a></li>
+                <li class="nav-item"><a class="nav-link" href="<?php echo getURL("my_competitions.php"); ?>">My
+                        Competitions</a></li>
                 <li class="nav-item"><a class="nav-link" href="<?php echo getURL("profile.php"); ?>">Profile</a></li>
                 <li class="nav-item"><a class="nav-link" href="<?php echo getURL("logout.php"); ?>">Logout</a></li>
             <?php endif; ?>
