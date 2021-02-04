@@ -36,6 +36,7 @@ sudo apt update -y
 #Upgrade packages
 sudo apt upgrade -y
 
+sudo swapoff -a
 #You may adjust this as necessary, 1G is fine, I upped it to 2G
 sudo fallocate -l 2G /swapfile
 sudo chmod 600 /swapfile
