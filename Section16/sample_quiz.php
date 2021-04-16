@@ -63,7 +63,7 @@ function submit_response(){
 		//echo var_export($question_ids, true);
 		$total = count($answers);
 		$user_id = 0;//TODO get user id from session
-		$query = "INSERT INTO Answers (quiz_id, question_id, answer, user_id) VALUES";
+		$query = "INSERT INTO Response (quiz_id, question_id, answer, user_id) VALUES";
 		//dynamically prepare our query
 		for($i = 0; $i < $total; $i++){
 			$query .= "(:quiz_id, :question_id$i, :answer$i, :user_id)";
