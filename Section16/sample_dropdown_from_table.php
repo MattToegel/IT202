@@ -4,7 +4,7 @@ function get_dropdown_items(){
 	$conn_string = "mysql:host=$host;dbname=$database;charset=utf8mb4";
 	$db = new PDO($conn_string, $username, $password);
 	
-	$query = "SELECT DISTINCT name from SomeTable";
+	$query = "SELECT DISTINCT id,name from SomeTable";
 	$stmt = $db->prepare($query);
 	$r = $stmt->execute();
 	return $stmt->fetchAll();
@@ -17,7 +17,7 @@ $items = get_dropdown_items();
 ?>
 <select>
 <?php foreach($items as $index=>$row):?>
-	<option value="<?php echo $index;?>">
+	<option value="<?php echo $row["id"];?>">
 		<?php echo $row['name'];?>
 	</option>
 <?php endforeach;?>
