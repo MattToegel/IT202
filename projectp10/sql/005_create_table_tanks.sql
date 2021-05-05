@@ -1,0 +1,20 @@
+create table IF NOT EXISTS tfp_tanks(
+    id int not null AUTO_INCREMENT,
+    name varchar(30) not null,
+    speed int default 50,
+    `range` int default 100,
+    turnSpeed int default 25,
+    fireRate int default 10,
+    health int default 3,
+    tankColor varchar(7) default '#05652D',
+    barrelColor varchar(7) default '#034820',
+    barrelTipColor varchar(7) default '#023417',
+    treadColor varchar(7) default '#000000',
+    hitColor varchar(7) default '#A2082B',
+    gunType int default 1,
+    user_id int,
+    created TIMESTAMP default CURRENT_TIMESTAMP,
+    modified TIMESTAMP default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+    damage float default 1,
+    primary key(id)
+)
