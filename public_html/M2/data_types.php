@@ -52,7 +52,7 @@
     <br>
     <?php
     $x = false;
-    echo '6) $x assigned array a/an ';
+echo '6) $x assigned false a/an ';
     var_dump($x);
     ?>
 </p>
@@ -60,7 +60,7 @@
 <p>
     <?php
     $x = true;
-    echo '7) $x assigned array a/an ';
+echo '7) $x assigned true a/an ';
     var_dump($x);
     echo "<br><br>";
     ?>
@@ -69,7 +69,7 @@
 <p>
     <?php
     $x = null;
-    echo '8) $x assigned array a/an ';
+echo '8) $x assigned null a/an ';
     var_dump($x);
     ?>
 </p>
