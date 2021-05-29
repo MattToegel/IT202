@@ -17,6 +17,7 @@ $a = 0;
 $b = 1.0;
 for ($i = 0; $i < 10; $i++) {
     $a += 0.1;
+    //echo "<br>" . var_export($a, true) . "<br>";
 }
 ?>
 <details>

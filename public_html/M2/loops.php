@@ -114,7 +114,7 @@ foreach ($myArr as $key => $value) { //notice the $key points to the value via =
 <p>Output: <br>
     <?php
     foreach ($myArr as $key => $value) { //notice the $key points to the value via =>
-        echo ($key + 1) . " is $value<br>";
+        echo ($key) . " is $value<br>";
     }
     ?>
 </p>
