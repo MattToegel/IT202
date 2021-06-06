@@ -45,9 +45,9 @@
             let age = form.age.value || 0; // if no value is set it'll default to 0
             let agev = document.getElementById("agev");
             agev.innerText = "";
-            //this is to catch non-numeric values, could also use isNaN()
+            //this is to catch non-numeric values, could also use isNaN(), update try/catch doesn't work here either
             try {
-                age = parseInt(age);
+                age = parseInt(age);    //returns NaN or the number
                 if (isNaN(age)) {
                     throw new Exception("Not a number");
                 }
@@ -73,9 +73,9 @@
             //NOTE: here the try/catch block doesn't work
             try {
                 console.log("Received date", bday);
-                birthdayDate = new Date(bday);
+                birthdayDate = new Date(bday);    //returns the date or "Invalid Date"
                 console.log("birthday before", birthdayDate);
-                //We need to add 1 to the month https://stackoverflow.com/a/1507625   :)
+                //We need to add 1 to the day https://stackoverflow.com/a/1507625   :)
                 birthdayDate.setDate(birthdayDate.getDate() + 1);
                 console.log("Note the value and type", birthdayDate, typeof birthdayDate);
                 //using == here since the type is an object, could also have done birthdayDate.toString() === "Invalid Date"
