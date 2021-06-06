@@ -15,3 +15,9 @@ function check() {
     console.log(footer);
     footer.innerText = "Verification:" + code;
 }
+function updateCurrentPage(page) {
+    let h1 = document.getElementsByTagName("h1")[0];
+    let title = document.getElementsByTagName("title")[0];
+    h1.innerText = page;
+    title.innerText = page[0].toUpperCase() + page.slice(1);
+}
