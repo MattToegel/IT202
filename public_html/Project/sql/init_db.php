@@ -1,3 +1,13 @@
+<h1>Database Helper Tool</h1>
+<details>
+    <summary>Info (About the tool)</summary>
+        <p>The scope of this tool is to help us separate our structural queries into separate files for better organization.</p>
+        <p>This tools job is to attempt to read all of those files and determine which ones are needed to run against your database to synchronize the structure.</p>
+        <p>This tool only works for queries that take zero parameters.</p>
+        <p>It can be used to preload some data via inserts, but those queries <em>MUST</em> but crafted in such a way that you don't generate duplicates during each run.</p>
+        <p>Files should be <a href="https://en.wikipedia.org/wiki/Idempotence">Idempotent</a></p>
+</details>
+<br><br>
 <?php
 # IMPORTANT: There should be no need to edit anything in this file
 # Simply drop new structural .sql files into this directory then access this file in the browser
@@ -25,7 +35,9 @@ try {
     foreach (glob(__DIR__ . "/*.sql") as $filename) {
         $sql[$filename] = file_get_contents($filename);
     }
+
     if (isset($sql) && $sql && count($sql) > 0) {
+        echo "<p>Found " . count($sql) . " files...</p>";
         /***
          * Sort the array so queries are executed in anticipated order.
          * Be careful with naming, 1-9 is fine, 1-10 has 10 run after #1 due to string sorting.
@@ -70,7 +82,7 @@ try {
                 //trim whitespace in front and back
                 $line = trim($line);
                 if (in_array($line, $t)) {
-                    echo "<br>Blocked from running, table found in 'show tables' results. [This is ok]<br>";
+                    echo "<p style=\"margin-left: 3em\">Blocked from running, table found in 'show tables' results. [This is ok, it reduces redundant DB calls]</p><br>";
                     continue;
                 }
             }
@@ -79,8 +91,8 @@ try {
             $count++;
             $error = $stmt->errorInfo();
             ?>
-            <details>
-                <summary>Status<?php echo ($error[0] === "00000" ? "Success" : "Error"); ?></summary>
+            <details style="margin-left: 3em">
+                <summary>Status: <?php echo ($error[0] === "00000" ? "Success" : "Error"); ?></summary>
                 <pre><?php echo var_export($error, true); ?></pre>
             </details>
             <br>
