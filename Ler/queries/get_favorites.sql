@@ -1,1 +1,0 @@
-SELECT * FROM Stories s JOIN Favorites f on s.id = f.story_id where f.user_id = :user_id

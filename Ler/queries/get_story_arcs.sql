@@ -1,1 +1,0 @@
-SELECT * FROM Arcs where story_id = :story_id

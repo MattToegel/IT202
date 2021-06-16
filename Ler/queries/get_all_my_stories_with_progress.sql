@@ -1,1 +1,0 @@
-SELECT s.id as story_id,s.* from Stories s JOIN History h on s.id = h.story_id where h.user_id = :user_id

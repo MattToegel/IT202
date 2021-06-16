@@ -1,1 +1,0 @@
-UPDATE Stories set title=:title, summary=:summary, visibility=:visibility WHERE id=:story_id

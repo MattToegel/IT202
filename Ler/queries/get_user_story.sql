@@ -1,1 +1,0 @@
-SELECT * from Stories where id = :story_id AND author = :author
