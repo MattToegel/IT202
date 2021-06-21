@@ -6,16 +6,16 @@ if (isset($_POST["submit"])) {
 
     $isValid = true;
     if (!isset($email) || !isset($password)) {
-        se("Must provide email and password");
+        flash("Must provide email and password", "warning");
         $isValid = false;
     }
     if (strlen($password) < 3) {
-        se("Password must be 3 or more characters");
+        flash("Password must be 3 or more characters", "warning");
         $isValid = false;
     }
     $email = sanitize_email($email);
     if (!is_valid_email($email)) {
-        se("Invalid email");
+        flash("Invalid email", "warning");
         $isValid = false;
     }
     if ($isValid) {
@@ -23,17 +23,17 @@ if (isset($_POST["submit"])) {
         $db = getDB();
         //$stmt = $db->prepare("INSERT INTO Users (email, password) VALUES (:email, :password)");
         //$hash = password_hash($password, PASSWORD_BCRYPT);
-        $stmt = $db->prepare("SELECT id, email, password from Users where email = :email LIMIT 1");
+        $stmt = $db->prepare("SELECT id, email, IFNULL(username, email) as `username`, password from Users where email = :email or username = :email LIMIT 1");
         try {
             $stmt->execute([":email" => $email]);
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
             if ($user) {
                 $upass = $user["password"];
                 if (password_verify($password, $upass)) {
-                    se("Yay we logged in");
+                    flash("Login successful", "success");
                     unset($user["password"]);
                     $_SESSION["user"] = $user;
-                    echo "<pre>" . var_export($_SESSION, true) . "</pre>";
+                    //echo "<pre>" . var_export($_SESSION, true) . "</pre>";
                     die(header("Location: home.php"));
                 } else {
                     se("Passwords don't match");
@@ -42,12 +42,7 @@ if (isset($_POST["submit"])) {
                 se("User doesn't exist");
             }
         } catch (Exception $e) {
-            $code = se($e->errorInfo, 0, "00000", false);
-            if ($code === "23000") {
-                se("An account with this email already exists");
-            } else {
-                echo "<pre>" . var_export($e->errorInfo, true) . "</pre>";
-            }
+            echo "<pre>" . var_export($e->errorInfo, true) . "</pre>";
         }
     }
 }
@@ -90,3 +85,6 @@ if (isset($_POST["submit"])) {
         return isValid;
     }
 </script>
+<?php
+require_once(__DIR__ . "/../../partials/flash.php");
+?>
