@@ -5,4 +5,7 @@ if (!is_logged_in()) {
 }
 ?>
 <h1>Home</h1>
-<h5>Welcome, <?php se(get_user_email()); ?>!</h5>
+<h5>Welcome, <?php se(get_username()); ?>!</h5>
+<?php
+require_once(__DIR__ . "/../../partials/flash.php");
+?>
