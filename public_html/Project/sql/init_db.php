@@ -1,11 +1,11 @@
 <h1>Database Helper Tool</h1>
 <details>
     <summary>Info (About the tool)</summary>
-        <p>The scope of this tool is to help us separate our structural queries into separate files for better organization.</p>
-        <p>This tools job is to attempt to read all of those files and determine which ones are needed to run against your database to synchronize the structure.</p>
-        <p>This tool only works for queries that take zero parameters.</p>
-        <p>It can be used to preload some data via inserts, but those queries <em>MUST</em> but crafted in such a way that you don't generate duplicates during each run.</p>
-        <p>Files should be <a href="https://en.wikipedia.org/wiki/Idempotence">Idempotent</a></p>
+    <p>The scope of this tool is to help us separate our structural queries into separate files for better organization.</p>
+    <p>This tools job is to attempt to read all of those files and determine which ones are needed to run against your database to synchronize the structure.</p>
+    <p>This tool only works for queries that take zero parameters.</p>
+    <p>It can be used to preload some data via inserts, but those queries <em>MUST</em> but crafted in such a way that you don't generate duplicates during each run.</p>
+    <p>Files should be <a href="https://en.wikipedia.org/wiki/Idempotence">Idempotent</a></p>
 </details>
 <br><br>
 <?php
@@ -87,7 +87,12 @@ try {
                 }
             }
             $stmt = $db->prepare($value);
-            $result = $stmt->execute();
+            try {
+                $result = $stmt->execute();
+            } catch (PDOException $e) {
+                //ignoring as we know it'll be an error
+                //had to wrap in try catch due to PHP 8.0 now throwing errors for PDO exceptions
+            }
             $count++;
             $error = $stmt->errorInfo();
             ?>

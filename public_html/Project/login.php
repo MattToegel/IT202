@@ -32,7 +32,20 @@ if (isset($_POST["submit"])) {
                 if (password_verify($password, $upass)) {
                     flash("Login successful", "success");
                     unset($user["password"]);
+                    //save user info
                     $_SESSION["user"] = $user;
+                    //lookup roles assigned to this user
+                    $stmt = $db->prepare("SELECT Roles.name FROM Roles 
+                    JOIN UserRoles on Roles.id = UserRoles.role_id 
+                    where UserRoles.user_id = :user_id and Roles.is_active = 1 and UserRoles.is_active = 1");
+                    $stmt->execute([":user_id" => $user["id"]]);
+                    $roles = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    //save roles or empty array
+                    if ($roles) {
+                        $_SESSION["user"]["roles"] = $roles;
+                    } else {
+                        $_SESSION["user"]["roles"] = [];
+                    }
                     //echo "<pre>" . var_export($_SESSION, true) . "</pre>";
                     die(header("Location: home.php"));
                 } else {

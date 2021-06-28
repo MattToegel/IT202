@@ -1,0 +1,33 @@
+<!-- samples from https://www.w3schools.com/html/html5_canvas.asp-->
+<h1>HTML5 Canvas Example</h1>
+<h3><a href="index.html">Back</a></h3>
+<div>
+    <div>Example 1: Line</div>
+    <canvas id="c1" width="200" height="100"></canvas>
+</div>
+<div>
+    <div>Example 2: Circle</div>
+    <canvas id="c2" width="200" height="100"></canvas>
+</div>
+<div>
+    <div>Example 3: Text</div>
+    <canvas id="c3" width="200" height="100"></canvas>
+</div>
+<script>
+    var c1 = document.getElementById("c1");
+    var ctx = c1.getContext("2d");
+    ctx.moveTo(0, 0);
+    ctx.lineTo(200, 100);
+    ctx.stroke();
+
+    var c2 = document.getElementById("c2");
+    var ctx = c2.getContext("2d");
+    ctx.beginPath();
+    ctx.arc(95, 50, 40, 0, 2 * Math.PI);
+    ctx.stroke();
+
+    var c3 = document.getElementById("c3");
+    var ctx = c3.getContext("2d");
+    ctx.font = "30px Arial";
+    ctx.fillText("Hello World", 10, 50);
+</script>
