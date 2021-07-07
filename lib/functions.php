@@ -105,9 +105,9 @@ function get_or_create_account() {
     if (is_logged_in()) {
         //let's define our data structure first
         //id is for internal references, account_number is user facing info, and balance will be a cached value of activity
-        $account = ["id" => -1, "account_number" => false, "balance" => 0];
+        $account = ["id" => -1, "account_number" => false, "balance" => 0, "quarry_vouchers" => 0];
         //this should always be 0 or 1, but being safe
-        $query = "SELECT id, account, balance from Accounts where user_id = :uid LIMIT 1";
+        $query = "SELECT id, account, balance, quarry_vouchers from Accounts where user_id = :uid LIMIT 1";
         $db = getDB();
         $stmt = $db->prepare($query);
         try {
@@ -150,6 +150,7 @@ function get_or_create_account() {
                 $account["id"] = $result["id"];
                 $account["account_number"] = $result["account"];
                 $account["balance"] = $result["balance"];
+                $account["quarry_vouchers"] = $result["quarry_vouchers"];
             }
         } catch (PDOException $e) {
             flash("Technical error: " . var_export($e->errorInfo, true), "danger");
@@ -189,7 +190,7 @@ function change_points($points, $reason, $src = -1, $dest = -1, $memo = "") {
     //I'm choosing to ignore the record of 0 point transactions
 
     if ($points > 0) {
-        $query = "INSERT INTO Points_History (account_src, account_dest, points_change, reason, memo) 
+        $query = "INSERT INTO Points_History (account_src, account_dest, point_change, reason, memo) 
             VALUES (:acs, :acd, :pc, :r,:m), 
             (:acs2, :acd2, :pc2, :r, :m)";
         //I'll insert both records at once, note the placeholders kept the same and the ones changed.
@@ -206,16 +207,16 @@ function change_points($points, $reason, $src = -1, $dest = -1, $memo = "") {
         $stmt = $db->prepare($query);
         try {
             $stmt->execute($params);
-            refreshAccount();
+            refresh_account_balance();
         } catch (PDOException $e) {
             flash("Transfer error occurred: " . var_export($e->errorInfo, true), "danger");
         }
     }
 }
-function refreshAccount() {
+function refresh_account_balance() {
     if (is_logged_in()) {
         //cache account balance via Point_History history
-        $query = "UPDATE Accounts set balance = (SELECT IFNULL(SUM(points_change), 0) from Points_History WHERE account_src = :src) where id = :src";
+        $query = "UPDATE Accounts set balance = (SELECT IFNULL(SUM(point_change), 0) from Points_History WHERE account_src = :src) where id = :src";
         $db = getDB();
         $stmt = $db->prepare($query);
         try {

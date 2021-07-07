@@ -17,6 +17,7 @@ if (isset($_POST["product_id"])) {
 
         if (is_logged_in()) {
             $balance = get_account_balance();
+            //lookup item by id, don't trust anything from the client
             $query = "SELECT name,cost from Items where id = :pid and stock > 0";
             $db = getDB();
             $stmt = $db->prepare($query);
@@ -27,23 +28,43 @@ if (isset($_POST["product_id"])) {
                     $cost = (int)se($result, "cost", 99999, false);
                     $name = se($result, "name", "N/A", false);
                     if ($cost <= $balance) {
+                        //deduct cost from user balance
                         change_points($cost, "purchase", get_user_account_id(), -1, "Purchased: " . $name);
+                        $hadError = false; //used to prevent error message from being overwritten
+
+                        //update quantity post-purchase
+                        $query = "UPDATE Items set stock = stock-1 WHERE id = :pid";
+                        $stmt = $db->prepare($query);
+                        try {
+                            $stmt->execute([":pid" => $product_id]);
+                        } catch (PDOException $e) {
+                            $err = var_export($e->errorInfo, true);
+                            error_log("Error updating product quantity: $err");
+                            $response["message"] = "Error updating product quantity: $err";
+                            $hadError = true;
+                        }
                         //string matching like this isn't the best way to do it, but I rather not potentially hardcode id's that could change
                         //TODO move special purchase logic elsewhere
-                        switch ($name) {
-                            case "Quarry Voucher":
-                                $query = "UPDATE Accounts set quarry_vouchers = quarry_vouchers + 1 WHERE id = :aid";
-                                $stmt = $db->prepare($query);
-                                try {
-                                    $r = $stmt->execute([":aid" => get_user_account_id()]);
-                                } catch (PDOException $e) {
-                                    $response["message"] = "Unknown error updating account: " . var_export($e->errorInfo, true);
-                                }
-                                break;
+                        if (!$hadError) {
+                            switch ($name) {
+                                case "Quarry Voucher":
+                                    $query = "UPDATE Accounts set quarry_vouchers = quarry_vouchers + 1 WHERE id = :aid";
+                                    $stmt = $db->prepare($query);
+                                    try {
+                                        $r = $stmt->execute([":aid" => get_user_account_id()]);
+                                    } catch (PDOException $e) {
+                                        $response["message"] = "Unknown error updating account: " . var_export($e->errorInfo, true);
+                                        $hadError = true;
+                                    }
+                                    get_or_create_account(); //pull latest account info into session
+                                    break;
+                            }
                         }
                         //TODO update success message handling, if the update in line 35 fails it'll still show success
-                        $response["status"] = 200;
-                        $response["message"] = "Thank you for your purchase of $name";
+                        if (!$hadError) {
+                            $response["status"] = 200;
+                            $response["message"] = "Thank you for your purchase of $name";
+                        }
                     } else {
                         $response["message"] = "You can't afford this";
                     }

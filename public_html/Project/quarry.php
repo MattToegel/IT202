@@ -22,7 +22,18 @@ if (isset($_COOKIE["rocks"])) {
 }
 if (!isset($rocks) || empty($rocks) || $forceRefresh) {
     //fetch db
-
+    $db = getDB();
+    $query = "SELECT time_to_mine, potential_reward, percent_chance, id, opens_date, is_mining FROM Rocks WHERE opened_date is null LIMIT 100";
+    $stmt = $db->prepare($query);
+    try {
+        $stmt->execute();
+        $r = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        if ($r) {
+            $rocks = $r;
+        }
+    } catch (PDOException $e) {
+        flash("Error fetching rocks: " . var_export($e->errorInfo, true), "warning");
+    }
     //create cookie
 
     /**
@@ -64,13 +75,13 @@ try {
                     <div class="col">
                         <?php /*note: $rock must be set here along with $isPotential = true*/
                         $isPotential = true; ?>
-                        <?php include(__DIR__ . "/../../patials/rock-item.php"); ?>
+                        <?php include(__DIR__ . "/../../partials/rock-item.php"); ?>
                     </div>
                 <?php endforeach; ?>
             </div>
         <?php else : ?>
             <?php if (get_vouchers() > 0) : ?>
-                <button type="button" class="btn btn-primary">Use Voucher (<?php se(get_vouchers()); ?>)</button>
+                <button type="button" class="btn btn-primary" onclick="useVoucher()">Use Voucher (<?php se(get_vouchers()); ?>)</button>
             <?php endif; ?>
         <?php endif; ?>
     </div>
@@ -81,7 +92,7 @@ try {
                 <?php foreach ($rocks as $rock) : ?>
                     <div class="col">
                         <?php /*note: $rock must be set here*/ ?>
-                        <?php include(__DIR__ . "/../../patials/rock-item.php"); ?>
+                        <?php include(__DIR__ . "/../../partials/rock-item.php"); ?>
                     </div>
                 <?php endforeach; ?>
             <?php else : ?>
@@ -89,7 +100,78 @@ try {
             <?php endif; ?>
         </div>
     </div>
+    <footer class="footer mt-auto py-3">
+        <div>Icons made by <a href="https://www.flaticon.com/authors/smashicons" title="Smashicons">Smashicons</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
+    </footer>
 </div>
+<script>
+    function pickRock(ele) {
+        const id = ele.id || 0;
+        if (id > 0) {
+            if (!!window.jQuery === true) {
+                $.get("api/pick_rock.php?id=" + id, (res) => {
+                    console.log("jQuery res", res);
+                    let data = JSON.parse(res);
+                    if (data.status === 200) {
+                        //doing a lazy reload for now (could get expensive)
+                        window.location.reload();
+                    } else {
+                        flash(data.message, "warning");
+                    }
+                });
+            } else {
+                fetch("api/pick_rock.php?id=" + id, {
+                    headers: {
+                        //"Content-type": "application/x-www-form-urlencoded",
+                        "X-Requested-With": "XMLHttpRequest",
+                    }
+                }).then(async res => {
+                    console.log("fetch api resp", res);
+                    let data = await res.json();
+                    if (data.status === 200) {
+                        //doing a lazy reload for now (could get expensive)
+                        window.location.reload();
+                    } else {
+                        flash(data.message, "warning");
+                    }
+                });
+            }
+        }
+    }
+
+    function useVoucher() {
+        //at the moment, this is a basic GET request.
+        //it relies on session data for validity
+        if (!!window.jQuery === true) {
+            $.get("api/use_voucher.php", (res) => {
+                console.log("jQuery res", res);
+                let data = JSON.parse(res);
+                if (data.status === 200) {
+                    //doing a lazy reload for now (could get expensive)
+                    window.location.reload();
+                } else {
+                    flash(data.message, "warning");
+                }
+            });
+        } else {
+            fetch("api/use_voucher.php", {
+                headers: {
+                    //"Content-type": "application/x-www-form-urlencoded",
+                    "X-Requested-With": "XMLHttpRequest",
+                }
+            }).then(async res => {
+                console.log("fetch api resp", res);
+                let data = await res.json();
+                if (data.status === 200) {
+                    //doing a lazy reload for now (could get expensive)
+                    window.location.reload();
+                } else {
+                    flash(data.message, "warning");
+                }
+            });
+        }
+    }
+</script>
 <?php
 require_once(__DIR__ . "/../../partials/flash.php");
 ?>
