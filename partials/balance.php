@@ -3,7 +3,7 @@
 //using $BASE_PATH from functions.php as a check to see if the file was loaded
 $balance = 0;
 if (isset($BASE_PATH)) {
-    $balance = se(get_account_balance(), null, 0, false);
+    $balance = (int)se(get_account_balance(), null, 0, false);
 }
 ?>
 <!-- The "component" is the user-balance element.

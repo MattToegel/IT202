@@ -69,7 +69,7 @@ if (isset($_POST["product_id"])) {
                         $response["message"] = "You can't afford this";
                     }
                 } else {
-                    $response["message"] = "Product not found or out of stock";
+                    $response["message"] = "Item not found or out of stock";
                 }
             } catch (PDOException $e) {
                 $response["message"] = "Unknown error fetching item: " . var_export($e->errorInfo, true);

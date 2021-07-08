@@ -93,10 +93,11 @@ function generate_prospect_options() {
             $rocks[":c$i"] = $percent_chance;
         }
         error_log("Generated rocks: " . var_export($rocks, true));
-        $query = "INSERT INTO Pending_Rocks(time_to_mine, potential_reward, percent_chance, owned_by, batches_id) VALUES
-        (:r0, :t0, :c0, :uid, :bid),
-        (:r1, :t1, :c1, :uid, :bid),
-        (:r2, :t2, :c2, :uid, :bid)";
+        $query =
+        "INSERT INTO Pending_Rocks(time_to_mine, potential_reward, percent_chance, owned_by, batches_id) VALUES
+        (:t0, :r0, :c0, :uid, :bid),
+        (:t1, :r1, :c1, :uid, :bid),
+        (:t2, :r2, :c2, :uid, :bid)";
         $stmt = $db->prepare($query);
         try {
             $rocks[":uid"] = get_user_id();

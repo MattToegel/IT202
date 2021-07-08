@@ -21,14 +21,15 @@ if (isset($_GET["id"])) {
             I'm going to insert the data from pending rocks into the rocks table if the below conditions are true:
             - rock belongs to user (owned_by)
             - no choice was made for the current batch
-            - rock doesn't have a choden date
+            - rock doesn't have a chosen date
 
             Note: This will seemingly give the Rock a new id since we're using Pending_Rock.id which isn't going to match with Rock.id
             */
-            $query = "INSERT INTO Rocks (time_to_mine, potential_reward, percent_chance, owned_by, batches_id)
+            $query =
+            "INSERT INTO Rocks (time_to_mine, potential_reward, percent_chance, owned_by, batches_id)
             SELECT time_to_mine, potential_reward, percent_chance, owned_by, batches_id 
             from Pending_Rocks pr JOIN Batches b ON pr.batches_id = b.id
-             WHERE chosen_date is null AND pr.id = :rid AND owned_by = :uid AND b.made_choice = 0";
+             WHERE chosen_date is null AND pr.id = :rid AND owned_by = :uid AND b.made_choice = 0 LIMIT 1";
             $db = getDB();
             $stmt = $db->prepare($query);
             try {
