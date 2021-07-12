@@ -8,6 +8,11 @@ function se($v, $k = null, $default = "", $isEcho = true) {
         $returnValue = $v->$k;
     } else {
         $returnValue = $v;
+        //added 07-05-2021 to fix case where $k of $v isn't set
+        //this is to kep htmlspecialchars happy
+        if (is_array($returnValue) || is_object($returnValue)) {
+            $returnValue = $default;
+        }
     }
     if (!isset($returnValue)) {
         $returnValue = $default;
@@ -100,9 +105,9 @@ function get_or_create_account() {
     if (is_logged_in()) {
         //let's define our data structure first
         //id is for internal references, account_number is user facing info, and balance will be a cached value of activity
-        $account = ["id" => -1, "account_number" => false, "balance" => 0];
+        $account = ["id" => -1, "account_number" => false, "balance" => 0, "quarry_vouchers" => 0];
         //this should always be 0 or 1, but being safe
-        $query = "SELECT id, account, balance from Accounts where user_id = :uid LIMIT 1";
+        $query = "SELECT id, account, balance, quarry_vouchers from Accounts where user_id = :uid LIMIT 1";
         $db = getDB();
         $stmt = $db->prepare($query);
         try {
@@ -145,6 +150,7 @@ function get_or_create_account() {
                 $account["id"] = $result["id"];
                 $account["account_number"] = $result["account"];
                 $account["balance"] = $result["balance"];
+                $account["quarry_vouchers"] = $result["quarry_vouchers"];
             }
         } catch (PDOException $e) {
             flash("Technical error: " . var_export($e->errorInfo, true), "danger");
@@ -158,7 +164,96 @@ function get_or_create_account() {
 }
 function get_account_balance() {
     if (is_logged_in() && isset($_SESSION["user"]["account"])) {
-        return se($_SESSION["user"]["account"], "balance", 0, false);
+        return (int)se($_SESSION["user"]["account"], "balance", 0, false);
     }
     return 0;
+}
+function get_user_account_id() {
+    if (is_logged_in() && isset($_SESSION["user"]["account"])) {
+        return (int)se($_SESSION["user"]["account"], "id", 0, false);
+    }
+    return 0;
+}
+function get_vouchers() {
+    if (is_logged_in() && isset($_SESSION["user"]["account"])) {
+        //flash(var_export($_SESSION, true), "warning");
+        return (int)se($_SESSION["user"]["account"], "quarry_vouchers", 0, false);
+    }
+    return 0;
+}
+/**
+ * Points should be passed as a positive value.
+ * $src should be where the points are coming from
+ * $dest should be where the points are going
+ */
+function change_points($points, $reason, $src = -1, $dest = -1, $memo = "") {
+    //I'm choosing to ignore the record of 0 point transactions
+
+    if ($points > 0) {
+        $query = "INSERT INTO Points_History (account_src, account_dest, point_change, reason, memo) 
+            VALUES (:acs, :acd, :pc, :r,:m), 
+            (:acs2, :acd2, :pc2, :r, :m)";
+        //I'll insert both records at once, note the placeholders kept the same and the ones changed.
+        $params[":acs"] = $src;
+        $params[":acd"] = $dest;
+        $params[":r"] = $reason;
+        $params[":m"] = $memo;
+        $params[":pc"] = ($points * -1);
+
+        $params[":acs2"] = $dest;
+        $params[":acd2"] = $src;
+        $params[":pc2"] = $points;
+        $db = getDB();
+        $stmt = $db->prepare($query);
+        try {
+            $stmt->execute($params);
+            refresh_account_balance();
+        } catch (PDOException $e) {
+            flash("Transfer error occurred: " . var_export($e->errorInfo, true), "danger");
+        }
+    }
+}
+function refresh_account_balance() {
+    if (is_logged_in()) {
+        //cache account balance via Point_History history
+        $query = "UPDATE Accounts set balance = (SELECT IFNULL(SUM(point_change), 0) from Points_History WHERE account_src = :src) where id = :src";
+        $db = getDB();
+        $stmt = $db->prepare($query);
+        try {
+            $stmt->execute([":src" => get_user_account_id()]);
+            get_or_create_account(); //refresh session data
+        } catch (PDOException $e) {
+            flash("Error refreshing account: " . var_export($e->errorInfo, true), "danger");
+        }
+    }
+}
+function refresh_last_login() {
+    if (is_logged_in()) {
+        //check if last_login is today
+        $query = "SELECT date(last_login) = date(current_timestamp) as same_day from Users where id = :uid";
+        $db = getDB();
+        $stmt = $db->prepare($query);
+        try {
+            $stmt->execute([":uid" => get_user_id()]);
+            $r = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($r) {
+                $isSameDay = (int)se($r, "same_day", 0, false);
+                if ($isSameDay === 0) {
+                    change_points(1, "login_bonus", -1, get_user_account_id());
+                    flash("You received a login bonus of 1 point!", "success");
+                }
+            }
+        } catch (PDOException $e) {
+            error_log("Unknown error during date check: " . var_export($e->errorInfo, true));
+        }
+        //update the timestamp
+        $query = "UPDATE Users set last_login = current_timestamp Where id = :uid";
+        $db = getDB();
+        $stmt = $db->prepare($query);
+        try {
+            $stmt->execute([":uid" => get_user_id()]);
+        } catch (PDOException $e) {
+            error_log("Unknown error during date check: " . var_export($e->errorInfo, true));
+        }
+    }
 }

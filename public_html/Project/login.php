@@ -50,7 +50,9 @@ if (isset($_POST["submit"])) {
 
                     //fetch account info, or create an account if the user existed before this feature was added
                     //in my project, a user will have only 1 account associated with them so it's a 1:1 relationship
-                    get_or_create_account();//applies directly to the session, make sure it's called after the session is set
+                    get_or_create_account(); //applies directly to the session, make sure it's called after the session is set
+                    //added Module 08 - reward player a login bonus
+                    refresh_last_login();
                     die(header("Location: home.php"));
                 } else {
                     se("Passwords don't match");
@@ -64,19 +66,19 @@ if (isset($_POST["submit"])) {
     }
 }
 ?>
-<div>
+<div class="container-fluid">
     <h1>Login</h1>
     <form method="POST" onsubmit="return validate(this);">
-        <div>
-            <label for="email">Email: </label>
-            <input type="email" id="email" name="email" required />
+        <div class="mb-3">
+            <label class="form-label" for="email">Email: </label>
+            <input class="form-control" type="email" id="email" name="email" required />
         </div>
-        <div>
-            <label for="pw">Password: </label>
-            <input type="password" id="pw" name="password" required />
+        <div class="mb-3">
+            <label class="form-label" for="pw">Password: </label>
+            <input class="form-control" type="password" id="pw" name="password" required />
         </div>
-        <div>
-            <input type="submit" name="submit" value="Login" />
+        <div class="mb-3">
+            <input class="btn btn-primary" type="submit" name="submit" value="Login" />
         </div>
     </form>
 </div>
