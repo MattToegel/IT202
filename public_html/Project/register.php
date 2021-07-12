@@ -8,7 +8,7 @@ if (isset($_POST["submit"])) {
 
     $isValid = true;
     if (!isset($email) || !isset($password) || !isset($confirm) || !isset($username)) {
-        flash("Must provide email, username, password, and confirm password","warning");
+        flash("Must provide email, username, password, and confirm password", "warning");
         $isValid = false;
     }
     if ($password !== $confirm) {
@@ -31,7 +31,7 @@ if (isset($_POST["submit"])) {
         $stmt = $db->prepare("INSERT INTO Users (email, username, password) VALUES (:email, :username, :password)");
         $hash = password_hash($password, PASSWORD_BCRYPT);
         try {
-            $stmt->execute([":email" => $email, ":password" => $hash, ":username"=>$username]);
+            $stmt->execute([":email" => $email, ":password" => $hash, ":username" => $username]);
             flash("You've successfully registered, please login");
             die(header("Location: login.php"));
         } catch (PDOException $e) {
@@ -45,27 +45,27 @@ if (isset($_POST["submit"])) {
     }
 }
 ?>
-<div>
+<div class="container-fluid">
     <h1>Register</h1>
     <form method="POST" onsubmit="return validate(this);">
-        <div>
-            <label for="email">Email: </label>
-            <input type="email" id="email" name="email" required />
+        <div class="mb-3">
+            <label class="form-label" for="email">Email: </label>
+            <input class="form-control" type="email" id="email" name="email" required />
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="username">Username: </label>
+            <input class="form-control" type="text" id="username" name="username" required />
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="pw">Password: </label>
+            <input class="form-control" type="password" id="pw" name="password" required />
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="cpw">Confirm Password: </label>
+            <input class="form-control" type="password" id="cpw" name="confirm" required />
         </div>
         <div>
-            <label for="username">Username: </label>
-            <input type="text" id="username" name="username" required />
-        </div>
-        <div>
-            <label for="pw">Password: </label>
-            <input type="password" id="pw" name="password" required />
-        </div>
-        <div>
-            <label for="cpw">Confirm Password: </label>
-            <input type="password" id="cpw" name="confirm" required />
-        </div>
-        <div>
-            <input type="submit" name="submit" value="Register" />
+            <input class="btn btn-primary" type="submit" name="submit" value="Register" />
         </div>
     </form>
 </div>
@@ -79,7 +79,7 @@ if (isset($_POST["submit"])) {
         if (email) {
             email = email.trim();
         }
-        if(username)    {
+        if (username) {
             username = username.trim();
         }
         if (password) {
@@ -88,8 +88,8 @@ if (isset($_POST["submit"])) {
         if (confirm) {
             confirm = confirm.trim();
         }
-        if(!username || username.length === 0)    {
-            isValid    =    false;
+        if (!username || username.length === 0) {
+            isValid = false;
             alert("Must provide a username");
         }
         if (email.indexOf("@") === -1) {

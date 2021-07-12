@@ -55,6 +55,11 @@ if (!has_role("Admin")) {
     function save_score_jquery() {
         //https://www.w3schools.com/jquery/jquery_ajax_get_post.asp
         //TBD
-        alert("Not implemented in this lesson");
+        $.post("api/save_score.php", {
+            score: 1
+        }, (res) => {
+            console.log("resp", res);
+            alert(res);
+        });
     }
 </script>
