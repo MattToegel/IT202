@@ -18,7 +18,8 @@ if (isset($_POST["product_id"])) {
         if (is_logged_in()) {
             $balance = get_account_balance();
             //lookup item by id, don't trust anything from the client
-            $query = "SELECT name,cost from Items where id = :pid and stock > 0";
+            //07/12/2021 added iname for internal name
+            $query = "SELECT iname, name,cost,description from Items where id = :pid and stock > 0";
             $db = getDB();
             $stmt = $db->prepare($query);
             try {
@@ -27,6 +28,8 @@ if (isset($_POST["product_id"])) {
                 if ($result) {
                     $cost = (int)se($result, "cost", 99999, false);
                     $name = se($result, "name", "N/A", false);
+                    $iname = se($result, "iname", "", false); //internal name, better for working in code
+                    $description = se($result, "description", "", false);//used below to extract %
                     if ($cost <= $balance) {
                         //deduct cost from user balance
                         change_points($cost, "purchase", get_user_account_id(), -1, "Purchased: " . $name);
@@ -46,8 +49,8 @@ if (isset($_POST["product_id"])) {
                         //string matching like this isn't the best way to do it, but I rather not potentially hardcode id's that could change
                         //TODO move special purchase logic elsewhere
                         if (!$hadError) {
-                            switch ($name) {
-                                case "Quarry Voucher":
+                            switch ($iname) {
+                                case "quarry_voucher":
                                     $query = "UPDATE Accounts set quarry_vouchers = quarry_vouchers + 1 WHERE id = :aid";
                                     $stmt = $db->prepare($query);
                                     try {
@@ -58,6 +61,31 @@ if (isset($_POST["product_id"])) {
                                     }
                                     get_or_create_account(); //pull latest account info into session
                                     break;
+                            }
+                            if (str_contains($iname, "pickaxe")) {
+                                //insert or update our item
+                                $query = "INSERT INTO Inventory (item_id, user_id, quantity, `mod`) VALUES (:i, :u, 1, :m) ON DUPLICATE KEY UPDATE quantity = quantity + 1";
+                                $stmt = $db->prepare($query);
+                                try {
+                                    $mod = 0;
+                                    //used to extract a % from the description to later utilize a modifier (i.e., pickaxes)
+                                    //really this should be stored better in a different column, but this is a lazy implementation based on existing data structure
+                                    if (str_contains($description, "%")) {
+                                        error_log("Description: $description");
+                                        $d1 = explode("%", $description)[0]; //left of %
+                                        error_log($d1);
+                                        $d2 = explode(" ", $d1);
+                                        $d2 = $d2[count($d2) - 1]; //right of space
+                                        error_log($d2);
+                                        $mod = floatval($d2);
+                                        error_log($mod);
+                                        $mod /= 100.0;
+                                        error_log($mod);
+                                    }
+                                    $stmt->execute([":i" => $product_id, ":u" => get_user_id(), ":m" => $mod]);
+                                } catch (PDOException $e) {
+                                    error_log("Error adding pickaxe to inventory: " . var_export($e->errorInfo, true));
+                                }
                             }
                         }
                         //TODO update success message handling, if the update in line 35 fails it'll still show success

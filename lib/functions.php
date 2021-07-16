@@ -257,3 +257,131 @@ function refresh_last_login() {
         }
     }
 }
+/** Used to retain existing query parameters when changing pages during pagination
+ * It'll update the "page" key in the $_GET array and pass the array to http_build_query() to generate the query string.
+ */
+function pagination_filter($newPage) {
+    $_GET["page"] = $newPage;
+
+    //php.net/manual/en/function.http-build-query.php
+    return se(http_build_query($_GET));
+}
+/** Runs two queries, one to get the total_records for the potentially filtered data, and the other to return the paginated data */
+function paginate($query, $params = [], $records_per_page = 5) {
+
+    global $total_records; //used for pagination display after this function
+    global $page; //used for pagination display after this function
+    //what page is the user on?
+    //ensure we're not less than page 1 (page 1 is so it makes sense to the user, we'll convert it to 0)
+    $page = se($_GET, "page", 1, false);
+    if ($page < 1) {
+        $page = 1;
+    }
+
+    $db = getDB();
+
+    //get the total records for the current filtered (if applicable) data
+    //this will get the get the part of the query after FROM
+    $t_query = "SELECT count(1) as `total` FROM " . explode(" FROM ", $query)[1];
+    //var_dump($t_query);
+    $stmt = $db->prepare($t_query);
+    try {
+        $stmt->execute($params);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($result) {
+            $total_records = se($result, "total", 0, false);
+        }
+    } catch (PDOException $e) {
+        error_log("Error getting total records: " . var_export($e->errorInfo, true));
+    }
+    $offset = ($page - 1) * $records_per_page;
+    //get the data 
+    $query .= " LIMIT :offset, :limit";
+    //IMPORTANT: this is required for the execute to set the limit variables properly
+    //otherwise it'll convert the values to a string and the query will fail since LIMIT expects only numerical values and doesn't cast
+    $db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+    //END IMPORTANT
+    $stmt = $db->prepare($query);
+    $results = [];
+    try {
+        $params[":offset"] = $offset;
+        $params[":limit"] = $records_per_page;
+        //var_dump($params);
+        $stmt->execute($params);
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        echo "<pre>";
+        var_dump($e);
+        echo "</pre>";
+        error_log("Error getting records: " . var_export($e->errorInfo, true));
+        flash("There was a problem with your request, please try again", "warning");
+    }
+    return $results;
+}
+/** Updates a daily tally of score for the user based on points acquired for mining on the current date */
+function update_score() {
+    //note: I'm diverging from the traditional score table due to poor planning ahead.
+    //Originally it was supposed to be 1 record per acquired score, but I couldn't think of how my data/system would do that fairly
+    //Instead I'm going to record a running total of "today's" score based on the sum of points acquired from mining
+    //Due to that, I need to have the below few queries to verify if it's still "today" or not since "created" isn't a unique key or composite unique key
+    // to rely on INSERT or UPDATE.
+    // This will make me need to rethink how to show daily, monthy, and lifetime scoreboards a bit so likely will not fit the arcade project as I implement it
+    // But the general implementation is *much* easier than what I'll be doing
+
+    //going to split this into multiple queries, even though some can be condensed
+    // 1) SUM the points from today's mining events
+    $query = "SELECT IFNULL(SUM(point_change), 0) as total FROM Points_History p where p.account_src = :a AND reason = 'mining' AND date(created) = current_date()";
+    $db = getDB();
+    $stmt = $db->prepare($query);
+    $points_today = 0;
+    try {
+        $stmt->execute([":a" => get_user_account_id()]);
+        $r = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($r) {
+            $points_today = (int)se($r, "total", 0, false);
+        }
+    } catch (PDOException $e) {
+        error_log("Error fetching points sum: " . var_export($e->errorInfo, true));
+    }
+    error_log("Checking $points_today");
+    if ($points_today > 0) {
+        $user = get_user_id();
+        //should be able to safely ignore 0 points, no need to record "nothing"
+        //Note: due to lack of permissions we can't use curr_date(), however current_date() works fine
+
+        // 2) check if we need to update or create a record in the scores table
+        $query = "SELECT count(1) as rec from Scores where user_id = :uid AND date(created) = current_date()";
+        $stmt = $db->prepare($query);
+        try {
+            $stmt->execute([":uid" => $user]);
+            $r = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($r) {
+                $t = (int)se($r, "rec", -1, false);
+                if ($t > 0) {
+                    // 3) update the score for today
+                    $query = "UPDATE Scores set score = :p WHERE user_id = :uid AND date(created) = current_date()";
+                    $stmt = $db->prepare($query);
+                    try {
+                        $stmt->execute([":uid" => $user, ":p" => $points_today]);
+                        error_log("Updated Score for $user to $points_today");
+                    } catch (PDOException $e) {
+                        error_log("Error updating today's score for $user with $points_today: " . var_export($e->errorInfo, true));
+                    }
+                    return;
+                }
+            }
+            // 3) create a new entry for holding today's score
+            $query = "INSERT INTO Scores (user_id, score) VALUES (:uid,:p)";
+            $stmt = $db->prepare($query);
+            try {
+                $stmt->execute([":uid" => $user, ":p" => $points_today]);
+                error_log("Created Score for $user to $points_today");
+            } catch (PDOException $e) {
+                error_log("Error creating record for today's score for $user with $points_today: " . var_export($e->errorInfo, true));
+            }
+            return;
+        } catch (PDOException $e) {
+            error_log("Error checking today's score record: " . var_export($e->errorInfo, true));
+        }
+    }
+}

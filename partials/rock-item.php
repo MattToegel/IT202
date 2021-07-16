@@ -8,7 +8,7 @@ if (!isset($isPotential)) {
     $isPotential = false;
 }
 ?>
-<div class="card" style="width:20em">
+<div class="card h-100" style="width:20em">
     <div class="card-body">
         <div class="card-title">
             Rock #<?php se($rock, "id", 0); ?>
@@ -32,7 +32,16 @@ if (!isset($isPotential)) {
 
                 <?php if (!!se($rock, "opens_date", null, false) === true) : ?>
                     <li class="list-group-item">
-                        Opens: <?php se($rock, "opens_date"); ?>
+                        Opens: <?php se($rock, "opens_date"); ?><br>
+                        <small id="<?php se($rock, "id", -1);?>">
+                        </small>
+                        <script>
+                            setInterval(()=>{
+                                let d = new Date("<?php se($rock, "opens_date");?>");
+                                let m = diff_ms(new Date(), d);
+                                document.getElementById("<?php se($rock, "id");?>").innerText = formatDuration(m);
+                            }, 1000);
+                            </script>
                     </li>
                 <?php endif; ?>
             </ul>
@@ -40,8 +49,13 @@ if (!isset($isPotential)) {
                 <button type="button" onclick="pickRock(this)" class="btn btn-primary" id="<?php se($rock, "id", -1); ?>">Choose this one</button>
             <?php else : ?>
                 <?php if (!!se($rock, "is_mining", 0, false) === false) : ?>
-                    <button type="button" class="btn btn-primary" id="<?php se($rock, "id", -1); ?>">Start Mining</button>
+                    <button type="button" class="btn btn-primary" onclick="prepareMining(this)" id="<?php se($rock, "id", -1); ?>">Start Mining</button>
                 <?php endif; ?>
+                <?php if (!!se($rock, "opens_date", "", false) === true) :   ?>
+                    <?php if (date('Y-m-d', strtotime(se($rock, "opens_date", "", false))) <= date("Y-m-d")) :   ?>
+                        <button type="button" onclick="checkReward(this)" class="btn btn-success" id="<?php se($rock, "id", -1); ?>">Check Reward</button>
+                    <?php endif;   ?>
+                <?php endif;   ?>
             <?php endif; ?>
         </div>
     </div>

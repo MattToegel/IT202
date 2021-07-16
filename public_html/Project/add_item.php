@@ -26,6 +26,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!empty($name)) {
         //TODO other validation (i.e., stock/cost limits)
         //TODO add image in the future
+        //Note: 07/12/2021, added iname field for internal name. There's no need to set this because of how the default value works
+        //the default value uses the name, lowercases it, and replaces spaces with underscore. The goal is to make it better to use in code
         $query = "INSERT INTO Items(name, description, stock, cost) VALUES (:name, :desc, :stock, :cost)";
         $db = getDB();
         $stmt = $db->prepare($query);
@@ -33,7 +35,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->execute([":name" => $name, ":desc" => $description, ":stock" => $stock, ":cost" => $cost]);
             flash("Created product \"$name\" with id " . $db->lastInsertId());
             //you can force reload the page to prevent duplicate form submissions
-            die(header("Refresh:0"));
+            //resolve headers already been sent (due to the balance include in nav.php)
+            //https://stackoverflow.com/a/8028987
+            if (headers_sent()) {
+                echo '<meta http-equiv="refresh" content="0;url=#" />';
+                die();
+            } else {
+                die(header("Refresh:0"));
+            }
+            
         } catch (PDOException $e) {
             if ($e->errorInfo[0] === '23000') {
                 flash("A product with the name \"$name\" already exists, please try another", "warning");
