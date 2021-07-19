@@ -23,12 +23,13 @@ try {
 }
 ?>
 <div class="container-fluid">
-    <h3>Ye Ol' Shoppe</h3>
+    <?php $title = "Ye Ol' Shoppe";
+    include(__DIR__ . "/../../partials/title.php"); ?>
     <div class="row">
         <?php if ($items && count($items) > 0) : ?>
             <?php foreach ($items as $item) : ?>
                 <div class="col pb-5">
-                    <div class="card" style="width: 20em">
+                    <div class="card h-100" style="width: 20em">
                         <div class="card-header">
                             Cost: <?php se($item, "cost", 99999); ?>
                         </div>
@@ -36,11 +37,17 @@ try {
                             <div class="card-title">
                                 <?php se($item, "name"); ?>
                             </div>
+                            <?php if (!!se($item, "image", false, false) === true) : ?>
+                                <div class="text-center">
+                                    <img style="max-height: 128px" class="img-fluid" src="<?php se($item, "image"); ?>" />
+                                </div>
+                            <?php endif; ?>
                             <p class="card-text">
                                 <?php se($item, "description"); ?>
                             </p>
-                            <button type="button" class="btn btn-primary" onclick="purchase(event)" id="<?php se($item, "id", -1); ?>">Purchase</button>
+
                         </div>
+                        <button type="button" class="mx-2 mb-1 btn btn-primary" onclick="purchase(event)" id="<?php se($item, "id", -1); ?>">Purchase</button>
                         <div class="card-footer text-muted">
                             Stock: <?php se($item, "stock", 0); ?>
                         </div>

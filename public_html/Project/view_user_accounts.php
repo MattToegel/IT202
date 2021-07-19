@@ -36,29 +36,8 @@ if (isset($_POST["search"]) && !empty($_POST["search"])) {
         <?php if (!$results || count($results) == 0) : ?>
             <p>No results to show</p>
         <?php else : ?>
-            <table class="table">
-                <?php foreach ($results as $index => $record) : ?>
-                    <?php if ($index == 0) : ?>
-                        <thead>
-                            <?php foreach ($record as $column => $value) : ?>
-                                <th scope="col"><?php se($column); ?></th>
-                            <?php endforeach; ?>
-                            <!-- we don't need this right now
-                            <th>Actions</th>-->
-                        </thead>
-                    <?php endif; ?>
-                    <tr scope="row">
-                        <?php foreach ($record as $column => $value) : ?>
-                            <td><?php se($value, null, "N/A"); ?></td>
-                        <?php endforeach; ?>
-
-                        <!-- we don't need this right now
-                        <td>
-                            <a href="dynamic_edit.php?id=<?php se($record, "id"); ?>">Edit</a>
-                        </td>-->
-                    </tr>
-                <?php endforeach; ?>
-            </table>
+            <?php /* Since I'm just showing data, I'm lazily using my dynamic view example */ ?>
+            <?php include(__DIR__ . "/../../partials/dynamic_list.php"); ?>
         <?php endif; ?>
     </div>
 </div>

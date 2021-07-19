@@ -65,11 +65,27 @@ try {
 } catch (PDOException $e) {
     flash("An unknown error occurs: " . var_export($e->errorInfo, true), "danger");
 }
+
+//fetch tools
+$tools = [];
+$query = "SELECT name, inv.id, iname, quantity from Inventory inv JOIN Items i on inv.item_id = i.id WHERE user_id = :uid AND name like '%pickaxe' AND quantity > 0";
+$db = getDB();
+$stmt = $db->prepare($query);
+try {
+    $stmt->execute([":uid" => get_user_id()]);
+    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    if ($results) {
+        $tools = $results;
+    }
+} catch (PDOException $e) {
+    error_log("Error fetching tools for user " . get_user_id() . ": " . var_export($e->errorInfo, true));
+}
 ?>
 <div class="container-fluid">
     <div>
         <?php if ($choices && count($choices) > 0) : ?>
-            <h3>Pick a Rock</h3>
+            <?php $title = "Pick a Rock";
+            include(__DIR__ . "/../../partials/title.php"); ?>
             <div class="row">
                 <?php foreach ($choices as $rock) : ?>
                     <div class="col">
@@ -86,11 +102,12 @@ try {
         <?php endif; ?>
     </div>
     <div>
-        <h3>Your Rocks</h3>
-        <div class="row">
+        <?php $title = "Your Rocks";
+        include(__DIR__ . "/../../partials/title.php"); ?>
+        <div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 rows-cols-xl-5 row-cols-xxl-5">
             <?php if ($rocks && count($rocks) > 0) : ?>
                 <?php foreach ($rocks as $rock) : ?>
-                    <div class="col">
+                    <div class="col m-2" style="width:20em">
                         <?php /*note: $rock must be set here*/ ?>
                         <?php include(__DIR__ . "/../../partials/rock-item.php"); ?>
                     </div>
@@ -100,11 +117,166 @@ try {
             <?php endif; ?>
         </div>
     </div>
+    <div class="modal" id="toollist" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Select a Tool</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="toolForm" onsubmit="return false;">
+                        <input type="hidden" name="rock_id" value="set via js" />
+                        <?php foreach ($tools as $key => $tool) : ?>
+                            <input type="radio" name="tool" class="form-check-input" value="<?php se($tool, "id"); ?>" id="<?php se($key); ?>" required />
+                            <label class="form-check-label" for="<?php se($key); ?>">
+                                <?php se($tool, "quantity", 0); ?>x - <?php se($tool, "name"); ?>
+                            </label>
+                        <?php endforeach; ?>
+                        <?php if (!$tools || count($tools) == 0) : ?>
+                            <p>You don't have any tools, you'll have to purchase some at the shop.</p>
+                        <?php endif; ?>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <?php if (!$tools || count($tools) == 0) : ?>
+                        <a href="shop.php" class="btn btn-primary">Visit Shop</a>
+                    <?php else : ?>
+                        <button type="button" onclick="startMining()" class="btn btn-primary">Use Tool</button>
+                    <?php endif;  ?>
+                </div>
+            </div>
+        </div>
+    </div>
     <footer class="footer mt-auto py-3">
         <div>Icons made by <a href="https://www.flaticon.com/authors/smashicons" title="Smashicons">Smashicons</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
     </footer>
 </div>
 <script>
+    //https://www.w3resource.com/javascript-exercises/fundamental/javascript-fundamental-exercise-230.php
+    const formatDuration = ms => {
+        if (ms < 0) ms = -ms;
+        const time = {
+            day: Math.floor(ms / 86400000),
+            hour: Math.floor(ms / 3600000) % 24,
+            minute: Math.floor(ms / 60000) % 60,
+            second: Math.floor(ms / 1000) % 60,
+            millisecond: Math.floor(ms) % 1000
+        };
+        return Object.entries(time)
+            .filter(val => val[1] !== 0)
+            .map(val => val[1] + ' ' + (val[1] !== 1 ? val[0] + 's' : val[0]))
+            .join(', ');
+    };
+
+    function diff_ms(dt2, dt1) {
+
+        var diff = (dt2.getTime() - dt1.getTime());
+        console.log("d0", dt2, "d1", dt1, "diff", diff);
+        return Math.abs(Math.round(diff));
+
+    }
+
+    function checkReward(ele) {
+        const rock_id = ele.id;
+        if (rock_id > 0) {
+            if (!!window.jQuery === true) {
+                $.post("api/check_reward.php", {
+                    rock_id: rock_id
+                }, (res) => {
+                    console.log("response", res);
+                    let data = JSON.parse(res);
+                    if (data.status == "200") {
+                        flash(data.message, "success");
+                        //remove the card from the dom (no need to refresh the page here as not being lazy)
+                        ele.closest(".col").remove(); //want to remove the entire column
+                    } else {
+                        flash(data.message, "danger");
+                    }
+                });
+            } else {
+                fetch("api/check_reward.php", {
+                    method: "POST",
+                    headers: {
+                        "Content-type": "application/x-www-form-urlencoded",
+                        "X-Requested-With": "XMLHttpRequest",
+                    },
+                    body: JSON.stringify({
+                        rock_id: rock_id
+                    })
+                }).then(async res => {
+                    console.log(res);
+                    let data = await res.json();
+                    console.log("fetch response", data);
+                    if (data.status == "200") {
+                        flash(data.message, "success");
+                        //remove the card from the dom (no need to refresh the page here as not being lazy)
+                        ele.closest(".col").remove(); //want to remove the entire column
+                    } else {
+                        flash(data.message, "danger");
+                    }
+                });
+            }
+        } else {
+            flash("There was a problem finding the rock to check", "warning");
+        }
+    }
+
+    function startMining() {
+        let modalEl = document.getElementById("toollist");
+        let modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+        modal.hide();
+        let form = document.getElementById("toolForm");
+        const rock_id = form.rock_id.value;
+        const tool_id = form.tool.value;
+        if (!!window.jQuery === true) {
+            $.post("api/mine_it.php", {
+                rock_id: rock_id,
+                tool_id: tool_id
+            }, (res) => {
+                let data = JSON.parse(res);
+                console.log(data);
+                flash(data.message);
+                //doing a lazy reload for now (could get expensive)
+                window.location.reload();
+            });
+        } else {
+            fetch("api/mine_it.php", {
+                method: "POST",
+                headers: {
+                    "Content-type": "application/x-www-form-urlencoded",
+                    "X-Requested-With": "XMLHttpRequest",
+                },
+                body: JSON.stringify({
+                    rock_id: rock_id,
+                    tool_id: tool_id
+                })
+            }).then(async res => {
+                console.log(res);
+                let data = await res.json();
+                console.log("fetch response", data);
+                if (data.status === 200) {
+                    flash("Purchase Successful!", "success");
+                    refreshBalance();
+                } else {
+                    //flash("Error occurred: " + JSON.stringify(data), "danger");
+                    flash(data.message, "warning");
+                }
+            });
+        }
+    }
+
+    function prepareMining(ele) {
+        let modalEl = document.getElementById("toollist");
+        let modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+        let rockIdEle = modalEl.getElementsByTagName("form")[0].rock_id;
+        rockIdEle.value = ele.id;
+        console.log("form", modalEl.getElementsByTagName("form")[0].rock_id);
+        modal.show();
+    }
+
+
     function pickRock(ele) {
         const id = ele.id || 0;
         if (id > 0) {
