@@ -173,7 +173,7 @@ try {
     function diff_ms(dt2, dt1) {
 
         var diff = (dt2.getTime() - dt1.getTime());
-
+        console.log("d0", dt2, "d1", dt1, "diff", diff);
         return Math.abs(Math.round(diff));
 
     }

@@ -79,7 +79,7 @@ if (isset($_POST["rock_id"]) && isset($_POST["tool_id"])) {
                         $opens_date = date('Y-m-d H:i:s', strtotime(date("Y-m-d H:i:s") . " +$minutes minute"));
                         //TODO probably should validate the new date
                         $query = "UPDATE Rocks set opens_date = :date, is_mining = 1, mod_time_to_mine = :mod WHERE id = :rid";
-                        $params = [":date" => $opens_date, ":mod" => ($minutes / 24 / 60), ":rid" => $rock_id];
+                        $params = [":date" => $opens_date, ":mod" => ($minutes /*/ 24 / 60*/), ":rid" => $rock_id];
                         $stmt = $db->prepare($query);
                         try {
                             $stmt->execute($params);

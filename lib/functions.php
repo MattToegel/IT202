@@ -262,7 +262,6 @@ function refresh_last_login() {
  */
 function pagination_filter($newPage) {
     $_GET["page"] = $newPage;
-
     //php.net/manual/en/function.http-build-query.php
     return se(http_build_query($_GET));
 }
@@ -289,7 +288,7 @@ function paginate($query, $params = [], $records_per_page = 5) {
         $stmt->execute($params);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         if ($result) {
-            $total_records = se($result, "total", 0, false);
+            $total_records = (int)se($result, "total", 0, false);
         }
     } catch (PDOException $e) {
         error_log("Error getting total records: " . var_export($e->errorInfo, true));

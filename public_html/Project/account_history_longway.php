@@ -92,7 +92,7 @@ try {
     $stmt->execute($params);
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
     if ($result) {
-        $total_records = se($result, "total", 0, false);
+        $total_records = (int)se($result, "total", 0, false);
     }
 } catch (PDOException $e) {
     error_log("Error getting total records: " . var_export($e->errorInfo, true));
