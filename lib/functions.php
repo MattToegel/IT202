@@ -384,3 +384,34 @@ function update_score() {
         }
     }
 }
+/** Gets the top 10 scores for valid durations (day, week, month, lifetime) */
+function getTop10($duration = "day") {
+    $d = "day";
+    if (in_array($duration, ["day", "week", "month", "lifetime"])) {
+        //variable is safe
+        $d = $duration;
+    }
+    $db = getDB();
+    //Note: In my project I'll be using modified instead of created datetime since I actually update the score
+    //in general, created timestamp is sufficient
+    $query = "SELECT user_id,username, score, Scores.modified from Scores join Users on Scores.user_id = Users.id";
+    if ($d !== "lifetime") {
+        //be very careful passing in a variable directly to SQL, I ensure it's a specific value from line 390
+        $query .= " WHERE created >= DATE_SUB(NOW(), INTERVAL 1 $d);";
+    }
+    //remember to prefix any ambiguous columns (Users and Scores both have created)
+    $query .= " ORDER BY score Desc, Scores.modified desc LIMIT 10"; //newest of the same score is ranked higher
+
+    $stmt = $db->prepare($query);
+    $results = [];
+    try {
+        $stmt->execute();
+        $r = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        if ($r) {
+            $results = $r;
+        }
+    } catch (PDOException $e) {
+        error_log("Error fetching scores for $d: " . var_export($e->errorInfo, true));
+    }
+    return $results;
+}
