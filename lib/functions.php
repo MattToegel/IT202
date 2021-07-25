@@ -402,7 +402,7 @@ function get_top_10($duration = "day") {
     $query = "SELECT user_id,username, score, Scores.modified from Scores join Users on Scores.user_id = Users.id";
     if ($d !== "lifetime") {
         //be very careful passing in a variable directly to SQL, I ensure it's a specific value from line 390
-        $query .= " WHERE created >= DATE_SUB(NOW(), INTERVAL 1 $d);";
+        $query .= " WHERE modified >= DATE_SUB(NOW(), INTERVAL 1 $d)";
     }
     //remember to prefix any ambiguous columns (Users and Scores both have created)
     $query .= " ORDER BY score Desc, Scores.modified desc LIMIT 10"; //newest of the same score is ranked higher
