@@ -4,7 +4,7 @@
 if (!isset($duration)) {
     $duration = "day"; //choosing to default to day
 }
-$results = getTop10($duration);
+$results = get_top_10($duration);
 
 switch ($duration) {
     case "day":

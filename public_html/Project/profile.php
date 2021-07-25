@@ -85,33 +85,125 @@ if (isset($_POST["save"])) {
 <?php
 $email = get_user_email();
 $username = get_username();
+$id = se($_GET, "id", -1, false);
+$isMe = true;
+$userData = [];
+//Note: I chose to comment out the second condition so I can use the id attribute to present "this" user with a
+// "profile view" of their own if the id passed in is the logged in user
+//If we just want the logged in user to always see the edit form, uncomment the second condition
+if ($id > -1 /*&& $id !== get_user_id()*/) {
+    $isMe = false; //we're looking up someone's profile
+
+    $db = getDB();
+    $query = "SELECT username, created, last_login from Users where id = :id";
+    $stmt = $db->prepare($query);
+    try {
+        $stmt->execute([":id" => $id]);
+        $r = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($r) {
+            $userData = $r;
+            $username = se($userData, "username", "", false);
+        }
+    } catch (PDOException $e) {
+        error_log("Error looking up user $id's profile: " . var_export($e->errorInfo, true));
+    }
+    $scores = get_latest_scores($id);
+}
 ?>
 <div class="container-fluid">
-    <form method="POST" onsubmit="return validate(this);">
-        <div class="mb-3">
-            <label class="form-label" for="email">Email</label>
-            <input class="form-control" type="email" name="email" id="email" value="<?php se($email); ?>" />
-        </div>
-        <div class="mb-3">
-            <label class="form-label" for="username">Username</label>
-            <input class="form-control" type="text" name="username" id="username" value="<?php se($username); ?>" />
-        </div>
-        <!-- DO NOT PRELOAD PASSWORD -->
-        <div>Password Reset</div>
-        <div class="mb-3">
-            <label class="form-label" for="cp">Current Password</label>
-            <input class="form-control" type="password" name="currentPassword" id="cp" />
-        </div>
-        <div class="mb-3">
-            <label class="form-label" for="np">New Password</label>
-            <input class="form-control" type="password" name="newPassword" id="np" />
-        </div>
-        <div class="mb-3">
-            <label class="form-label" for="conp">Confirm Password</label>
-            <input class="form-control" type="password" name="confirmPassword" id="conp" />
-        </div>
-        <input class="btn btn-primary" type="submit" value="Update Profile" name="save" />
-    </form>
+
+    <?php if ($isMe) : ?>
+        <?php $title = "Your Profile";
+        include(__DIR__ . "/../../partials/title.php"); ?>
+        <a href="?id=<?php se(get_user_id());   ?>" class="btn btn-primary">View Public Profile</a>
+        <?php /* Viewing our profile */ ?>
+        <form method="POST" onsubmit="return validate(this);">
+            <div class="mb-3">
+                <label class="form-label" for="email">Email</label>
+                <input class="form-control" type="email" name="email" id="email" value="<?php se($email); ?>" />
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="username">Username</label>
+                <input class="form-control" type="text" name="username" id="username" value="<?php se($username); ?>" />
+            </div>
+            <!-- DO NOT PRELOAD PASSWORD -->
+            <div>Password Reset</div>
+            <div class="mb-3">
+                <label class="form-label" for="cp">Current Password</label>
+                <input class="form-control" type="password" name="currentPassword" id="cp" />
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="np">New Password</label>
+                <input class="form-control" type="password" name="newPassword" id="np" />
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="conp">Confirm Password</label>
+                <input class="form-control" type="password" name="confirmPassword" id="conp" />
+            </div>
+            <input class="btn btn-primary" type="submit" value="Update Profile" name="save" />
+        </form>
+    <?php else : ?>
+        <?php /* Viewing someone elses profile */ ?>
+        <?php $title = se($username, null, "", false) . "'s Profile";
+        include(__DIR__ . "/../../partials/title.php"); ?>
+        <?php if ($userData && count($userData) > 0) : ?>
+            <div class="card">
+                <div class="card-body">
+
+                    <div class="card-subtitle">
+                        <div class="row">
+                            <div class="col">
+                                Joined: <?php se($userData, "created"); ?>
+                            </div>
+                            <div class="col">
+                                Last Online: <?php se($userData, "last_login"); ?>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-text">
+                        <div class="row">
+                            <div class="col">
+                                Best Score: <?php se(get_best_score($id));   ?>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="card-title">
+                                    <div class="fw-bold fs-3">
+                                        Last 10 Scores
+                                    </div>
+                                </div>
+                                <div class="card-text">
+                                    <table class="table">
+                                        <thead>
+                                            <th>Score</th>
+                                            <th>Achieved</th>
+                                        </thead>
+                                        <tbody>
+                                            <?php if (!$scores || count($scores) == 0) : ?>
+                                                <tr>
+                                                    <td>No scores available</td>
+                                                </tr>
+                                            <?php else : ?>
+                                                <?php foreach ($scores as $result) : ?>
+                                                    <tr>
+                                                        <td><?php se($result, "score"); ?></td>
+                                                        <td><?php se($result, "modified"); ?></td>
+                                                    </tr>
+                                                <?php endforeach; ?>
+                                            <?php endif; ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <?php else : ?>
+            <p>There was a problem looking up this user, please try again.</p>
+        <?php endif; ?>
+    <?php endif; ?>
 </div>
 <script>
     function validate(form) {
