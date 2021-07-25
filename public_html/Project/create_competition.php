@@ -12,7 +12,7 @@ if (!is_logged_in()) {
     $cost = $starting_reward + 1;
     $balance = (int)se(get_account_balance(), null, 0, false);
     $entry_fee = (int)se($_POST, "entry_fee", 0, false);
-    $reward_increase = (int)se($_POST, "reward_increase", 0, false);
+    $reward_increase = (float)se($_POST, "reward_increase", 0, false);
     $min_participants = (int)se($_POST, "min_participants", 3, false);
     $payout_split = se($_POST, "payout", 1, false);
     $duration = (int)se($_POST, "duration", 3, false);
@@ -90,7 +90,7 @@ if (!is_logged_in()) {
             if ($comp_id > 0) {
                 change_points($cost, "create-comp", get_user_account_id(), -1, "Created Competition #$comp_id");
                 //TODO creator joins competition for free
-                error_log("Attempt to join created competition: " . join_competition($comp_id));
+                error_log("Attempt to join created competition: " . join_competition($comp_id, true));
                 flash("Successfully created Competition $name", "success");
             }
         } catch (PDOException $e) {
