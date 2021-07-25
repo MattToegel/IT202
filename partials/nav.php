@@ -45,6 +45,18 @@ require_once(__DIR__ . "/../lib/functions.php");
                 <li class="nav-item"><a class="nav-link" href="shop.php">Shop</a></li>
                 <li class="nav-item"><a class="nav-link" href="quarry.php">Quarry</a></li>
                 <li class="nav-item"><a class="nav-link" href="account_history.php">Account History</a></li>
+                <li class="nav-item"><a class="nav-link" href="profile.php">Profile</a></li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Competitions
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="create_competition.php">Create</a></li>
+                        <li><a class="dropdown-item" href="competitions.php">Active</a></li>
+                        <li><a class="dropdown-item" href="competitions.php?filter=joined">Joined History</a></li>
+                        <li><a class="dropdown-item" href="competitions.php?filter=expired">Expired</a></li>
+                    </ul>
+                </li>
             <?php endif; ?>
             <?php if (!is_logged_in()) : ?>
                 <li class="nav-item"><a class="nav-link" href="login.php">Login</a></li>

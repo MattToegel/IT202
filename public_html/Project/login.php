@@ -53,6 +53,9 @@ if (isset($_POST["submit"])) {
                     get_or_create_account(); //applies directly to the session, make sure it's called after the session is set
                     //added Module 08 - reward player a login bonus
                     refresh_last_login();
+                    //added Module 10
+                    //put the function here as it's the least frequent "activation" that won't go too long without running
+                    calc_winners_or_expire();//This can cost up to ~100 queries
                     die(header("Location: home.php"));
                 } else {
                     se("Passwords don't match");
