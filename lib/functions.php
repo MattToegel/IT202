@@ -186,10 +186,10 @@ function get_vouchers() {
  * $src should be where the points are coming from
  * $dest should be where the points are going
  */
-function change_points($points, $reason, $src = -1, $dest = -1, $memo = "") {
+function change_points($points, $reason, $src = -1, $dest = -1, $memo = "", $forceAllowZero = false) {
     //I'm choosing to ignore the record of 0 point transactions
 
-    if ($points > 0) {
+    if ($points > 0 || $forceAllowZero) {
         $query = "INSERT INTO Points_History (account_src, account_dest, point_change, reason, memo) 
             VALUES (:acs, :acd, :pc, :r,:m), 
             (:acs2, :acd2, :pc2, :r, :m)";
@@ -461,7 +461,7 @@ function get_latest_scores($user_id, $limit = 10) {
     return [];
 }
 /** returns a message about the status of a join attempt */
-function join_competition($comp_id) {
+function join_competition($comp_id, $isCreator = false) {
     if ($comp_id <= 0) {
         return "Invalid Competition";
     }
@@ -522,7 +522,10 @@ function join_competition($comp_id) {
                 //I'm choosing not to let failure here be a big deal, only 1 successful update periodically is required
             }
             //this won't record free competitions due to the inner logic of change_points()
-            change_points($fee, "join-comp", get_user_account_id(), -1, "Joined Competition #" . $comp_id);
+            if ($isCreator) {
+                $fee = 0;
+            }
+            change_points($fee, "join-comp", get_user_account_id(), -1, "Joined Competition #" . $comp_id, true);
             return "Successfully joined Competition #$comp_id";
         } else {
             return "Unknown error joining competition, please try again";
@@ -603,7 +606,8 @@ function calc_winners_or_expire() {
     //do time check
     $db = getDB();
     //added limit to do up to 25 item bursts for "higher volume" site
-    $query = "SELECT id, current_reward, payouts, min_participants, current_participants FROM Competitions c WHERE c.expires >= CURRENT_TIMESTAMP AND c.is_expired = 0 AND c.did_payout = 0 LIMIT 25";
+    $query = "SELECT id, current_reward, payouts, min_participants, current_participants FROM Competitions c 
+    WHERE c.expires <= CURRENT_TIMESTAMP AND c.is_expired = 0 AND c.did_payout = 0 LIMIT 25";
     $stmt = $db->prepare($query);
     $results = [];
     $total = 0;
@@ -661,21 +665,21 @@ function calc_winners_or_expire() {
                         }
                     }
                 }
-                //prevent the competition from being recalculated or from showing as active
-                $query = "UPDATE Competitions set did_payout = :p, is_expired = 1 WHERE id = :cid";
-                $stmt = $db->prepare($query);
-                try {
-                    //Note: if this fails and the previous payout(s) succeeded it could duplicate reward players
-                    $stmt->execute([":cid" => $comp_id, ":p" => $didPayout]);
-                    $total++;
-                    if ($didPayout) {
-                        $numPaid++;
-                    }
-                } catch (PDOException $e) {
-                    error_log("Error updating competition to paid out or expired: " . var_export($e->errorInfo, true));
-                }
             } else {
                 //just expire (this is here purely as a note)
+            }
+            //prevent the competition from being recalculated or from showing as active
+            $query = "UPDATE Competitions set did_payout = :p, is_expired = 1 WHERE id = :cid";
+            $stmt = $db->prepare($query);
+            try {
+                //Note: if this fails and the previous payout(s) succeeded it could duplicate reward players
+                $stmt->execute([":cid" => $comp_id, ":p" => $didPayout]);
+                $total++;
+                if ($didPayout) {
+                    $numPaid++;
+                }
+            } catch (PDOException $e) {
+                error_log("Error updating competition to paid out or expired: " . var_export($e->errorInfo, true));
             }
         }
     }

@@ -13,5 +13,6 @@ CREATE TABLE IF NOT EXISTS Competitions(
     is_expired tinyint(1) DEFAULT 0 COMMENT 'convenience for expirey check queries',
     expires TIMESTAMP,
     created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP
+    modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
+    FOREIGN KEY (creator) REFERENCES Users(id)
 )
