@@ -10,6 +10,7 @@ function getTotal($arr)
     //TODO do adding here
     //TODO do rounding stuff here
     echo "The total is " . var_export($total, true);
+    echo "my sums";
 }
 echo "Problem 2: Adding Floats<br>";
 ?>
