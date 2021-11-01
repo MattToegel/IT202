@@ -71,9 +71,9 @@ if (isset($_POST["email"]) && isset($_POST["password"]) && isset($_POST["confirm
         //TODO 4
         $hash = password_hash($password, PASSWORD_BCRYPT);
         $db = getDB();
-        $stmt = $db->prepare("INSERT INTO Users (email, password, username) VALUES(:email, :password, :username)");
+        $stmt = $db->prepare("INSERT INTO Users (email, password) VALUES(:email, :password)");
         try {
-            $stmt->execute([":email" => $email, ":password" => $hash, ":username" => $username]);
+            $stmt->execute([":email" => $email, ":password" => $hash]);
             echo "Successfully registered!";
         } catch (Exception $e) {
             echo "There was a problem registering";
