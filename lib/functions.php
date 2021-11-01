@@ -1,6 +1,6 @@
 <?php
 //TODO 1: require db.php
-
+require_once(__DIR__ . "/db.php");
 /** Safe Echo Function
  * Takes in a value and passes it through htmlspecialchars()
  * or
