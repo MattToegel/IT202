@@ -1,3 +1,6 @@
+<?php
+require(__DIR__ . "/../../lib/functions.php");
+?>
 <form onsubmit="return validate(this)" method="POST">
     <div>
         <label for="email">Email</label>
