@@ -3,8 +3,8 @@ require(__DIR__ . "/../../partials/nav.php");
 ?>
 <form onsubmit="return validate(this)" method="POST">
     <div>
-        <label for="email">Email</label>
-        <input type="email" name="email" required />
+        <label for="email">Username/Email</label>
+        <input type="text" name="email" required />
     </div>
     <div>
         <label for="pw">Password</label>
@@ -32,12 +32,19 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
         flash("Email must not be empty", "danger");
         $hasError = true;
     }
-    //sanitize
-    $email = sanitize_email($email);
-    //validate
-    if (!is_valid_email($email)) {
-        flash("Invalid email address", "danger");
-        $hasError = true;
+    if (str_contains($email, "@")) {
+        //sanitize
+        $email = sanitize_email($email);
+        //validate
+        if (!is_valid_email($email)) {
+            flash("Invalid email address", "warning");
+            $hasError = true;
+        }
+    } else {
+        if (!preg_match('/^[a-z0-9_-]{3,30}$/i', $email)) {
+            flash("Username must only be alphanumeric and can only contain - or _", "warning");
+            $hasError = true;
+        }
     }
     if (empty($password)) {
         flash("password must not be empty", "danger");
