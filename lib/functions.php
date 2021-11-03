@@ -120,3 +120,13 @@ function users_check_duplicate($errorInfo)
         flash("<pre>" . var_export($errorInfo, true) . "</pre>");
     }
 }
+function get_url($dest)
+{
+    global $BASE_PATH;
+    if (str_starts_with($dest, "/")) {
+        //handle absolute path
+        return $dest;
+    }
+    //handle relative path
+    return $BASE_PATH . $dest;
+}
