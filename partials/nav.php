@@ -50,4 +50,5 @@ require_once(__DIR__ . "/../lib/functions.php");
             </ul>
         </div>
     </div>
+
 </nav>
