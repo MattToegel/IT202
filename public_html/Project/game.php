@@ -1,5 +1,9 @@
-<div style="width: 100%">
-    <canvas tabindex="1" width="400px" height="400px"></canvas>
+<?php
+require(__DIR__ . "/../../partials/nav.php");
+?>
+<div class="container-fluid">
+    <h1>Ducks Be Gone</h1>
+    <canvas tabindex="1" height="400px"></canvas>
 </div>
 <!-- Need to load an image resource to use it on the Canvas -->
 <img src="duck.png" style="display: none;" />
@@ -9,11 +13,25 @@
     var context = canvas.getContext("2d");
     let img = document.getElementsByTagName("img")[0];
     //mouse position
-    let mp = { x: 0, y: 0 };
+    let mp = {
+        x: 0,
+        y: 0
+    };
     //start position of launcher handle
-    let start = { x: 0, y: 0 };
+    let start = {
+        x: 0,
+        y: 0
+    };
     //launcher grip/holder
-    let grip = { x: 0, y: 0, dx: 0, dy: 0, s: 1000, power: 0, didTrigger: false };
+    let grip = {
+        x: 0,
+        y: 0,
+        dx: 0,
+        dy: 0,
+        s: 1000,
+        power: 0,
+        didTrigger: false
+    };
 
     let secondsPassed = 0;
     //cached img half and quarter dimensions (division is expensive in general)
@@ -61,7 +79,7 @@
             s: s,
             hit: false,
             lifetime: 0,
-            thinker: function () {
+            thinker: function() {
                 if (Math.random() > .5) {
                     if (!this.dx) {
                         this.dx = (Math.random() > .5 ? 1 : -1)
@@ -78,10 +96,10 @@
                     }, t);
                 }
             },
-            setHit: function () {
+            setHit: function() {
                 this.hit = true;
             },
-            draw: function () {
+            draw: function() {
                 if (this.hit) {
                     return;
                 }
@@ -108,7 +126,7 @@
                 context.drawImage(img, this.x - imgDimensions.WQ, this.y - imgDimensions.HQ, imgDimensions.WH, imgDimensions.HH);
                 context.restore();
             },
-            move: function (secondsPassed) {
+            move: function(secondsPassed) {
                 if (this.hit) {
                     return;
                 }
@@ -144,7 +162,7 @@
             released: false,
             hit: false,
             lifetime: 0,
-            launchFrom: function (start, target, power) {
+            launchFrom: function(start, target, power) {
                 this.x = start.x + this.r / 2;
                 this.y = start.y;
                 this.dx = start.x - target.x;
@@ -152,7 +170,7 @@
                 this.released = true;
                 this.s = power * this.s;
             },
-            draw: function () {
+            draw: function() {
                 if (this.hit) {
                     return;
                 }
@@ -163,15 +181,14 @@
                 context.closePath();
 
             },
-            move: function (secondsPassed) {
+            move: function(secondsPassed) {
                 if (this.hit) {
                     return;
                 }
                 if (!this.released) {
-                    this.x = mp.x;//+this.r/2;
-                    this.y = mp.y;//+this.r/2;
-                }
-                else {
+                    this.x = mp.x; //+this.r/2;
+                    this.y = mp.y; //+this.r/2;
+                } else {
                     if (gameData.bouncyProjectiles) {
                         if (this.x < 0 || this.x + this.r > canvas.width) {
                             this.dx *= -1;
@@ -184,8 +201,7 @@
                     if (this.lifetime.toFixed(2) % .25 == 0) {
                         if (this.s > 0) {
                             this.s -= this.ss * .075;
-                        }
-                        else if (this.s <= 0) {
+                        } else if (this.s <= 0) {
                             this.s = 0;
                             this.hit = true;
                         }
@@ -195,7 +211,9 @@
         }
     }
 
-    const distance = (x1, y1, x2, y2) => { return (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1); }
+    const distance = (x1, y1, x2, y2) => {
+        return (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1);
+    }
     const intersect = (x1, y1, r1, x2, y2, r2) => {
         return distance(x1, y1, x2, y2) <= ((r1 + r2) * (r1 + r2));
     }
@@ -204,7 +222,10 @@
         if (grip.didTrigger) {
             grip.didTrigger = false;
             //used to calculate power (speed) and start point of shot
-            grip.releasedFrom = { x: grip.x, y: grip.y };
+            grip.releasedFrom = {
+                x: grip.x,
+                y: grip.y
+            };
             grip.release = distance(grip.x, grip.y, start.x, start.y);
             console.log("release", grip.release);
         }
@@ -229,8 +250,7 @@
     const timeCountdown = setInterval(() => {
         if (gameData.isPlaying && gameData.timeRemaining > 0) {
             gameData.timeRemaining--;
-        }
-        else if (gameData.isPlaying && gameData.timeRemaining <= 0) {
+        } else if (gameData.isPlaying && gameData.timeRemaining <= 0) {
             gameOver();
             gameData.timeRemaining = 0;
             gameData.isPlaying = false;
@@ -254,8 +274,7 @@
                 }
                 http.open("POST", "api/save_score.php", true);
                 http.send(`score=${gameData.score}`);
-            }
-            else if (example === 2) {
+            } else if (example === 2) {
                 //fetch api way
                 fetch("api/save_score.php", {
                     method: "POST",
@@ -272,16 +291,15 @@
                     console.log("received data", data);
                     console.log("saved score");
                 })
-            }
-            else if (example === 3) {
+            } else if (example === 3) {
                 //TBD jQuery way
             }
         }
     };
     window.addEventListener("load", () => {
         start = Object.freeze({
-            x: canvas.width / 2,//center
-            y: canvas.height * .7//70% of canvas
+            x: canvas.width / 2, //center
+            y: canvas.height * .7 //70% of canvas
         })
         grip.x = start.x;
         grip.y = start.y;
@@ -312,12 +330,12 @@
     const scaledMP = (e) => {
         //scaled mouse position on canvas https://stackoverflow.com/a/17130415
         var rect = canvas.getBoundingClientRect(); // abs. size of element
-        scaleX = canvas.width / rect.width;    // relationship vs. element for X
-        scaleY = canvas.height / rect.height;  // relationship vs. element for Y
+        scaleX = canvas.width / rect.width; // relationship vs. element for X
+        scaleY = canvas.height / rect.height; // relationship vs. element for Y
 
         mp.x = (e.clientX - rect.left) * scaleX;
         mp.y = (e.clientY - rect.top) * scaleY;
-       
+
     }
     window.addEventListener("mouseleave", release);
     window.addEventListener("mouseup", release);
@@ -325,8 +343,8 @@
         //handles start button click
         if (!gameData.isPlaying) {
             scaledMP(e);
-            if (mp.x >= startButton.x && mp.x <= startButton.x + startButton.w
-                && mp.y >= startButton.y && mp.y <= startButton.y + startButton.h) {
+            if (mp.x >= startButton.x && mp.x <= startButton.x + startButton.w &&
+                mp.y >= startButton.y && mp.y <= startButton.y + startButton.h) {
                 resetGame();
                 gameData.isPlaying = true;
             }
@@ -345,7 +363,7 @@
     const drawFPS = () => {
         // Draw number to the screen
         context.font = '18px Arial';
-        context.fillStyle = 'white';//assumes dark background
+        context.fillStyle = 'white'; //assumes dark background
         context.fillText("FPS: " + fps, canvas.width * .05, canvas.height * .075);
     }
     const gameLoop = (timeStamp) => {
@@ -396,18 +414,14 @@
 
                 if (grip.power <= .25) {
                     context.strokeStyle = "green";
-                }
-                else if (grip.power <= .5) {
+                } else if (grip.power <= .5) {
                     context.strokeStyle = "yellow";
-                }
-                else if (grip.power <= .75) {
+                } else if (grip.power <= .75) {
                     context.strokeStyle = "orange";
-                }
-                else {
+                } else {
                     context.strokeStyle = "red";
                 }
-            }
-            else {
+            } else {
                 context.strokeStyle = "black";
             }
             //draw launcher and anchors
@@ -450,17 +464,16 @@
             grip.y = mp.y - 5;
             let d = distance(grip.x, grip.y, start.x, start.y);
             grip.power = Math.min(d / gameData.maxDist, 1);
-        }
-        else {
+        } else {
             //move holder back to start position
             if (distance(grip.x, grip.y, start.x, start.y) < .1) {
-                grip.dx = (start.x - grip.x)/start.x;
-                grip.dy = (start.y - grip.y)/start.y;
-                
+                grip.dx = (start.x - grip.x) / start.x;
+                grip.dy = (start.y - grip.y) / start.y;
+
                 console.log(grip.dx, grip.dy);
                 grip.x += grip.s * grip.dx * secondsPassed;
                 grip.y += grip.s * grip.dy * secondsPassed;
-                
+
                 /*let dist = distance(grip.x, grip.y, start.x, start.y)
                 //console.log(dist, start);
                 if(dist < 10 || (isNaN(grip.x) || isNaN(grip.y))){
@@ -469,8 +482,7 @@
                     grip.y = start.y;
                     grip.release = 0;
                 }*/
-            }
-            else {
+            } else {
                 grip.x = start.x;
                 grip.y = start.y;
                 //fire shot if at start position and there's an unreleased projectile
@@ -521,19 +533,15 @@
     }
 
     canvas {
-        width: 400px;
+        width: 80%;
+        max-height: 80vh;
         display: block;
         border: 1px solid black;
         margin-left: auto;
         margin-right: auto;
-        position: absolute;
-        top: 0;
+
         left: 0;
         bottom: 0;
         right: 0;
-    }
-
-    div {
-        padding: 56.25%;
     }
 </style>
