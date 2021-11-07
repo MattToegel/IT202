@@ -83,6 +83,8 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
                         } else {
                             $_SESSION["user"]["roles"] = []; //no roles
                         }
+                        //M2-Feat-Accounts
+                        get_or_create_account();
                         die(header("Location: home.php"));
                     } else {
                         flash("Invalid password", "danger");
@@ -98,5 +100,5 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
 }
 ?>
 <?php
-require(__DIR__ . "/../../partials/flash.php");
+require(__DIR__ . "/../../partials/footer.php");
 ?>
