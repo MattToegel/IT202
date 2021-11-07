@@ -1,0 +1,19 @@
+body{
+    color: white;
+    background-color: black;
+}
+nav li a,.navbar-brand{
+    /* see how you can use custom css variables from bootstrap
+    https://getbootstrap.com/docs/5.1/customize/css-variables/ */
+    color: var(--bs-orange) !important;
+    text-shadow: -.5px -.5px 0 #000, .5px -.5px 0 #000, -.5px .5px 0 #000, .5px .5px 0 #000;
+
+}
+.btn-primary{
+    background-color: var(--bs-orange);
+    border: 1px solid black;
+    color: black;
+}
+canvas{
+    background-color: white;
+}
