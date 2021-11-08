@@ -158,7 +158,7 @@ function get_or_create_account()
         //id is for internal references, account_number is user facing info, and balance will be a cached value of activity
         $account = ["id" => -1, "account_number" => false, "balance" => 0];
         //this should always be 0 or 1, but being safe
-        $query = "SELECT id, account, balance from Accounts where user_id = :uid LIMIT 1";
+        $query = "SELECT id, account, balance from BGD_Accounts where user_id = :uid LIMIT 1";
         $db = getDB();
         $stmt = $db->prepare($query);
         try {
@@ -171,7 +171,7 @@ function get_or_create_account()
                 //it shouldn't be too likely to occur with a length of 12, but it's still worth handling such a scenario
 
                 //you only need to prepare once
-                $query = "INSERT INTO Accounts (account, user_id) VALUES (:an, :uid)";
+                $query = "INSERT INTO BGD_Accounts (account, user_id) VALUES (:an, :uid)";
                 $stmt = $db->prepare($query);
                 $user_id = get_user_id(); //caching a reference
                 $account_number = "";

@@ -8,7 +8,7 @@
     let placeholders = document.getElementsByClassName("show-balance");
     for (let p of placeholders) {
         //https://developer.mozilla.org/en-US/docs/Web/API/Node/cloneNode
-        p.innerHTML = bv.cloneNode(true).outerHTML;
+        p.innerHTML = bv.outerHTML; //bv.cloneNode(true).outerHTML;
     }
     bv.remove(); //delete the original
 </script>

@@ -6,5 +6,5 @@ CREATE TABLE IF NOT EXISTS BGD_Accounts(
     created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES Users(id),
-    check (balance > 0 AND LENGTH(account) = 12)
+    check (balance >= 0 AND LENGTH(account) = 12)
 )
