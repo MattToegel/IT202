@@ -545,3 +545,6 @@ require(__DIR__ . "/../../partials/nav.php");
         right: 0;
     }
 </style>
+<?php
+require(__DIR__ . "/../../partials/footer.php");
+?>
