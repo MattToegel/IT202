@@ -17,3 +17,6 @@ nav li a,.navbar-brand{
 canvas{
     background-color: white;
 }
+label{
+    text-transform: capitalize;
+}
