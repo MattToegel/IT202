@@ -3,7 +3,7 @@ require(__DIR__ . "/../../partials/nav.php");
 ?>
 <div class="container-fluid">
     <h1>Ducks Be Gone</h1>
-    <canvas tabindex="1" height="400px"></canvas>
+    <canvas tabindex="1" width="720px" height="720px"></canvas>
 </div>
 <!-- Need to load an image resource to use it on the Canvas -->
 <img src="duck.png" style="display: none;" />
@@ -45,7 +45,8 @@ require(__DIR__ . "/../../partials/nav.php");
     let duckData = {
         bounceModifier: 1.05,
         maxDucks: 20,
-        spawnInterval: 1000
+        spawnInterval: 1000,
+        size: 15
     }
 
     let gameData = {
@@ -67,6 +68,17 @@ require(__DIR__ . "/../../partials/nav.php");
         y: canvas.height * .3,
         w: canvas.width * .4,
         h: canvas.height * .1,
+    }
+    //Helps fix resizing of canvas so the width doesn't go beyond the height
+    const applySize = () => {
+        let rect = canvas.getBoundingClientRect(); // abs. size of element
+        let v = Math.ceil(rect.height) + "px"
+        if (rect.width > rect.height) {
+
+            canvas.style.maxWidth = v;
+        }
+        gameData.maxDist = (canvas.width * canvas.width) * .1;
+        console.log("max", gameData.maxDist);
     }
     //defines a duck object
     const makeDuck = (x, y, r, s) => {
@@ -105,13 +117,13 @@ require(__DIR__ . "/../../partials/nav.php");
                 }
 
                 //draw the hit box (for debugging)
-                /*
+
                 context.beginPath();
                 context.fillStyle = "yellow";
                 context.arc(this.x, this.y, this.r, 0, 360);
                 context.fill();
                 context.closePath();
-                */
+
 
                 context.save();
                 let d = this.dx * -1;
@@ -123,7 +135,8 @@ require(__DIR__ . "/../../partials/nav.php");
                 context.scale(d, 1);
                 context.translate(-this.x, -this.y);
                 //do the draw
-                context.drawImage(img, this.x - imgDimensions.WQ, this.y - imgDimensions.HQ, imgDimensions.WH, imgDimensions.HH);
+                let off = (this.r * 1.5); //magic value for size of 15, couldn't think of a dynamic formula at the moment
+                context.drawImage(img, this.x - (off), this.y - (off)); //, this.x - imgDimensions.WQ, this.y - imgDimensions.HQ, imgDimensions.WH, imgDimensions.HH);
                 context.restore();
             },
             move: function(secondsPassed) {
@@ -242,7 +255,7 @@ require(__DIR__ . "/../../partials/nav.php");
         let y = (canvas.height * .1 + (Math.random() * canvas.height * .2));
         //random speed between 1 and 11
         let s = 1 + (Math.random() + 10);
-        let d = makeDuck(x, y, 10, s);
+        let d = makeDuck(x, y, duckData.size, s);
         d.thinker();
         gameData.ducks.push(d);
     }, duckData.spawnInterval);
@@ -297,6 +310,7 @@ require(__DIR__ . "/../../partials/nav.php");
         }
     };
     window.addEventListener("load", () => {
+        applySize();
         start = Object.freeze({
             x: canvas.width / 2, //center
             y: canvas.height * .7 //70% of canvas
@@ -337,6 +351,8 @@ require(__DIR__ . "/../../partials/nav.php");
         mp.y = (e.clientY - rect.top) * scaleY;
 
     }
+    window.addEventListener("resize", applySize)
+
     window.addEventListener("mouseleave", release);
     window.addEventListener("mouseup", release);
     window.addEventListener("mousedown", (e) => {
@@ -533,8 +549,12 @@ require(__DIR__ . "/../../partials/nav.php");
     }
 
     canvas {
-        width: 80%;
+        /*width: 100%;
+        height: 100%;
+        max-height: 80vh;*/
+        width: 80vw;
         max-height: 80vh;
+
         display: block;
         border: 1px solid black;
         margin-left: auto;
