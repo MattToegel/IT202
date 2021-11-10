@@ -1,13 +1,15 @@
 <?php
 require(__DIR__ . "/../../partials/nav.php");
 reset_session();
+$email = se($_POST, "email", "", false);
 ?>
 <div class="container-fluid">
     <h1>Register</h1>
     <form onsubmit="return validate(this)" method="POST">
         <div class="mb-3">
             <label class="form-label" for="email">Email</label>
-            <input class="form-control" type="email" id="email" name="email" required />
+            <input class="form-control" type="email" id="email" name="email" 
+            required value="<?php se($email); ?>" />
         </div>
         <div class="mb-3">
             <label class="form-label" for="username">Username</label>
@@ -28,7 +30,7 @@ reset_session();
     function validate(form) {
         //TODO 1: implement JavaScript validation
         //ensure it returns false for an error and true for success
-
+        
         return true;
     }
 </script>
