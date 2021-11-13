@@ -175,12 +175,15 @@ function get_or_create_account()
                 $stmt = $db->prepare($query);
                 $user_id = get_user_id(); //caching a reference
                 $account_number = "";
+                $aid = -1;
                 while (!$created) {
                     try {
                         $account_number = get_random_str(12);
                         $stmt->execute([":an" => $account_number, ":uid" => $user_id]);
                         $created = true; //if we got here it was a success, let's exit
+                        $aid = $db->lastInsertId();
                         flash("Welcome! Your account has been created successfully", "success");
+                        change_bills(10, "welcome", -1, $aid, "Welcome bonus!");
                     } catch (PDOException $e) {
                         $code = se($e->errorInfo, 0, "00000", false);
                         //if it's a duplicate error, just let the loop happen
@@ -194,7 +197,7 @@ function get_or_create_account()
                     }
                 }
                 //loop exited, let's assign the new values
-                $account["id"] = $db->lastInsertId();
+                $account["id"] = $aid;
                 $account["account_number"] = $account_number;
             } else {
                 //$account = $result; //just copy it over
@@ -206,6 +209,9 @@ function get_or_create_account()
             flash("Technical error: " . var_export($e->errorInfo, true), "danger");
         }
         $_SESSION["user"]["account"] = $account; //storing the account info as a key under the user session
+        if (isset($created) && $created) {
+            refresh_account_balance();
+        }
         //Note: if there's an error it'll initialize to the "empty" definition around line 161
 
     } else {
@@ -317,4 +323,57 @@ function inputMap($fieldType)
         return "number";
     }
     return "text"; //default
+}
+
+/**
+ * Points should be passed as a positive value.
+ * $src should be where the points are coming from
+ * $dest should be where the points are going
+ */
+function change_bills($bills, $reason, $src = -1, $dest = -1, $memo = "")
+{
+    //I'm choosing to ignore the record of 0 point transactions
+    if ($bills > 0) {
+        $query = "INSERT INTO BGD_Bills_History (src, dest, diff, reason, memo) 
+            VALUES (:acs, :acd, :pc, :r,:m), 
+            (:acs2, :acd2, :pc2, :r, :m)";
+        //I'll insert both records at once, note the placeholders kept the same and the ones changed.
+        $params[":acs"] = $src;
+        $params[":acd"] = $dest;
+        $params[":r"] = $reason;
+        $params[":m"] = $memo;
+        $params[":pc"] = ($bills * -1);
+
+        $params[":acs2"] = $dest;
+        $params[":acd2"] = $src;
+        $params[":pc2"] = $bills;
+        $db = getDB();
+        $stmt = $db->prepare($query);
+        try {
+            $stmt->execute($params);
+            //Only refresh the balance of the user if the logged in user's account is part of the transfer
+            //this is needed so future features don't waste time/resources or potentially cause an error when a calculation
+            //occurs without a logged in user
+            if ($src === get_user_account_id() || $dest === get_user_account_id()) {
+                refresh_account_balance();
+            }
+        } catch (PDOException $e) {
+            flash("Transfer error occurred: " . var_export($e->errorInfo, true), "danger");
+        }
+    }
+}
+function refresh_account_balance()
+{
+    if (is_logged_in()) {
+        //cache account balance via BGD_Bills_History history
+        $query = "UPDATE BGD_Accounts set balance = (SELECT IFNULL(SUM(diff), 0) from BGD_Bills_History WHERE src = :src) where id = :src";
+        $db = getDB();
+        $stmt = $db->prepare($query);
+        try {
+            $stmt->execute([":src" => get_user_account_id()]);
+            get_or_create_account(); //refresh session data
+        } catch (PDOException $e) {
+            flash("Error refreshing account: " . var_export($e->errorInfo, true), "danger");
+        }
+    }
 }
