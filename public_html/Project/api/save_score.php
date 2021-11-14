@@ -21,8 +21,16 @@ if (isset($data["score"]) && isset($data["data"]) && isset($data["nonce"])) {
         $reject = true;
     }
     unset($_SESSION["nonce"]);
+    require_once(__DIR__ . "/../../../lib/functions.php");
+    $user_id = get_user_id();
+    if ($user_id <= 0) {
+        $reject = true;
+        error_log("User not logged in");
+        http_response_code(403);
+        $response["message"] = "You must be logged in to save your score";
+        flash($response["message"], "warning");
+    }
     if (!$reject) {
-        require_once(__DIR__ . "/../../../lib/functions.php");
         $score = (int)se($data, "score", 0, false);
         $calced = 0;
         $data = $data["data"]; //anti-cheating
@@ -66,7 +74,7 @@ if (isset($data["score"]) && isset($data["data"]) && isset($data["nonce"])) {
         }
         if (!$reject) {
             http_response_code(200);
-            $user_id = get_user_id();
+            
             save_score($score, $user_id, true);
             //purchase feature to pay to earn points (free play doesn't earn)
             if (se($_SESSION, "gen_points", false, false)) {
