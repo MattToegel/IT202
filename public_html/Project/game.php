@@ -12,6 +12,7 @@ require(__DIR__ . "/../../partials/nav.php");
     var canvas = document.getElementsByTagName("canvas")[0];
     var context = canvas.getContext("2d");
     let img = document.getElementsByTagName("img")[0];
+
     //mouse position
     let mp = {
         x: 0,
@@ -53,13 +54,17 @@ require(__DIR__ . "/../../partials/nav.php");
         score: 0,
         maxTime: 60,
         timeRemaining: 60,
+        //use php session data to populate duck value (potential shop upgrade)
+        duckValue: <?php se($_SESSION, "duck_value", 0); ?> || 10,
         allowPiercingShots: true,
         bouncyProjectiles: true,
         isPlaying: false,
         oldTimeStamp: 0,
         maxDist: 8500,
         projectiles: [],
-        ducks: []
+        ducks: [],
+        projectileCount: 0,
+        sessionData: []
     }
     let fps;
     //position/dimensions for start button (on start screen)
@@ -273,8 +278,23 @@ require(__DIR__ . "/../../partials/nav.php");
     const gameOver = () => {
         if (gameData.score > 0 && gameData.timeRemaining <= 0) {
             //TODO save examples
-            let example = 2;
+            let example = 3;
 
+            <?php
+            //used to prevent duplicate game session data
+            $_SESSION["nonce"] = get_random_str(6);
+            ?>
+            let sd = [];
+            //convert the map to an array
+            for (let key in gameData.sessionData) {
+                sd.push(gameData.sessionData[key]);
+            }
+            let data = {
+                score: gameData.score,
+                nonce: "<?php echo $_SESSION["nonce"]; ?>", //the php will echo the value so the JS will have it as if we hard coded it
+                data: sd
+            }
+            gameData.sessionData = []; //reset
             if (example === 1) {
                 //original way
                 let http = new XMLHttpRequest();
@@ -283,29 +303,66 @@ require(__DIR__ . "/../../partials/nav.php");
                         let data = JSON.parse(http.responseText);
                         console.log("received data", data);
                         console.log("Saved score");
+                        window.location.reload(); //lazily reloading the page to get a new nonce for next game
                     }
                 }
                 http.open("POST", "api/save_score.php", true);
-                http.send(`score=${gameData.score}`);
+                //Convert a simple object to query params
+                {
+                    //examples to convert data to query string parameters (used for XMLHttpRequest send)
+                    //https://howchoo.com/javascript/how-to-turn-an-object-into-query-string-parameters-in-javascript
+                    let query = null;
+                    //ES6
+                    query = Object.keys(data).map(key => key + '=' + data[key]).join('&');
+                    console.log("query1", query);
+                    //ES5
+                    query = Object.keys(data).map(function(key) {
+                        return key + '=' + data[key]
+                    }).join('&');
+                    console.log("query2", query);
+                    //jQuery
+                    if ($) {
+                        query = $.param(data);
+                        console.log("query3", query);
+                    }
+                    //Note: I don't need the above query param stuff since my data is too complex for a form submit
+                    //so I need to use JSON instead
+                }
+                http.setRequestHeader('Content-Type', 'application/json');
+                http.send(JSON.stringify({
+                    "data": data
+                }));
             } else if (example === 2) {
                 //fetch api way
                 fetch("api/save_score.php", {
                     method: "POST",
                     headers: {
-                        "Content-type": "application/x-www-form-urlencoded",
+                        "Content-type": "application/json",
                         "X-Requested-With": "XMLHttpRequest",
                     },
                     body: JSON.stringify({
-                        score: gameData.score,
-                        //TODO pass game state for validation (anti-cheating)
+                        "data": data
                     })
                 }).then(async res => {
                     let data = await res.json();
                     console.log("received data", data);
                     console.log("saved score");
+                    window.location.reload(); //lazily reloading the page to get a new nonce for next game
                 })
             } else if (example === 3) {
-                //TBD jQuery way
+                //jquery way
+                $.ajax({
+                    type: "POST",
+                    url: "api/save_score.php",
+                    contentType: "application/json",
+                    data: JSON.stringify({
+                        data: data
+                    }),
+                    success: (resp, status, xhr) => {
+                        console.log(resp, status, xhr);
+                        window.location.reload(); //lazily reloading the page to get a new nonce for next game
+                    }
+                });
             }
         }
     };
@@ -371,6 +428,8 @@ require(__DIR__ . "/../../partials/nav.php");
         gameData.score = 0;
         gameData.ducks = [];
         gameData.projectiles = [];
+        gameData.projectileCount = 0;
+        gameData.sessionData = [];
         grip.didTrigger = false;
     }
     const calcFPS = () => {
@@ -507,7 +566,7 @@ require(__DIR__ . "/../../partials/nav.php");
                     grip.power = Math.min(grip.release / gameData.maxDist, 1);
                     console.log("launched with power", grip.power);
                     gameData.projectiles[gameData.projectiles.length - 1].launchFrom(start, grip.releasedFrom, grip.power);
-
+                    gameData.projectileCount++;
                     grip.power = 0;
                 }
 
@@ -531,7 +590,17 @@ require(__DIR__ . "/../../partials/nav.php");
                 if (!d.hit && !c.hit && intersect(c.x, c.y, c.r, d.x, d.y, d.r)) {
                     console.log("hit", c, d);
                     d.setHit();
-                    gameData.score += 10;
+                    gameData.score += gameData.duckValue;
+                    //record action for anticheat
+                    if (gameData.sessionData["p_" + gameData.projectileCount]) {
+                        gameData.sessionData["p_" + gameData.projectileCount]["d"]++;
+                    } else {
+                        gameData.sessionData["p_" + gameData.projectileCount] = {
+                            d: 1,
+                            ts: Date.now()
+                        };
+                    }
+                    console.log("session data", gameData.sessionData);
                     if (!gameData.allowPiercingShots) {
                         c.hit = true;
                     }
