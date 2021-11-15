@@ -382,6 +382,7 @@ function save_score($score, $user_id, $showFlash = false)
 {
     if ($user_id < 1) {
         flash("Error saving score, you may not be logged in", "warning");
+        return;
     }
     if ($score <= 0) {
         flash("Scores of zero are not recorded", "warning");

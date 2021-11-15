@@ -123,11 +123,11 @@ require(__DIR__ . "/../../partials/nav.php");
 
                 //draw the hit box (for debugging)
 
-                context.beginPath();
+                /*context.beginPath();
                 context.fillStyle = "yellow";
                 context.arc(this.x, this.y, this.r, 0, 360);
                 context.fill();
-                context.closePath();
+                context.closePath();*/
 
 
                 context.save();
@@ -278,7 +278,7 @@ require(__DIR__ . "/../../partials/nav.php");
     const gameOver = () => {
         if (gameData.score > 0 && gameData.timeRemaining <= 0) {
             //TODO save examples
-            let example = 3;
+            let example = 1;
 
             <?php
             //used to prevent duplicate game session data
@@ -299,10 +299,12 @@ require(__DIR__ . "/../../partials/nav.php");
                 //original way
                 let http = new XMLHttpRequest();
                 http.onreadystatechange = () => {
-                    if (http.readyState == 4 && http.status == 200) {
-                        let data = JSON.parse(http.responseText);
-                        console.log("received data", data);
-                        console.log("Saved score");
+                    if (http.readyState == 4) {
+                        if (http.status === 200) {
+                            let data = JSON.parse(http.responseText);
+                            console.log("received data", data);
+                            console.log("Saved score");
+                        }
                         window.location.reload(); //lazily reloading the page to get a new nonce for next game
                     }
                 }
