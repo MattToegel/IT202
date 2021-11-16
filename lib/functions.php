@@ -357,9 +357,11 @@ function change_bills($bills, $reason, $src = -1, $dest = -1, $memo = "")
             if ($src === get_user_account_id() || $dest === get_user_account_id()) {
                 refresh_account_balance();
             }
+            return true;
         } catch (PDOException $e) {
             flash("Transfer error occurred: " . var_export($e->errorInfo, true), "danger");
         }
+        return false;
     }
 }
 function refresh_account_balance()
@@ -470,4 +472,40 @@ function get_latest_scores($user_id, $limit = 10)
         error_log("Error getting latest $limit scores for user $user_id: " . var_export($e->errorInfo, true));
     }
     return [];
+}
+function add_item($item_id, $user_id, $quantity = 1)
+{
+    if ($item_id <= 0 || $user_id <= 0 || $quantity === 0) {
+        error_log("add_item() Item ID: $item_id, User_id: $user_id, Quantity $quantity");
+        return;
+    }
+    $db = getDB();
+    $stmt = $db->prepare("INSERT INTO BGD_Inventory (item_id, user_id, quantity) VALUES (:iid, :uid, :q) ON DUPLICATE KEY quantity = quantity + :q");
+    try {
+        //if using bindValue, all must be bind value, can't split between this an execute assoc array
+        $stmt->bindValue(":q", PDO::PARAM_INT, $quantity);
+        $stmt->bindValue(":iid", PDO::PARAM_INT, $item_id);
+        $stmt->bindValue(":uid", PDO::PARAM_INT, $user_id);
+        $stmt->execute();
+        return true;
+    } catch (PDOException $e) {
+        error_log("Error adding $quantity of $item_id to user $user_id: " . var_export($e->errorInfo, true));
+    }
+    return false;
+}
+function record_purchase($item_id, $user_id, $quantity)
+{
+    if ($item_id <= 0 || $user_id <= 0 || $quantity === 0) {
+        error_log("record_purchase() Item ID: $item_id, User_id: $user_id, Quantity $quantity");
+        return;
+    }
+    $db = getDB();
+    $stmt = $db->prepare("INSERT INTO BGD_PurchaseHistory (item_id, user_id, quantity) VALUES (:iid, :uid, :q)");
+    try {
+        $stmt->execute([":iid" => $item_id, ":uid" => $user_id, ":q" => $quantity]);
+        return true;
+    } catch (PDOException $e) {
+        error_log("Error recording purchase $quantity of $item_id for user $user_id: " . var_export($e->errorInfo, true));
+    }
+    return false;
 }
