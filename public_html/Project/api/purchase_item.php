@@ -3,8 +3,10 @@
 //any other unexpected characters can break the handling of the response
 $response = ["message" => "There was a problem completing your purchase"];
 http_response_code(400);
+error_log("req: " . var_export($_POST, true));
 if (isset($_POST["item_id"]) && isset($_POST["quantity"]) && isset($_POST["cost"])) {
     require_once(__DIR__ . "/../../../lib/functions.php");
+    session_start();
     $user_id = get_user_id();
     $balance = get_account_balance();
     $item_id = (int)se($_POST, "item_id", 0, false);
@@ -63,7 +65,7 @@ if (isset($_POST["item_id"]) && isset($_POST["quantity"]) && isset($_POST["cost"
             error_log("Problem creating transaction");
         }
     } else {
-        $response["message"] = join(["<div>", "</div>"], $errors);
+        $response["message"] = join("<br>", $errors);
     }
 }
 echo json_encode($response);

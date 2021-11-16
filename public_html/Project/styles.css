@@ -20,3 +20,6 @@ canvas{
 label{
     text-transform: capitalize;
 }
+#flash{
+    position:absolute;
+}
