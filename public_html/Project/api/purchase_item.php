@@ -24,11 +24,13 @@ if (isset($_POST["item_id"]) && isset($_POST["quantity"]) && isset($_POST["cost"
         array_push($errors, "Invalid balance or cost");
         $isValid = false;
     }
-    if ($item_id <= 0) {
+    //I'll have predefined items loaded in at negative values
+    //so I don't need/want this check
+    /*if ($item_id <= 0) {
         //invalid item
         array_push($errors, "Invalid item");
         $isValid = false;
-    }
+    }*/
     if ($quantity <= 0) {
         //invalid quantity
         array_push($errors, "Invalid quantity");
