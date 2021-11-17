@@ -499,16 +499,16 @@ function add_item($item_id, $user_id, $quantity = 1)
     }
     return false;
 }
-function record_purchase($item_id, $user_id, $quantity)
+function record_purchase($item_id, $user_id, $quantity, $cost)
 {
     if ($item_id <= 0 || $user_id <= 0 || $quantity === 0) {
         error_log("record_purchase() Item ID: $item_id, User_id: $user_id, Quantity $quantity");
         return;
     }
     $db = getDB();
-    $stmt = $db->prepare("INSERT INTO BGD_PurchaseHistory (item_id, user_id, quantity) VALUES (:iid, :uid, :q)");
+    $stmt = $db->prepare("INSERT INTO BGD_PurchaseHistory (item_id, user_id, quantity, unit_cost) VALUES (:iid, :uid, :q, :uc)");
     try {
-        $stmt->execute([":iid" => $item_id, ":uid" => $user_id, ":q" => $quantity]);
+        $stmt->execute([":iid" => $item_id, ":uid" => $user_id, ":q" => $quantity, ":uc" => $cost]);
         return true;
     } catch (PDOException $e) {
         error_log("Error recording purchase $quantity of $item_id for user $user_id: " . var_export($e->errorInfo, true));

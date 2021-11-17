@@ -19,7 +19,7 @@ if (isset($_POST["item_id"]) && isset($_POST["quantity"]) && isset($_POST["cost"
         array_push($errors, "Invalid user");
         $isValid = false;
     }
-    if ($balance <= 0 && $cost > 0) {
+    if ($balance <= 0 && $cost >= 0) {
         //not enough funds
         array_push($errors, "Invalid balance or cost");
         $isValid = false;
@@ -36,7 +36,7 @@ if (isset($_POST["item_id"]) && isset($_POST["quantity"]) && isset($_POST["cost"
         array_push($errors, "Invalid quantity");
         $isValid = false;
     }
-    if ($cost > $balance) {
+    if (($cost * $quantity) > $balance) {
         //can't afford
         array_push($errors, "Insufficient funds");
         $isValid = false;
@@ -58,7 +58,7 @@ if (isset($_POST["item_id"]) && isset($_POST["quantity"]) && isset($_POST["cost"
     }
     if ($isValid) {
         if (change_bills($cost * $quantity, "purchase", get_user_account_id(), -1, "Purchased $quantity $name")) {
-            record_purchase($item_id, $user_id, $quantity);
+            record_purchase($item_id, $user_id, $quantity, $cost);
             add_item($item_id, $user_id, $quantity);
             http_response_code(200);
             $response["message"] = "Purchased $quantity of $name";
