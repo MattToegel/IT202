@@ -481,7 +481,8 @@ function get_latest_scores($user_id, $limit = 10)
 function add_item($item_id, $user_id, $quantity = 1)
 {
     error_log("add_item() Item ID: $item_id, User_id: $user_id, Quantity $quantity");
-    if ($item_id <= 0 || $user_id <= 0 || $quantity === 0) {
+    //I'm using negative values for predefined items so I can't validate >= 0 for item_id
+    if (/*$item_id <= 0 ||*/$user_id <= 0 || $quantity === 0) {
         
         return;
     }
@@ -501,7 +502,8 @@ function add_item($item_id, $user_id, $quantity = 1)
 }
 function record_purchase($item_id, $user_id, $quantity, $cost)
 {
-    if ($item_id <= 0 || $user_id <= 0 || $quantity === 0) {
+    //I'm using negative values for predefined items so I can't validate >= 0 for item_id
+    if (/*$item_id <= 0 ||*/$user_id <= 0 || $quantity === 0) {
         error_log("record_purchase() Item ID: $item_id, User_id: $user_id, Quantity $quantity");
         return;
     }

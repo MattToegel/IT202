@@ -102,6 +102,13 @@ try {
                     <div class="card-footer">
                         Cost: <?php se($item, "cost"); ?>
                         <button onclick="purchase('<?php se($item, 'id'); ?>','<?php se($item, 'cost'); ?>')" class="btn btn-primary">Purchase</button>
+                        <!-- example form submit-->
+                        <form action="api/purchase_item.php" method="POST">
+                            <input type="hidden" name="item_id" value="<?php se($item, 'id'); ?>" />
+                            <input type="hidden" name="cost" value="<?php se($item, 'cost'); ?>" />
+                            <input type="hidden" name="quantity" value="1" />
+                            <input type="submit" value="Buy (form)" />
+                        </form>
                     </div>
                 </div>
             </div>

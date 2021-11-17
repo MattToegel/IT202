@@ -20,6 +20,17 @@ function flash(message = "", color = "info") {
         flash.children[0].remove();
         
     }, 3000);
+    //removeit(flash);
+}
+function removeit (flash) {
+    setTimeout(() => {
+        console.log("removing");
+        flash.children[0].remove();
+        if (flash.children.length > 0) {
+            removeit(flash);
+        }
+        
+    }, 3000);
 }
 /**
  * Used in AJAX calls to fetch the $_SESSION balance after a server side change

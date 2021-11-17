@@ -19,7 +19,7 @@ if (isset($_POST["item_id"]) && isset($_POST["quantity"]) && isset($_POST["cost"
         array_push($errors, "Invalid user");
         $isValid = false;
     }
-    if ($balance <= 0 && $cost >= 0) {
+    if ($balance <= 0 || $cost <= 0) {
         //not enough funds
         array_push($errors, "Invalid balance or cost");
         $isValid = false;
