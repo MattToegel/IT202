@@ -40,6 +40,7 @@ require_once(__DIR__ . "/../lib/functions.php");
                 <?php if (is_logged_in()) : ?>
 
                     <li class="nav-item"><a class="nav-link" href="<?php echo get_url('profile.php'); ?>">Profile</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?php echo get_url('shop.php'); ?>">Shop</a></li>
                 <?php endif; ?>
                 <li class="nav-item"><a class="nav-link" href="<?php echo get_url('game.php'); ?>">Play</a></li>
                 <?php if (!is_logged_in()) : ?>
@@ -55,6 +56,17 @@ require_once(__DIR__ . "/../lib/functions.php");
                             <li><a class="dropdown-item" href="<?php echo get_url('admin/create_role.php'); ?>">Create</a></li>
                             <li><a class="dropdown-item" href="<?php echo get_url('admin/list_roles.php'); ?>">List</a></li>
                             <li><a class="dropdown-item" href="<?php echo get_url('admin/assign_roles.php'); ?>">Assign</a></li>
+                        </ul>
+                    </li>
+                <?php endif; ?>
+                <?php if (has_role("Admin")) : ?>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="rolesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Admin Items
+                        </a>
+                        <ul class="dropdown-menu bg-warning" aria-labelledby="rolesDropdown">
+                            <li><a class="dropdown-item" href="<?php echo get_url('admin/add_item.php'); ?>">Create</a></li>
+                            <li><a class="dropdown-item" href="<?php echo get_url('admin/list_items.php'); ?>">List</a></li>
                         </ul>
                     </li>
                 <?php endif; ?>
