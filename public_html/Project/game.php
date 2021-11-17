@@ -3,7 +3,15 @@ require(__DIR__ . "/../../partials/nav.php");
 ?>
 <div class="container-fluid">
     <h1>Ducks Be Gone</h1>
-    <canvas tabindex="1" width="720px" height="720px"></canvas>
+    <div class="row">
+        <div class="col"></div>
+        <div class="col">
+            <canvas tabindex="1" width="720px" height="720px"></canvas>
+        </div>
+        <div class="col">
+            <?php require(__DIR__ . "/../../partials/inventory.php"); ?>
+        </div>
+    </div>
 </div>
 <!-- Need to load an image resource to use it on the Canvas -->
 <img src="duck.png" style="display: none;" />

@@ -41,7 +41,7 @@ if (isset($_POST["item_id"]) && isset($_POST["quantity"]) && isset($_POST["cost"
         array_push($errors, "Insufficient funds");
         $isValid = false;
     }
-    //get true price from DB
+    //get true price from DB, don't trust the client
     $db = getDB();
     $stmt = $db->prepare("SELECT name,cost FROM BGD_Items where id = :id");
     $name = "";

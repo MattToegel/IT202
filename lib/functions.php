@@ -349,16 +349,21 @@ function change_bills($bills, $reason, $src = -1, $dest = -1, $memo = "")
         $params[":pc2"] = $bills;
         $db = getDB();
         $stmt = $db->prepare($query);
+        error_log("Transfering");
         try {
             $stmt->execute($params);
+            error_log("transaction complete");
+            error_log(json_encode(["src" => $src, "dest" => $dest, "user account" => get_user_account_id()]));
             //Only refresh the balance of the user if the logged in user's account is part of the transfer
             //this is needed so future features don't waste time/resources or potentially cause an error when a calculation
             //occurs without a logged in user
-            if ($src === get_user_account_id() || $dest === get_user_account_id()) {
+            if ($src == get_user_account_id() || $dest == get_user_account_id()) {
+                error_log("refreshing account balance");
                 refresh_account_balance();
             }
             return true;
         } catch (PDOException $e) {
+            error_log(var_export($e->errorInfo, true));
             flash("Transfer error occurred: " . var_export($e->errorInfo, true), "danger");
         }
         return false;
