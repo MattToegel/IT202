@@ -480,17 +480,18 @@ function get_latest_scores($user_id, $limit = 10)
 }
 function add_item($item_id, $user_id, $quantity = 1)
 {
+    error_log("add_item() Item ID: $item_id, User_id: $user_id, Quantity $quantity");
     if ($item_id <= 0 || $user_id <= 0 || $quantity === 0) {
-        error_log("add_item() Item ID: $item_id, User_id: $user_id, Quantity $quantity");
+        
         return;
     }
     $db = getDB();
-    $stmt = $db->prepare("INSERT INTO BGD_Inventory (item_id, user_id, quantity) VALUES (:iid, :uid, :q) ON DUPLICATE KEY quantity = quantity + :q");
+    $stmt = $db->prepare("INSERT INTO BGD_Inventory (item_id, user_id, quantity) VALUES (:iid, :uid, :q) ON DUPLICATE KEY UPDATE quantity = quantity + :q");
     try {
         //if using bindValue, all must be bind value, can't split between this an execute assoc array
-        $stmt->bindValue(":q", PDO::PARAM_INT, $quantity);
-        $stmt->bindValue(":iid", PDO::PARAM_INT, $item_id);
-        $stmt->bindValue(":uid", PDO::PARAM_INT, $user_id);
+        $stmt->bindValue(":q", $quantity, PDO::PARAM_INT);
+        $stmt->bindValue(":iid", $item_id, PDO::PARAM_INT);
+        $stmt->bindValue(":uid", $user_id, PDO::PARAM_INT);
         $stmt->execute();
         return true;
     } catch (PDOException $e) {
