@@ -7,5 +7,5 @@ CREATE TABLE IF NOT EXISTS BGD_ActiveEffects(
     modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES Users(id),
     FOREIGN KEY (item_id) REFERENCES BGD_Items(id),
-    UNIQUE KEY (item_id, user_id),
+    UNIQUE KEY (item_id, user_id)
 )

@@ -4,11 +4,11 @@ require(__DIR__ . "/../../partials/nav.php");
 <div class="container-fluid">
     <h1>Ducks Be Gone</h1>
     <div class="row">
-        <div class="col"></div>
-        <div class="col">
+        <div class="col-1"></div>
+        <div class="col-5">
             <canvas tabindex="1" width="720px" height="720px"></canvas>
         </div>
-        <div class="col">
+        <div class="col-6">
             <?php require(__DIR__ . "/../../partials/inventory.php"); ?>
         </div>
     </div>

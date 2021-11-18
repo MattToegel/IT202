@@ -55,3 +55,25 @@ function refreshBalance () {
         console.error('Error:', error);
     });
 }
+
+function activate_item (item, ele) {
+    let fd = new FormData();
+    fd.append("item_id", item);
+    fetch("api/activate_item.php", {
+        method: "POST",
+        //had to not set a Content-Type for this to work
+        //not sure if this is just a local issue or not
+        headers: {
+            "X-Requested-With": "XMLHttpRequest",
+        },
+        body: fd
+    }).then(response => response.json())
+    .then(data => {
+        console.log('Success:', data);
+        ele.parentNode.querySelector(".quantity").innerText = data.remaining || 0
+        
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+}
