@@ -74,8 +74,11 @@ if (isset($data["score"]) && isset($data["data"]) && isset($data["nonce"])) {
         }
         if (!$reject) {
             http_response_code(200);
-            
-            save_score($score, $user_id, true);
+            //2x and 3x score mod logic
+            $mod = (int)se($_SESSION, "score_mod", 1, false);
+            unset($_SESSION["score_mod"]);
+            error_log("Score $score x $mod = " . ($score * $mod));
+            save_score($score * $mod, $user_id, true);
             //purchase feature to pay to earn points (free play doesn't earn)
             if (se($_SESSION, "gen_points", false, false)) {
                 $p = ceil($score / 100);

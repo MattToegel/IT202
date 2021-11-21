@@ -23,3 +23,7 @@ label{
 #flash{
     /*position:absolute;*/
 }
+.scroll-content{
+    height: 70vh;
+    overflow: auto;
+}

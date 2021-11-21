@@ -3,12 +3,11 @@ require(__DIR__ . "/../../partials/nav.php");
 ?>
 <div class="container-fluid">
     <h1>Ducks Be Gone</h1>
-    <div class="row">
-        <div class="col-1"></div>
-        <div class="col-5">
-            <canvas tabindex="1" width="720px" height="720px"></canvas>
+    <div class="row row-cols-2">
+        <div class="col">
+            <canvas tabindex="1" class="w-100 h-auto" width="720px" height="720px"></canvas>
         </div>
-        <div class="col-6">
+        <div class="col scroll-content">
             <?php require(__DIR__ . "/../../partials/inventory.php"); ?>
         </div>
     </div>
@@ -20,7 +19,7 @@ require(__DIR__ . "/../../partials/nav.php");
     var canvas = document.getElementsByTagName("canvas")[0];
     var context = canvas.getContext("2d");
     let img = document.getElementsByTagName("img")[0];
-
+    <?php $_SESSION["ae_nonce"] = get_random_str(6); ?>
     //mouse position
     let mp = {
         x: 0,
@@ -64,8 +63,11 @@ require(__DIR__ . "/../../partials/nav.php");
         timeRemaining: 60,
         //use php session data to populate duck value (potential shop upgrade)
         duckValue: <?php se($_SESSION, "duck_value", 0); ?> || 10,
-        allowPiercingShots: true,
-        bouncyProjectiles: true,
+        //allowPiercingShots: true,
+        //bouncyProjectiles: true,
+        piercingShots: 0,
+        bouncyProjectiles: "none", //"none", "sides", "sides-bottom", "all"
+        calibur: 1,
         isPlaying: false,
         oldTimeStamp: 0,
         maxDist: 8500,
@@ -189,6 +191,7 @@ require(__DIR__ . "/../../partials/nav.php");
             hit: false,
             lifetime: 0,
             launchFrom: function(start, target, power) {
+
                 this.x = start.x + this.r / 2;
                 this.y = start.y;
                 this.dx = start.x - target.x;
@@ -215,9 +218,47 @@ require(__DIR__ . "/../../partials/nav.php");
                     this.x = mp.x; //+this.r/2;
                     this.y = mp.y; //+this.r/2;
                 } else {
-                    if (gameData.bouncyProjectiles) {
-                        if (this.x < 0 || this.x + this.r > canvas.width) {
-                            this.dx *= -1;
+                    //logic for bouncy effects
+                    if (gameData.bouncyProjectiles !== "none") {
+                        if (gameData.bouncyProjectiles.indexOf("side") > -1) {
+                            if (this.x <= 0) {
+                                this.x = 0;
+                                this.dx *= -1;
+                            } else if (this.x + this.r >= canvas.width) {
+                                this.x = canvas.width - this.r;
+                                this.dx *= -1;
+                            }
+                            /* if (this.x < 0 || this.x + this.r >= canvas.width) {
+                                 this.dx *= -1;
+                             }*/
+                        }
+                        if (gameData.bouncyProjectiles.indexOf("bottom") > -1) {
+                            if (this.y + this.r >= canvas.height) {
+                                this.dy *= -1;
+                                this.y = canvas.height - this.r;
+                            }
+                        }
+                        if (gameData.bouncyProjectiles === "all") {
+                            /*if (this.y <= (canvas.height * .1) || this.y + this.r >= canvas.height) {
+                                this.dy *= -1;
+                            }
+                            if (this.x < 0 || this.x + this.r >= canvas.width) {
+                                this.dx *= -1;
+                            }*/
+                            if (this.y + this.r >= canvas.height) {
+                                this.dy *= -1;
+                                this.y = canvas.height - this.r;
+                            } else if (this.y <= (canvas.height * .1)) {
+                                this.y = canvas.height * .1;
+                                this.dy *= -1;
+                            }
+                            if (this.x <= 0) {
+                                this.x = 0;
+                                this.dx *= -1;
+                            } else if (this.x + this.r >= canvas.width) {
+                                this.x = canvas.width - this.r;
+                                this.dx *= -1;
+                            }
                         }
                     }
                     this.x += this.s * this.dx * secondsPassed;
@@ -407,7 +448,10 @@ require(__DIR__ . "/../../partials/nav.php");
             //if the mouse intersected with the handle start the "pull" for the launch
             if (intersect(mp.x, mp.y, 5, start.x, start.y, 10)) {
                 grip.didTrigger = true;
-                let p = makeProjectile(grip.x + 10, grip.y, 10, 5, "blue");
+                //use calibur effect
+                let size = 10;
+                size *= gameData.calibur;
+                let p = makeProjectile(grip.x + (size / 2), grip.y, size, 5, "blue");
                 gameData.projectiles.push(p);
             }
         }
@@ -432,11 +476,101 @@ require(__DIR__ . "/../../partials/nav.php");
             scaledMP(e);
             if (mp.x >= startButton.x && mp.x <= startButton.x + startButton.w &&
                 mp.y >= startButton.y && mp.y <= startButton.y + startButton.h) {
-                resetGame();
-                gameData.isPlaying = true;
+                fetchModifiers();
             }
         }
     });
+    const fetchModifiers = () => {
+        const applyModifiers = (items) => {
+            for (let item of items) {
+                console.log(item);
+                switch (parseInt(item.item_id)) {
+                    /*Server-side
+                    case -1: 
+                        break;
+                    case -2:
+                        break;*/
+                    case -3:
+                        gameData.bouncyProjectiles = "sides";
+                        break;
+                    case -4:
+                        gameData.bouncyProjectiles = "sides-bottom";
+                        break;
+                    case -5:
+                        gameData.bouncyProjectiles = "all";
+                        break;
+                    case -6:
+                        gameData.piercingShots = 1;
+                        break;
+                    case -7:
+                        gameData.piercingShots = 2;
+                        break;
+                    case -8:
+                        gameData.piercingShots = 3;
+                        break;
+                    case -9:
+                        gameData.calibur = 1.25;
+                        break;
+                    case -10:
+                        gameData.calibur = 1.5;
+                        break;
+                    case -11:
+                        gameData.calibur = 1.75;
+                        break;
+                    case -12:
+                        gameData.calibur = 2;
+                        break;
+                    case -13:
+                        gameData.bouncyProjectiles = "sides";
+                    case -14:
+                        gameData.bouncyProjectiles = "all";
+                        console.log("b", gameData);
+                        break;
+                    default:
+                        break;
+                }
+                /*gameData = Object.defineProperty(gameData, "bouncyProjectiles", {
+                    value: gameData.bouncyProjectiles,
+
+                });
+                gameData = Object.defineProperty(gameData, "calibur", {
+                    value: gameData.calibur,
+
+                });
+                gameData = Object.defineProperty(gameData, "piercingShots", {
+                    value: gameData.piercingShots,
+
+                });*/
+                console.log("Effects", gameData);
+            }
+        }
+        //https://stackoverflow.com/a/69941251
+        let data = new FormData();
+        data.append("nonce", "<?php se($_SESSION, "ae_nonce"); ?>");
+        fetch("api/get_and_use_active_items.php", {
+                method: "POST",
+                headers: {
+                    "Content-type": "application/x-www-form-urlencoded",
+                    "X-Requested-With": "XMLHttpRequest",
+                },
+                body: new URLSearchParams(Object.fromEntries(data)),
+            }).then(resp =>
+                resp.json()
+            )
+            .then(data => {
+                console.log("Response", data);
+                applyModifiers(data.active);
+            }).catch(err => {
+                console.log("error", err);
+            }).finally(() => {
+                //regardless of success or error start the game
+                startGame();
+            })
+    }
+    const startGame = () => {
+        resetGame();
+        gameData.isPlaying = true;
+    }
     const resetGame = () => {
         gameData.timeRemaining = gameData.maxTime;
         gameData.score = 0;
@@ -549,8 +683,8 @@ require(__DIR__ . "/../../partials/nav.php");
         //follow mouse if aiming
         if (grip.didTrigger) {
             //magic value 5 for cursor dimensions
-            grip.x = mp.x - 5;
-            grip.y = mp.y - 5;
+            grip.x = mp.x - gameData.projectiles[0].r2;
+            grip.y = mp.y - gameData.projectiles[0].r2;
             let d = distance(grip.x, grip.y, start.x, start.y);
             grip.power = Math.min(d / gameData.maxDist, 1);
         } else {
@@ -615,9 +749,18 @@ require(__DIR__ . "/../../partials/nav.php");
                         };
                     }
                     console.log("session data", gameData.sessionData);
-                    if (!gameData.allowPiercingShots) {
+                    //logic for piercing shots effect
+                    if (gameData.piercingShots > 0) {
+                        c.hits = (c.hits || 0) + 1;
+                        if (c.hits > gameData.piercingShots) {
+                            c.hit = true; //expire bounces
+                        }
+                    } else {
                         c.hit = true;
                     }
+                    /*if (!gameData.allowPiercingShots) {
+                        c.hit = true;
+                    }*/
 
                 }
             }
