@@ -23,11 +23,6 @@ if ($user_id > 0 && isset($_POST["nonce"])) {
             }
         } catch (PDOException $e) {
             error_log("Fetch Active Effects Error: " . var_export($e->errorInfo, true));
-            if ($e->errorInfo[1] === 3819) {
-                http_response_code(404);
-                $response["message"] = "You don't have any of this item remaining";
-                $response["delete"] = $item_id; //tell the UI to remove the item from the grid
-            }
         }
         $useActive = true; //for debugging
 
