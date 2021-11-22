@@ -43,6 +43,8 @@ if ($user_id > 0 && isset($_POST["nonce"])) {
                         $_SESSION["score_mod"] = 2;
                     } else if ($item_id == -2) {
                         $_SESSION["score_mod"] = 3;
+                    } else if ($item_id == -15) {
+                        $_SESSION["gen_points"] = true;
                     }
                 }
                 http_response_code(200);
