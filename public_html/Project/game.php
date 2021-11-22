@@ -3,7 +3,7 @@ require(__DIR__ . "/../../partials/nav.php");
 ?>
 <div class="container-fluid">
     <h1>Ducks Be Gone</h1>
-    <div class="row row-cols-2">
+    <div class="row row-cols-2 game-layout">
         <div class="col">
             <canvas tabindex="1" class="w-100 h-auto" width="720px" height="720px"></canvas>
         </div>
@@ -568,6 +568,8 @@ require(__DIR__ . "/../../partials/nav.php");
             })
     }
     const startGame = () => {
+        document.querySelector(".scroll-content").style.display = "none";
+        document.querySelector(".game-layout").className = "row row-cols-1";
         resetGame();
         gameData.isPlaying = true;
     }
@@ -683,8 +685,9 @@ require(__DIR__ . "/../../partials/nav.php");
         //follow mouse if aiming
         if (grip.didTrigger) {
             //magic value 5 for cursor dimensions
-            grip.x = mp.x - gameData.projectiles[0].r2;
-            grip.y = mp.y - gameData.projectiles[0].r2;
+            let pr2 = 10 * gameData.calibur;
+            grip.x = mp.x - pr2;
+            grip.y = mp.y - pr2;
             let d = distance(grip.x, grip.y, start.x, start.y);
             grip.power = Math.min(d / gameData.maxDist, 1);
         } else {
