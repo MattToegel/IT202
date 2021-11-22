@@ -1,4 +1,4 @@
-function flash(message = "", color = "info") {
+function flash (message = "", color = "info") {
     let flash = document.getElementById("flash");
     //create a div (or whatever wrapper we want)
     let outerDiv = document.createElement("div");
@@ -18,7 +18,7 @@ function flash(message = "", color = "info") {
     setTimeout(() => {
         console.log("removing");
         flash.children[0].remove();
-        
+
     }, 3000);
     //removeit(flash);
 }
@@ -29,7 +29,7 @@ function removeit (flash) {
         if (flash.children.length > 0) {
             removeit(flash);
         }
-        
+
     }, 3000);
 }
 /**
@@ -44,14 +44,37 @@ function refreshBalance () {
             "X-Requested-With": "XMLHttpRequest",
         }
     }).then(response => response.json())
-    .then(data => {
-        console.log('Success:', data);
-        let balances = document.getElementsByClassName("show-balance");
-        for (let b of balances) {
-            b.getElementsByTagName("div")[0].innerText = "Balance: " + (data.balance || 0);
-        }
-    })
-    .catch((error) => {
-        console.error('Error:', error);
-    });
+        .then(data => {
+            console.log('Success:', data);
+            let balances = document.getElementsByClassName("show-balance");
+            for (let b of balances) {
+                b.getElementsByTagName("div")[0].innerText = "Balance: " + (data.balance || 0);
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+}
+
+function activate_item (item, ele) {
+    let fd = new FormData();
+    fd.append("item_id", item);
+    fetch("api/activate_item.php", {
+        method: "POST",
+        //had to not set a Content-Type for this to work
+        //not sure if this is just a local issue or not
+        headers: {
+            "X-Requested-With": "XMLHttpRequest",
+        },
+        body: fd
+    }).then(response => response.json())
+        .then(data => {
+            console.log('Success:', data);
+            ele.parentElement.parentElement.querySelector(".quantity").innerText = data.remaining || 0;
+            //ele.parentNode.querySelector(".quantity").innerText = data.remaining || 0
+
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
 }

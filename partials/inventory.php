@@ -22,15 +22,22 @@ try {
 //store triggered items in a new table (so it persists between page loads and logouts)
 ?>
 <h5>Inventory</h5>
-<div class="row row-cols-1">
+<div class="row row-cols-auto g-4 justify-content-center">
     <?php foreach ($results as $r) : ?>
         <div class="col ">
-            <div class="card bg-dark w-25">
+            <div class="card bg-dark " style="width:153px; height:153px">
                 <div class="card-body">
                     <div class="card-text"><?php se($r, "name"); ?></div>
                 </div>
                 <div class="card-footer">
-                    <?php se($r, "quantity", 0); ?>
+                    <div class="text-center mb-3">
+                        <div class="quantity">
+                            <?php se($r, "quantity", 0); ?>x
+                        </div>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-primary" onclick="activate_item(<?php se($r, 'id'); ?>, this)">Use</button>
+                    </div>
                 </div>
             </div>
         </div>

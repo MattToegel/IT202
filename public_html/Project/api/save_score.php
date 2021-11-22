@@ -36,6 +36,7 @@ if (isset($data["score"]) && isset($data["data"]) && isset($data["nonce"])) {
         $data = $data["data"]; //anti-cheating
         $duck_value = (int)se($_SESSION, "duck_value", 10, false);
         $lastDate = null;
+        $startDate = null;
         $data_count = count($data);
         $duplicate_dates = 0;
         //anti-cheating checks (some TODOs may not be implemented and are there for example as to things you may need to consider)
@@ -45,12 +46,20 @@ if (isset($data["score"]) && isset($data["data"]) && isset($data["nonce"])) {
         //4) TODO: ensure sufficient time elapsed between records
         //5) TODO: pass in location data and validate position trajectory (may be overkill)
         foreach ($data as $r) {
-            $date = DateTime::createFromFormat("U", $r["ts"]);
+            $time = (int)se($r, "ts", 0, false);
+            $time /= 1000;
+            $date = DateTime::createFromFormat("U", floor($time));
             if (!$lastDate || $date >= $lastDate) {
                 if ($date === $lastDate) {
                     $duplicate_dates++;
                 }
-                $lastData = $date;
+                if (!$startDate) {
+                    //Note: technically the best option is to let the server set the start date/time when it fetches the list of effects
+                    //that way it's less likely it can be altered on the client side
+                    $startDate = $date;
+                    error_log("set start date " . var_export($startDate, true));
+                }
+                $lastDate = $date;
                 $ducks = (int)$r["d"];
                 $calced += $ducks * $duck_value;
                 if ($calced > $score) {
@@ -64,23 +73,38 @@ if (isset($data["score"]) && isset($data["data"]) && isset($data["nonce"])) {
                 break;
             }
         }
-        if ($calced != $score) {
-            $reject = true;
-            error_log("Invalid calculated score");
+        if (!$reject) {
+            if ($calced != $score) {
+                $reject = true;
+                error_log("Invalid calculated score");
+            }
+            if ($duplicate_dates >= $data_count) {
+                error_log("Too many duplicate dates");
+                $reject = true;
+            }
+            //https://pretagteam.com/question/get-interval-seconds-between-two-datetime-in-php
+            $seconds = abs($lastDate->getTimestamp() - $startDate->getTimestamp());
+            error_log("last date " . var_export($lastDate, true));
+            error_log("Elapsed seconds $seconds");
+            if ($seconds > 60) {
+                error_log("Modified game duration greater than 60 seconds");
+                $reject = true;
+            }
         }
-        if ($duplicate_dates >= $data_count) {
-            error_log("Too many duplicate dates");
-            $reject = true;
-        }
+        error_log("Rejected " . ($reject ? "true" : "false"));
         if (!$reject) {
             http_response_code(200);
-            
-            save_score($score, $user_id, true);
+            //2x and 3x score mod logic
+            $mod = (int)se($_SESSION, "score_mod", 1, false);
+            unset($_SESSION["score_mod"]);
+            error_log("Score $score x $mod = " . ($score * $mod));
+            save_score($score * $mod, $user_id, true);
             //purchase feature to pay to earn points (free play doesn't earn)
             if (se($_SESSION, "gen_points", false, false)) {
                 $p = ceil($score / 100);
                 unset($_SESSION["gen_points"]); //remove flag
-                change_bills($p, "win", -1, get_account_balance(), "You won $p bills!");
+                change_bills($p, "win", -1, get_user_account_id(), "You won $p bills with a score of $score (" . $mod . "x multiplier)!");
+                flash("You won $p bills!");
                 $response["message"] = "You won $p bills!";
             } else {
                 $response["message"] = "Score Saved!";
@@ -88,6 +112,7 @@ if (isset($data["score"]) && isset($data["data"]) && isset($data["nonce"])) {
             error_log("Score of $score saved successfully for $user_id");
         } else {
             $response["message"] = "AntiCheat Detection Triggered. Score rejected.";
+            flash($response["message"], "danger");
         }
     }
 }
