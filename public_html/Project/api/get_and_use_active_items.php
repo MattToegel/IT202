@@ -35,7 +35,9 @@ if ($user_id > 0 && isset($_POST["nonce"])) {
             error_log("effects " . var_export($activeEffects, true));
             $stmt = $db->prepare($query);
             try {
-                $stmt->execute(array_map(fn ($x) => $x["item_id"], $activeEffects));
+                $params = array_map(fn ($x) => $x["item_id"], $activeEffects);
+                error_log("params " . var_export($params, true));
+                $stmt->execute($params);
                 $response["active"] = $activeEffects;
                 foreach ($activeEffects as $ae) {
                     $item_id = (int)se($ae, "item_id", 0, false);
