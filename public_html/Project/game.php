@@ -3,7 +3,14 @@ require(__DIR__ . "/../../partials/nav.php");
 ?>
 <div class="container-fluid">
     <h1>Ducks Be Gone</h1>
-    <canvas tabindex="1" height="400px"></canvas>
+    <div class="row row-cols-2 game-layout">
+        <div class="col">
+            <canvas tabindex="1" class="w-100 h-auto" width="720px" height="720px"></canvas>
+        </div>
+        <div class="col scroll-content">
+            <?php require(__DIR__ . "/../../partials/inventory.php"); ?>
+        </div>
+    </div>
 </div>
 <!-- Need to load an image resource to use it on the Canvas -->
 <img src="duck.png" style="display: none;" />
@@ -12,6 +19,7 @@ require(__DIR__ . "/../../partials/nav.php");
     var canvas = document.getElementsByTagName("canvas")[0];
     var context = canvas.getContext("2d");
     let img = document.getElementsByTagName("img")[0];
+    <?php $_SESSION["ae_nonce"] = get_random_str(6); ?>
     //mouse position
     let mp = {
         x: 0,
@@ -45,20 +53,28 @@ require(__DIR__ . "/../../partials/nav.php");
     let duckData = {
         bounceModifier: 1.05,
         maxDucks: 20,
-        spawnInterval: 1000
+        spawnInterval: 1000,
+        size: 15
     }
 
     let gameData = {
         score: 0,
         maxTime: 60,
         timeRemaining: 60,
-        allowPiercingShots: true,
-        bouncyProjectiles: true,
+        //use php session data to populate duck value (potential shop upgrade)
+        duckValue: <?php se($_SESSION, "duck_value", 0); ?> || 10,
+        //allowPiercingShots: true,
+        //bouncyProjectiles: true,
+        piercingShots: 0,
+        bouncyProjectiles: "none", //"none", "sides", "sides-bottom", "all"
+        calibur: 1,
         isPlaying: false,
         oldTimeStamp: 0,
         maxDist: 8500,
         projectiles: [],
-        ducks: []
+        ducks: [],
+        projectileCount: 0,
+        sessionData: []
     }
     let fps;
     //position/dimensions for start button (on start screen)
@@ -67,6 +83,17 @@ require(__DIR__ . "/../../partials/nav.php");
         y: canvas.height * .3,
         w: canvas.width * .4,
         h: canvas.height * .1,
+    }
+    //Helps fix resizing of canvas so the width doesn't go beyond the height
+    const applySize = () => {
+        let rect = canvas.getBoundingClientRect(); // abs. size of element
+        let v = Math.ceil(rect.height) + "px"
+        if (rect.width > rect.height) {
+
+            canvas.style.maxWidth = v;
+        }
+        gameData.maxDist = (canvas.width * canvas.width) * .1;
+        console.log("max", gameData.maxDist);
     }
     //defines a duck object
     const makeDuck = (x, y, r, s) => {
@@ -105,13 +132,13 @@ require(__DIR__ . "/../../partials/nav.php");
                 }
 
                 //draw the hit box (for debugging)
-                /*
-                context.beginPath();
+
+                /*context.beginPath();
                 context.fillStyle = "yellow";
                 context.arc(this.x, this.y, this.r, 0, 360);
                 context.fill();
-                context.closePath();
-                */
+                context.closePath();*/
+
 
                 context.save();
                 let d = this.dx * -1;
@@ -123,7 +150,8 @@ require(__DIR__ . "/../../partials/nav.php");
                 context.scale(d, 1);
                 context.translate(-this.x, -this.y);
                 //do the draw
-                context.drawImage(img, this.x - imgDimensions.WQ, this.y - imgDimensions.HQ, imgDimensions.WH, imgDimensions.HH);
+                let off = (this.r * 1.5); //magic value for size of 15, couldn't think of a dynamic formula at the moment
+                context.drawImage(img, this.x - (off), this.y - (off)); //, this.x - imgDimensions.WQ, this.y - imgDimensions.HQ, imgDimensions.WH, imgDimensions.HH);
                 context.restore();
             },
             move: function(secondsPassed) {
@@ -163,6 +191,7 @@ require(__DIR__ . "/../../partials/nav.php");
             hit: false,
             lifetime: 0,
             launchFrom: function(start, target, power) {
+
                 this.x = start.x + this.r / 2;
                 this.y = start.y;
                 this.dx = start.x - target.x;
@@ -189,9 +218,47 @@ require(__DIR__ . "/../../partials/nav.php");
                     this.x = mp.x; //+this.r/2;
                     this.y = mp.y; //+this.r/2;
                 } else {
-                    if (gameData.bouncyProjectiles) {
-                        if (this.x < 0 || this.x + this.r > canvas.width) {
-                            this.dx *= -1;
+                    //logic for bouncy effects
+                    if (gameData.bouncyProjectiles !== "none") {
+                        if (gameData.bouncyProjectiles.indexOf("side") > -1) {
+                            if (this.x <= 0) {
+                                this.x = 0;
+                                this.dx *= -1;
+                            } else if (this.x + this.r >= canvas.width) {
+                                this.x = canvas.width - this.r;
+                                this.dx *= -1;
+                            }
+                            /* if (this.x < 0 || this.x + this.r >= canvas.width) {
+                                 this.dx *= -1;
+                             }*/
+                        }
+                        if (gameData.bouncyProjectiles.indexOf("bottom") > -1) {
+                            if (this.y + this.r >= canvas.height) {
+                                this.dy *= -1;
+                                this.y = canvas.height - this.r;
+                            }
+                        }
+                        if (gameData.bouncyProjectiles === "all") {
+                            /*if (this.y <= (canvas.height * .1) || this.y + this.r >= canvas.height) {
+                                this.dy *= -1;
+                            }
+                            if (this.x < 0 || this.x + this.r >= canvas.width) {
+                                this.dx *= -1;
+                            }*/
+                            if (this.y + this.r >= canvas.height) {
+                                this.dy *= -1;
+                                this.y = canvas.height - this.r;
+                            } else if (this.y <= (canvas.height * .1)) {
+                                this.y = canvas.height * .1;
+                                this.dy *= -1;
+                            }
+                            if (this.x <= 0) {
+                                this.x = 0;
+                                this.dx *= -1;
+                            } else if (this.x + this.r >= canvas.width) {
+                                this.x = canvas.width - this.r;
+                                this.dx *= -1;
+                            }
                         }
                     }
                     this.x += this.s * this.dx * secondsPassed;
@@ -242,7 +309,7 @@ require(__DIR__ . "/../../partials/nav.php");
         let y = (canvas.height * .1 + (Math.random() * canvas.height * .2));
         //random speed between 1 and 11
         let s = 1 + (Math.random() + 10);
-        let d = makeDuck(x, y, 10, s);
+        let d = makeDuck(x, y, duckData.size, s);
         d.thinker();
         gameData.ducks.push(d);
     }, duckData.spawnInterval);
@@ -260,43 +327,102 @@ require(__DIR__ . "/../../partials/nav.php");
     const gameOver = () => {
         if (gameData.score > 0 && gameData.timeRemaining <= 0) {
             //TODO save examples
-            let example = 2;
+            let example = 1;
 
+            <?php
+            //used to prevent duplicate game session data
+            $_SESSION["nonce"] = get_random_str(6);
+            ?>
+            let sd = [];
+            //convert the map to an array
+            for (let key in gameData.sessionData) {
+                sd.push(gameData.sessionData[key]);
+            }
+            let data = {
+                score: gameData.score,
+                nonce: "<?php echo $_SESSION["nonce"]; ?>", //the php will echo the value so the JS will have it as if we hard coded it
+                data: sd
+            }
+            gameData.sessionData = []; //reset
             if (example === 1) {
                 //original way
                 let http = new XMLHttpRequest();
                 http.onreadystatechange = () => {
-                    if (http.readyState == 4 && http.status == 200) {
-                        let data = JSON.parse(http.responseText);
-                        console.log("received data", data);
-                        console.log("Saved score");
+                    if (http.readyState == 4) {
+                        if (http.status === 200) {
+                            let data = JSON.parse(http.responseText);
+                            console.log("received data", data);
+                            console.log("Saved score");
+                        }
+                        window.location.reload(); //lazily reloading the page to get a new nonce for next game
                     }
                 }
                 http.open("POST", "api/save_score.php", true);
-                http.send(`score=${gameData.score}`);
+                //Convert a simple object to query params
+                {
+                    //examples to convert data to query string parameters (used for XMLHttpRequest send)
+                    //https://howchoo.com/javascript/how-to-turn-an-object-into-query-string-parameters-in-javascript
+                    let query = null;
+                    //ES6
+                    query = Object.keys(data).map(key => key + '=' + data[key]).join('&');
+                    console.log("query1", query);
+                    //ES5
+                    query = Object.keys(data).map(function(key) {
+                        return key + '=' + data[key]
+                    }).join('&');
+                    console.log("query2", query);
+                    //jQuery
+                    if ($) {
+                        query = $.param(data);
+                        console.log("query3", query);
+                    }
+                    //Note: I don't need the above query param stuff since my data is too complex for a form submit
+                    //so I need to use JSON instead
+                }
+                http.setRequestHeader('Content-Type', 'application/json');
+                http.send(JSON.stringify({
+                    "data": data
+                }));
             } else if (example === 2) {
                 //fetch api way
                 fetch("api/save_score.php", {
                     method: "POST",
                     headers: {
-                        "Content-type": "application/x-www-form-urlencoded",
+                        "Content-type": "application/json",
                         "X-Requested-With": "XMLHttpRequest",
                     },
                     body: JSON.stringify({
-                        score: gameData.score,
-                        //TODO pass game state for validation (anti-cheating)
+                        "data": data
                     })
                 }).then(async res => {
                     let data = await res.json();
                     console.log("received data", data);
                     console.log("saved score");
+                    window.location.reload(); //lazily reloading the page to get a new nonce for next game
                 })
             } else if (example === 3) {
-                //TBD jQuery way
+                //jquery way
+                $.ajax({
+                    type: "POST",
+                    url: "api/save_score.php",
+                    contentType: "application/json",
+                    data: JSON.stringify({
+                        data: data
+                    }),
+                    success: (resp, status, xhr) => {
+                        console.log(resp, status, xhr);
+                        window.location.reload(); //lazily reloading the page to get a new nonce for next game
+                    },
+                    error: (xhr, status, error) => {
+                        console.log(xhr, status, error);
+                        window.location.reload();
+                    }
+                });
             }
         }
     };
     window.addEventListener("load", () => {
+        applySize();
         start = Object.freeze({
             x: canvas.width / 2, //center
             y: canvas.height * .7 //70% of canvas
@@ -322,7 +448,10 @@ require(__DIR__ . "/../../partials/nav.php");
             //if the mouse intersected with the handle start the "pull" for the launch
             if (intersect(mp.x, mp.y, 5, start.x, start.y, 10)) {
                 grip.didTrigger = true;
-                let p = makeProjectile(grip.x + 10, grip.y, 10, 5, "blue");
+                //use calibur effect
+                let size = 10;
+                size *= gameData.calibur;
+                let p = makeProjectile(grip.x + (size / 2), grip.y, size, 5, "blue");
                 gameData.projectiles.push(p);
             }
         }
@@ -337,6 +466,8 @@ require(__DIR__ . "/../../partials/nav.php");
         mp.y = (e.clientY - rect.top) * scaleY;
 
     }
+    window.addEventListener("resize", applySize)
+
     window.addEventListener("mouseleave", release);
     window.addEventListener("mouseup", release);
     window.addEventListener("mousedown", (e) => {
@@ -345,16 +476,110 @@ require(__DIR__ . "/../../partials/nav.php");
             scaledMP(e);
             if (mp.x >= startButton.x && mp.x <= startButton.x + startButton.w &&
                 mp.y >= startButton.y && mp.y <= startButton.y + startButton.h) {
-                resetGame();
-                gameData.isPlaying = true;
+                fetchModifiers();
             }
         }
     });
+    const fetchModifiers = () => {
+        const applyModifiers = (items) => {
+            for (let item of items) {
+                console.log(item);
+                switch (parseInt(item.item_id)) {
+                    /*Server-side
+                    case -1: 
+                        break;
+                    case -2:
+                        break;*/
+                    case -3:
+                        gameData.bouncyProjectiles = "sides";
+                        break;
+                    case -4:
+                        gameData.bouncyProjectiles = "sides-bottom";
+                        break;
+                    case -5:
+                        gameData.bouncyProjectiles = "all";
+                        break;
+                    case -6:
+                        gameData.piercingShots = 1;
+                        break;
+                    case -7:
+                        gameData.piercingShots = 2;
+                        break;
+                    case -8:
+                        gameData.piercingShots = 3;
+                        break;
+                    case -9:
+                        gameData.calibur = 1.25;
+                        break;
+                    case -10:
+                        gameData.calibur = 1.5;
+                        break;
+                    case -11:
+                        gameData.calibur = 1.75;
+                        break;
+                    case -12:
+                        gameData.calibur = 2;
+                        break;
+                    case -13:
+                        gameData.bouncyProjectiles = "sides";
+                    case -14:
+                        gameData.bouncyProjectiles = "all";
+                        console.log("b", gameData);
+                        break;
+                    default:
+                        break;
+                }
+                /*gameData = Object.defineProperty(gameData, "bouncyProjectiles", {
+                    value: gameData.bouncyProjectiles,
+
+                });
+                gameData = Object.defineProperty(gameData, "calibur", {
+                    value: gameData.calibur,
+
+                });
+                gameData = Object.defineProperty(gameData, "piercingShots", {
+                    value: gameData.piercingShots,
+
+                });*/
+                console.log("Effects", gameData);
+            }
+        }
+        //https://stackoverflow.com/a/69941251
+        let data = new FormData();
+        data.append("nonce", "<?php se($_SESSION, "ae_nonce"); ?>");
+        fetch("api/get_and_use_active_items.php", {
+                method: "POST",
+                headers: {
+                    "Content-type": "application/x-www-form-urlencoded",
+                    "X-Requested-With": "XMLHttpRequest",
+                },
+                body: new URLSearchParams(Object.fromEntries(data)),
+            }).then(resp =>
+                resp.json()
+            )
+            .then(data => {
+                console.log("Response", data);
+                applyModifiers(data.active);
+            }).catch(err => {
+                console.log("error", err);
+            }).finally(() => {
+                //regardless of success or error start the game
+                startGame();
+            })
+    }
+    const startGame = () => {
+        document.querySelector(".scroll-content").style.display = "none";
+        document.querySelector(".game-layout").className = "row row-cols-1";
+        resetGame();
+        gameData.isPlaying = true;
+    }
     const resetGame = () => {
         gameData.timeRemaining = gameData.maxTime;
         gameData.score = 0;
         gameData.ducks = [];
         gameData.projectiles = [];
+        gameData.projectileCount = 0;
+        gameData.sessionData = [];
         grip.didTrigger = false;
     }
     const calcFPS = () => {
@@ -460,8 +685,9 @@ require(__DIR__ . "/../../partials/nav.php");
         //follow mouse if aiming
         if (grip.didTrigger) {
             //magic value 5 for cursor dimensions
-            grip.x = mp.x - 5;
-            grip.y = mp.y - 5;
+            let pr2 = 10 * gameData.calibur;
+            grip.x = mp.x - pr2;
+            grip.y = mp.y - pr2;
             let d = distance(grip.x, grip.y, start.x, start.y);
             grip.power = Math.min(d / gameData.maxDist, 1);
         } else {
@@ -491,7 +717,7 @@ require(__DIR__ . "/../../partials/nav.php");
                     grip.power = Math.min(grip.release / gameData.maxDist, 1);
                     console.log("launched with power", grip.power);
                     gameData.projectiles[gameData.projectiles.length - 1].launchFrom(start, grip.releasedFrom, grip.power);
-
+                    gameData.projectileCount++;
                     grip.power = 0;
                 }
 
@@ -515,10 +741,29 @@ require(__DIR__ . "/../../partials/nav.php");
                 if (!d.hit && !c.hit && intersect(c.x, c.y, c.r, d.x, d.y, d.r)) {
                     console.log("hit", c, d);
                     d.setHit();
-                    gameData.score += 10;
-                    if (!gameData.allowPiercingShots) {
+                    gameData.score += gameData.duckValue;
+                    //record action for anticheat
+                    if (gameData.sessionData["p_" + gameData.projectileCount]) {
+                        gameData.sessionData["p_" + gameData.projectileCount]["d"]++;
+                    } else {
+                        gameData.sessionData["p_" + gameData.projectileCount] = {
+                            d: 1,
+                            ts: Date.now()
+                        };
+                    }
+                    console.log("session data", gameData.sessionData);
+                    //logic for piercing shots effect
+                    if (gameData.piercingShots > 0) {
+                        c.hits = (c.hits || 0) + 1;
+                        if (c.hits > gameData.piercingShots) {
+                            c.hit = true; //expire bounces
+                        }
+                    } else {
                         c.hit = true;
                     }
+                    /*if (!gameData.allowPiercingShots) {
+                        c.hit = true;
+                    }*/
 
                 }
             }
@@ -533,8 +778,12 @@ require(__DIR__ . "/../../partials/nav.php");
     }
 
     canvas {
-        width: 80%;
+        /*width: 100%;
+        height: 100%;
+        max-height: 80vh;*/
+        width: 80vw;
         max-height: 80vh;
+
         display: block;
         border: 1px solid black;
         margin-left: auto;
