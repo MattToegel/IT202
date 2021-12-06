@@ -78,6 +78,18 @@ require_once(__DIR__ . "/../lib/functions.php");
                         </a>
                         <ul class="dropdown-menu bg-warning" aria-labelledby="rolesDropdown">
                             <li><a class="dropdown-item" href="<?php echo get_url('admin/give_bills.php'); ?>">Give Bills</a></li>
+                            <li><a class="dropdown-item" href="<?php echo get_url('admin/calc_winners.php'); ?>">Calc Winners</a></li>
+                        </ul>
+                    </li>
+                <?php endif; ?>
+                <?php if (is_logged_in()) : ?>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="rolesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Competitions
+                        </a>
+                        <ul class="dropdown-menu bg-warning" aria-labelledby="rolesDropdown">
+                            <li><a class="dropdown-item" href="<?php echo get_url('create_competition.php'); ?>">Create</a></li>
+                            <li><a class="dropdown-item" href="<?php echo get_url('list_competitions.php'); ?>">Active</a></li>
                         </ul>
                     </li>
                 <?php endif; ?>
