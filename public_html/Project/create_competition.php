@@ -60,6 +60,10 @@ if (isset($_POST["title"]) && !empty($_POST["title"])) {
             <input id="ms" name="min_score" type="number" class="form-control" placeholder=">= 1" min="1" />
         </div>
         <div class="mb-3">
+            <label for="mp" class="form-label">Min. Participants</label>
+            <input id="mp" name="min_participants" type="number" class="form-control" placeholder=">= 3" min="3" />
+        </div>
+        <div class="mb-3">
             <label for="jc" class="form-label">Join Cost</label>
             <input id="jc" name="join_cost" type="number" class="form-control" onchange="updateCost()" placeholder=">= 0" min="0" />
         </div>

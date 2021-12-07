@@ -639,12 +639,38 @@ function elog($data)
     echo "<br>" . var_export($data, true) . "<br>";
     error_log(var_export($data, true));
 }
-function calc_winners($echo = false)
+
+function get_top_scores_for_comp($comp_id, $limit = 10)
+{
+    $db = getDB();
+    $stmt = $db->prepare("SELECT score, s.created, username, u.id as user_id FROM BGD_Scores s 
+    JOIN BGD_UserComps uc on uc.user_id = s.user_id 
+    JOIN BGD_Competitions c on c.id = uc.competition_id
+    JOIN Users u on u.id = s.user_id WHERE c.id = :cid AND s.created 
+    BETWEEN uc.created AND c.expires ORDER BY s.score desc LIMIT :limit");
+    $scores = [];
+    try {
+        $stmt->bindValue(":cid", $comp_id, PDO::PARAM_INT);
+        $stmt->bindValue(":limit", $limit, PDO::PARAM_INT);
+        $stmt->execute();
+        $r = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        if ($r) {
+            $scores = $r;
+        }
+    } catch (PDOException $e) {
+        flash("There was a problem fetching scores, please try again later", "danger");
+        error_log("List competition scores error: " . var_export($e, true));
+    }
+    return $scores;
+}
+function calc_winners()
 {
     $db = getDB();
     elog("Starting winner calc");
     $calced_comps = [];
-    $stmt = $db->prepare("select c.id,c.title, first_place, second_place, third_place, current_reward from BGD_Competitions c JOIN BGD_Payout_Options po on c.payout_option = po.id where expires <= CURRENT_TIMESTAMP() AND did_calc = 0 AND current_participants >= min_participants LIMIT 10");
+    $stmt = $db->prepare("select c.id,c.title, first_place, second_place, third_place, current_reward 
+    from BGD_Competitions c JOIN BGD_Payout_Options po on c.payout_option = po.id 
+    where expires <= CURRENT_TIMESTAMP() AND did_calc = 0 AND current_participants >= min_participants LIMIT 10");
     try {
         $stmt->execute();
         $r = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -661,13 +687,9 @@ function calc_winners($echo = false)
                 $spr = ceil($reward * $sp);
                 $tpr = ceil($reward * $tp);
                 $comp_id = se($row, "id", -1, false);
-                $stmt = $db->prepare("SELECT score, s.user_id, a.id as account_id FROM BGD_Scores s 
-                JOIN BGD_Accounts a on a.user_id = s.user_id
-                JOIN BGD_UserComps uc on uc.user_id = s.user_id 
-                JOIN BGD_Competition c on c.id = uc.competition_id WHERE uc.competition_id = :cid AND s.created BETWEEN uc.created AND c.expires ORDER by score desc LIMIT 3");
+                
                 try {
-                    $stmt->execute([":cid" => $comp_id]);
-                    $r = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    $r = get_top_scores_for_comp($comp_id, 3);
                     if ($r) {
                         $atleastOne = false;
                         foreach ($r as $index => $row) {
@@ -724,7 +746,7 @@ function calc_winners($echo = false)
         elog("No competitions to calc");
     }
     //close invalid comps
-    $stmt = $db->prepare("UPDATE BGD_Competitions set did_calc = 1 WHERE expires <= CURRENT_TIMESTAMPS() AND current_participants < min_participants AND did_calc = 0");
+    $stmt = $db->prepare("UPDATE BGD_Competitions set did_calc = 1 WHERE expires <= CURRENT_TIMESTAMP() AND current_participants < min_participants AND did_calc = 0");
     try {
         $stmt->execute();
         $rows = $stmt->rowCount();
