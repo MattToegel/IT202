@@ -10,7 +10,37 @@ if (isset($_POST["join"])) {
     $balance = get_account_balance();
     if ($comp_id > 0) {
         if ($balance >= $cost) {
-            join_competition($comp_id, $user_id);
+            $db = getDB();
+            //always validate from the source of truth (the db)
+            $stmt = $db->prepare("SELECT join_cost, title FROM BGD_Competitions where id = :id");
+            try {
+                $stmt->execute([":id" => $comp_id]);
+                $r = $stmt->fetch(PDO::FETCH_ASSOC);
+                if ($r) {
+                    $name = se($r, "title", "N/A", false);
+                    $cost = (int)se($r, "join_cost", 0, false);
+                    if ($balance >= $cost) {
+                        $db->beginTransaction();
+                        if (change_bills($cost, "join-comp", get_user_account_id(), -1, "Join Competition $name")) {
+                            if (join_competition($comp_id, $user_id)) {
+                                flash("Successfully joined competition $name", "success");
+                                $db->commit();
+                            } else {
+                                flash("Error joining $name", "danger");
+                                $db->rollback();
+                            }
+                        } else {
+                            flash("There was a problem deducting points", "danger");
+                            $db->rollback();
+                        }
+                    } else {
+                        flash("You can't afford to join this competition", "warning");
+                    }
+                }
+            } catch (PDOException $e) {
+                error_log("Comp lookup error: " . var_export($e, true));
+                flash("There was a problem joining the competition", "warning");
+            }
         } else {
             flash("You can't afford to join this competition", "warning");
         }
@@ -19,11 +49,15 @@ if (isset($_POST["join"])) {
     }
 }
 $per_page = 5;
-paginate("SELECT count(1) as total FROM BGD_Competitions WHERE xpires > current_timestamp() AND did_payout < 1 AND did_calc < 1");
+paginate("SELECT count(1) as total FROM BGD_Competitions WHERE expires > current_timestamp() AND did_payout < 1 AND did_calc < 1");
 //handle page load
+//TODO fix join
 $stmt = $db->prepare("SELECT BGD_Competitions.id, title, min_participants, current_participants, current_reward, expires, creator_id, min_score, join_cost, IF(competition_id is null, 0, 1) as joined,  CONCAT(first_place,'% - ', second_place, '% - ', third_place, '%') as place FROM BGD_Competitions
 JOIN BGD_Payout_Options on BGD_Payout_Options.id = BGD_Competitions.payout_option
-LEFT JOIN BGD_UserComps on BGD_UserComps.competition_id = BGD_Competitions.id WHERE user_id = :uid AND expires > current_timestamp() AND did_payout < 1 AND did_calc < 1 ORDER BY expires desc");
+LEFT JOIN (SELECT * FROM BGD_UserComps WHERE user_id = :uid) as uc ON uc.competition_id = BGD_Competitions.id WHERE expires > current_timestamp() AND did_payout < 1 AND did_calc < 1 ORDER BY expires desc");
+/*$stmt = $db->prepare("SELECT BGD_Competitions.id, title, min_participants, current_participants, current_reward, expires, creator_id, min_score, join_cost, IF(competition_id is null, 0, 1) as joined,  CONCAT(first_place,'% - ', second_place, '% - ', third_place, '%') as place FROM BGD_Competitions
+JOIN BGD_Payout_Options on BGD_Payout_Options.id = BGD_Competitions.payout_option
+LEFT JOIN BGD_UserComps on BGD_UserComps.competition_id = BGD_Competitions.id WHERE user_id = :uid AND expires > current_timestamp() AND did_payout < 1 AND did_calc < 1 ORDER BY expires desc");*/
 $results = [];
 try {
     $stmt->execute([":uid" => get_user_id()]);
@@ -35,20 +69,6 @@ try {
     flash("There was a problem fetching competitions, please try again later", "danger");
     error_log("List competitions error: " . var_export($e, true));
 }
-/*
-title varchar(240) not null,
-    min_participants int DEFAULT 3,
-    current_participants int default 0,
-    payout_option int,
-    starting_reward int DEFAULT 1,
-    current_reward int DEFAULT 1,
-    did_calc TINYINT(1) DEFAULT 0,
-    did_payout tinyint(1) DEFAULT 0,
-    duration int default 3,
-    creator_id int,
-    min_score int DEFAULT 1,
-    expires TIMESTAMP DEFAULT (DATE_ADD(CURRENT_TIMESTAMP, INTERVAL duration DAY)),
-*/
 ?>
 <div class="container-fluid">
     <h1>List Competitions</h1>
@@ -64,27 +84,29 @@ title varchar(240) not null,
         <tbody>
             <?php if (count($results) > 0) : ?>
                 <?php foreach ($results as $row) : ?>
-                    <td><?php se($row, "title"); ?></td>
-                    <td><?php se($row, "current_participants"); ?>/<?php se($row, "min_participants"); ?></td>
-                    <td><?php se($row, "current_reward"); ?><br>Payout: <?php se($row, "place", "-"); ?></td>
-                    <td><?php se($row, "min_score"); ?></td>
-                    <td><?php se($row, "expires", "-"); ?></td>
-                    <td>
-                        <?php if (se($row, "joined", 0, false)) : ?>
-                            <button class="btn btn-primary disabled" onclick="event.preventDefault()" disabled>Already Joined</button>
-                        <?php else : ?>
-                            <form method="POST">
-                                <input type="hidden" name="comp_id" value="<?php se($row, 'id'); ?>" />
-                                <input type="hidden" name="cost" value="<?php se($row, 'join_cost', 0); ?>" />
-                                <input type="submit" name="join" class="btn btn-primary" value="Join (Cost: <?php se($row, "join_cost", 0) ?>)" />
-                            </form>
-                        <?php endif; ?>
-                        <a class="btn btn-secondary" href="view_competition.php?id=<?php se($row, 'id'); ?>">View</a>
-                    </td>
+                    <tr>
+                        <td><?php se($row, "title"); ?></td>
+                        <td><?php se($row, "current_participants"); ?>/<?php se($row, "min_participants"); ?></td>
+                        <td><?php se($row, "current_reward"); ?><br>Payout: <?php se($row, "place", "-"); ?></td>
+                        <td><?php se($row, "min_score"); ?></td>
+                        <td><?php se($row, "expires", "-"); ?></td>
+                        <td>
+                            <?php if (se($row, "joined", 0, false)) : ?>
+                                <button class="btn btn-primary disabled" onclick="event.preventDefault()" disabled>Already Joined</button>
+                            <?php else : ?>
+                                <form method="POST">
+                                    <input type="hidden" name="comp_id" value="<?php se($row, 'id'); ?>" />
+                                    <input type="hidden" name="cost" value="<?php se($row, 'join_cost', 0); ?>" />
+                                    <input type="submit" name="join" class="btn btn-primary" value="Join (Cost: <?php se($row, "join_cost", 0) ?>)" />
+                                </form>
+                            <?php endif; ?>
+                            <a class="btn btn-secondary" href="view_competition.php?id=<?php se($row, 'id'); ?>">View</a>
+                        </td>
+                    </tr>
                 <?php endforeach; ?>
             <?php else : ?>
                 <tr>
-                    <td colspan="100%">No active competitins</td>
+                    <td colspan="100%">No active competitions</td>
                 </tr>
             <?php endif; ?>
         </tbody>

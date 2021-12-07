@@ -607,12 +607,14 @@ function elog($data)
     echo "<br>" . var_export($data, true) . "<br>";
     error_log(var_export($data, true));
 }
-function calc_winners($echo = false)
+function calc_winners()
 {
     $db = getDB();
     elog("Starting winner calc");
     $calced_comps = [];
-    $stmt = $db->prepare("select c.id,c.title, first_place, second_place, third_place, current_reward from BGD_Competitions c JOIN BGD_Payout_Options po on c.payout_option = po.id where expires <= CURRENT_TIMESTAMP() AND did_calc = 0 AND current_participants >= min_participants LIMIT 10");
+    $stmt = $db->prepare("select c.id,c.title, first_place, second_place, third_place, current_reward 
+    from BGD_Competitions c JOIN BGD_Payout_Options po on c.payout_option = po.id 
+    where expires <= CURRENT_TIMESTAMP() AND did_calc = 0 AND current_participants >= min_participants LIMIT 10");
     try {
         $stmt->execute();
         $r = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -629,10 +631,13 @@ function calc_winners($echo = false)
                 $spr = ceil($reward * $sp);
                 $tpr = ceil($reward * $tp);
                 $comp_id = se($row, "id", -1, false);
-                $stmt = $db->prepare("SELECT score, s.user_id, a.id as account_id FROM BGD_Scores s 
+                $stmt = $db->prepare(
+                    "SELECT score, s.user_id, a.id as account_id FROM BGD_Scores s 
                 JOIN BGD_Accounts a on a.user_id = s.user_id
                 JOIN BGD_UserComps uc on uc.user_id = s.user_id 
-                JOIN BGD_Competition c on c.id = uc.competition_id WHERE uc.competition_id = :cid AND s.created BETWEEN uc.created AND c.expires ORDER by score desc LIMIT 3");
+                JOIN BGD_Competition c on c.id = uc.competition_id 
+                WHERE uc.competition_id = :cid AND s.created BETWEEN uc.created AND c.expires ORDER by score desc LIMIT 3"
+                );
                 try {
                     $stmt->execute([":cid" => $comp_id]);
                     $r = $stmt->fetchAll(PDO::FETCH_ASSOC);
