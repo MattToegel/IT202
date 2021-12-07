@@ -1,0 +1,14 @@
+<iframe src="https://github.com/hk453/IT202-007/blob/prod/public_html/Project/Proposal.md"></iframe>
+<iframe src="https://api.github.com/repos/hk453/IT202-007/contents/src/blob/prod/public_html/Project/Proposal.md"></iframe>
+
+<iframe id="github-iframe" src=""></iframe>
+<script>
+    fetch('https://api.github.com/repos/hk453/IT202-007/contents/blob/prod/public_html/Project/Proposal.md')
+        .then(function(response) {
+            return response.json();
+        }).then(function(data) {
+            var iframe = document.getElementById('github-iframe');
+            console.log(data);
+            iframe.src = 'data:text/html;base64,' + encodeURIComponent(data['content']);
+        });
+</script>
