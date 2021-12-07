@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Click Speed Test</title>
+<style type="text/css">
+  #content {
+    width: 200px;
+    border: 1px dashed #dc0000;
+    font-size: 20px;
+    text-align: center;
+    margin: 0 auto;
+    margin-top: 50px;
+    padding: 20px;
+    user-select: none;
+  }
+	
+  #clickarea {
+    width: 500px;
+    height : 300px;
+    border: 2px solid #dc0000;
+    font-size: 20px;
+    text-align: center;
+    margin: 0 auto;
+    margin-top: 50px;
+    padding: 20px;
+    position: relative;
+  }
+	
+  #logo {
+    width: 200px;
+    height: 200px;
+    margin: 0 auto;
+    margin-top: 50px;
+    display: block;
+    user-select: none;
+  }
+	
+  #start {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    border: 0;
+    line-height: 2.5;
+    padding: 0 20px;
+    font-size: 1rem;
+    text-align: center;
+    color: #fff;
+    text-shadow: 1px 1px 1px #000;
+    border-radius: 10px;
+    background-color: rgba(220, 0, 0, 1);
+    background-image: linear-gradient(to top left,
+				  rgba(0, 0, 0, .2),
+				  rgba(0, 0, 0, .2) 30%,
+				  rgba(0, 0, 0, 0));
+    box-shadow: inset 2px 2px 3px rgba(255, 255, 255, .6),
+                inset -2px -2px 3px rgba(0, 0, 0, .6);
+  }
+	
+  #start:hover {
+    background-color: rgba(255, 0, 0, 1);
+  }
+	
+  #start:active {
+    box-shadow: inset -2px -2px 3px rgba(255, 255, 255, .6),
+                inset 2px 2px 3px rgba(0, 0, 0, .6);
+  }
+
+</style>
+</head>
+<body>
+  <img id="logo" src="cursor.png" />
+  <div id="content">
+    Timer: <span id="timer"></span><br/>
+    Score: <span id="score"></span><br/>
+    Clicks/s: <span id="clicks"></span>
+  </div>
+  <div id="clickarea">
+    <button id="start">Start</button>
+  </div>
+  <script type="text/javascript">
+    var score; // to store the current score
+    var duration = 10; // 10 seconds
+    var startTime; // start time
+    var ended = true; // boolean indicating if game is ended
+    // we get DOM References for some HTML elements
+    var timerTxt = document.getElementById("timer");
+    var scoreTxt = document.getElementById("score");
+    var clicksTxt = document.getElementById("clicks");
+    var startBtn = document.getElementById("start");
+    var clickArea = document.getElementById("clickarea");
+
+    // we define two functions for showing or hiding a HTML element
+    var show = function(elem) {
+      elem.style.display = 'inline';
+    };
+
+    var hide = function(elem) {
+      elem.style.display = 'none';
+    };
+
+    // Method called when the game starts
+    function startGame() {
+      hide(startBtn);
+      score = -1;
+      ended = false;
+      // we get start time
+      startTime = new Date().getTime();
+
+      // we create a timer with the setInterval method
+      var timerId = setInterval(function() {
+        var total = (new Date().getTime() - startTime) / 1000;
+
+        // while total lower than duration, we update timer and the clicks by seconds
+        if (total < duration) {
+          timerTxt.textContent = total.toFixed(3);
+          clicksTxt.textContent = (score / total).toFixed(2);
+        } else {
+          // otherwise, game is ended, we clear interval and we set game as ended
+          ended = true;
+          clearInterval(timerId);
+          // we call the end game method
+          endGame();
+        }
+      }, 1);
+  }
+
+  // end game method
+  function endGame() {
+    // we write final stats
+    var clicsBySeconds = (score / duration).toFixed(2);
+    timerTxt.textContent = duration.toFixed(3);
+    clicksTxt.textContent = clicsBySeconds;
+    // we show start button to play an other game
+    show(startBtn);
+
+    // we display result to the user in delayed mode 
+    //to update DOM elements just before the alert
+    setTimeout(function() {
+      alert('You made ' + score + ' clicks in ' + duration + 
+      ' seconds. It is ' + clicsBySeconds + 
+      ' clicks by seconds. Try again!');
+    }, 10);
+  }
+
+  // we set a click event listener on the start button
+  startBtn.addEventListener("click", function(e) {
+    startGame();
+  });
+
+  // we add a click event listener on the click area div to update the score when the user will click
+  clickArea.addEventListener("click", function(e) {
+    if (!ended) {
+      score++;
+      scoreTxt.textContent = score;
+    }
+  });
+</script>
+</body>
+</html>

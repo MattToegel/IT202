@@ -85,6 +85,8 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
                         }
                         //M2-Feat-Accounts
                         get_or_create_account();
+                        //Trigger calc winners since we don't have a better periodic place at the moment
+                        calc_winners();
                         die(header("Location: home.php"));
                     } else {
                         flash("Invalid password", "danger");
