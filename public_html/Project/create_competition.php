@@ -25,7 +25,7 @@ if (isset($_POST["title"]) && !empty($_POST["title"])) {
             $_POST["creator_id"] = get_user_id();
             $comp_id = save_data("BGD_Competitions", $_POST);
             if ($comp_id > 0) {
-                if (join_competition($comp_id, get_user_id())) {
+                if (add_to_competition($comp_id, get_user_id())) {
                     flash("Successfully created competition", "success");
                     $db->commit();
                 } else {

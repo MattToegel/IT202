@@ -8,18 +8,10 @@ if (isset($_POST["join"])) {
     $comp_id = se($_POST, "comp_id", 0, false);
     $cost = se($_POST, "join_cost", 0, false);
     $balance = get_account_balance();
-    if ($comp_id > 0) {
-        if ($balance >= $cost) {
-            join_competition($comp_id, $user_id);
-        } else {
-            flash("You can't afford to join this competition", "warning");
-        }
-    } else {
-        flash("Invalid competition, please try again", "danger");
-    }
+    join_competition($comp_id, $user_id, $cost);
 }
 $per_page = 5;
-paginate("SELECT count(1) as total FROM BGD_Competitions WHERE xpires > current_timestamp() AND did_payout < 1 AND did_calc < 1");
+paginate("SELECT count(1) as total FROM BGD_Competitions WHERE expires > current_timestamp() AND did_payout < 1 AND did_calc < 1");
 //handle page load
 $stmt = $db->prepare("SELECT BGD_Competitions.id, title, min_participants, current_participants, current_reward, expires, creator_id, min_score, join_cost, IF(competition_id is null, 0, 1) as joined,  CONCAT(first_place,'% - ', second_place, '% - ', third_place, '%') as place FROM BGD_Competitions
 JOIN BGD_Payout_Options on BGD_Payout_Options.id = BGD_Competitions.payout_option
