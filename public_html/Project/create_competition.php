@@ -16,7 +16,9 @@ try {
 }
 //save
 if (isset($_POST["title"]) && !empty($_POST["title"])) {
-    $cost = $_POST["starting_reward"];
+    $cost = (int)se($_POST, "starting_reward", 0, false);
+    $cost++;
+    $cost += (int)se($_POST, "join_cost", 0, false);
     $title = se($_POST, "title", "N/A", false);
     $balance = get_account_balance();
     if ($balance >= $cost) {
