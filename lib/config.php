@@ -1,19 +1,23 @@
 <?php
 
 $ini = @parse_ini_file(".env");
+
 if($ini && isset($ini["DB_URL"])){
     //load local .env file
-    $db_url = parse_url($ini["DB_URL"]);
+    $url = $ini["DB_URL"];
+    $db_url = parse_url($url);
 }
 else{
     //load from heroku env variables
-    $db_url      = parse_url(getenv("DB_URL"));
+    $url = getenv("DB_URL");
+    $db_url = parse_url($url);
+    
 }
 //attempts to handle a failure where parse_url doesn't parse properly (usually happens when special characters are included)
 if (!$db_url || count($db_url) === 0) {
     $matches;
     $pattern = "/mysql:\/\/(\w+):(\w+)@([^:]+):(\d+)\/(\w+)/i";
-    preg_match($pattern, $ini["DB_URL"], $matches);
+    preg_match($pattern, $url, $matches);
     $db_url["host"] = $matches[3];
     $db_url["user"] = $matches[1];
     $db_url["pass"] = $matches[2];
