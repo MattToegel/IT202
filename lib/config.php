@@ -9,6 +9,16 @@ else{
     //load from heroku env variables
     $db_url      = parse_url(getenv("DB_URL"));
 }
+//attempts to handle a failure where parse_url doesn't parse properly (usually happens when special characters are included)
+if (!$db_url) {
+    $matches;
+    $pattern = "/mysql:\/\/(\w+):(\w+)@([^:]+):(\d+)\/(\w+)/i";
+    preg_match($pattern, $str, $matches);
+    $db_url["host"] = $matches[3];
+    $db_url["user"] = $matches[1];
+    $db_url["pass"] = $matches[2];
+    $db_url["path"] = "/" . $matches[5];
+}
 $dbhost   = $db_url["host"];
 $dbuser = $db_url["user"];
 $dbpass = $db_url["pass"];
