@@ -18,23 +18,33 @@
 
 - Milestone 1
     - [ ] \(mm/dd/yyyy of completion) User will be able to register a new account
-        -  Link to related .md file: [Link Name](link url)
-    - [ ] \(mm/dd/yyyy of completion) Feature Title (from the proposal bullet point, if it's a sub-point indent it properly)
-        -  Link to related .md file: [Link Name](link url)
-    - [ ] \(mm/dd/yyyy of completion) Feature Title (from the proposal bullet point, if it's a sub-point indent it properly)
-        -  Link to related .md file: [Link Name](link url)
-    - [ ] \(mm/dd/yyyy of completion) Feature Title (from the proposal bullet point, if it's a sub-point indent it properly)
-        -  Link to related .md file: [Link Name](link url)
-    - [ ] \(mm/dd/yyyy of completion) Feature Title (from the proposal bullet point, if it's a sub-point indent it properly)
-        -  Link to related .md file: [Link Name](link url)
-    - [ ] \(mm/dd/yyyy of completion) Feature Title (from the proposal bullet point, if it's a sub-point indent it properly)
-        -  Link to related .md file: [Link Name](link url)
-    - [ ] \(mm/dd/yyyy of completion) Feature Title (from the proposal bullet point, if it's a sub-point indent it properly)
-        -  Link to related .md file: [Link Name](link url)
-    - [ ] \(mm/dd/yyyy of completion) Feature Title (from the proposal bullet point, if it's a sub-point indent it properly)
-        -  Link to related .md file: [Link Name](link url)
-    - [ ] \(mm/dd/yyyy of completion) Feature Title (from the proposal bullet point, if it's a sub-point indent it properly)
-        -  Link to related .md file: [Link Name](link url)
+        - [Milestone 1](https://github.com/MattToegel/IT202/blob/Milestone1/public_html/Project/milestone1.md)
+        - [https://mt85-prod.herokuapp.com/Project/register.php](https://mt85-prod.herokuapp.com/Project/register.php)
+    - [ ] \(mm/dd/yyyy of completion) User will be able to login to their account (given they enter the correct credentials)
+        -  [Milestone 1](https://github.com/MattToegel/IT202/blob/Milestone1/public_html/Project/milestone1.md)
+        - [https://mt85-prod.herokuapp.com/Project/login.php](https://mt85-prod.herokuapp.com/Project/login.php)
+    - [ ] \(mm/dd/yyyy of completion) User will be able to logout
+        - [Milestone 1](https://github.com/MattToegel/IT202/blob/Milestone1/public_html/Project/milestone1.md)
+        - [https://mt85-prod.herokuapp.com/Project/logout.php](https://mt85-prod.herokuapp.com/Project/logout.php)
+    - [ ] \(mm/dd/yyyy of completion) Basic security rules implemented
+        - [Milestone 1](https://github.com/MattToegel/IT202/blob/Milestone1/public_html/Project/milestone1.md)
+        - [https://mt85-prod.herokuapp.com/Project/profile.php](https://mt85-prod.herokuapp.com/Project/profile.php)
+    - [ ] \(mm/dd/yyyy of completion) Basic Roles implemented
+        - [Milestone 1](https://github.com/MattToegel/IT202/blob/Milestone1/public_html/Project/milestone1.md)
+        - [https://mt85-prod.herokuapp.com/Project/admin/create_role.php](https://mt85-prod.herokuapp.com/Project/admin/create_role.php)
+    - [ ] \(mm/dd/yyyy of completion) Site should have basic styles/theme applied; everything should be styled
+        - [Milestone 1](https://github.com/MattToegel/IT202/blob/Milestone1/public_html/Project/milestone1.md)
+        - [https://mt85-prod.herokuapp.com/Project/home.php](https://mt85-prod.herokuapp.com/Project/home.php)
+        - [https://mt85-prod.herokuapp.com/Project/styles.css](https://mt85-prod.herokuapp.com/Project/styles.css)
+    - [ ] \(mm/dd/yyyy of completion) Any output messages/errors should be “user friendly”
+        - [Milestone 1](https://github.com/MattToegel/IT202/blob/Milestone1/public_html/Project/milestone1.md)
+        - [https://mt85-prod.herokuapp.com/Project/logout.php](https://mt85-prod.herokuapp.com/Project/logout.php)
+    - [ ] \(mm/dd/yyyy of completion) User will be able to see their profile
+        - [Milestone 1](https://github.com/MattToegel/IT202/blob/Milestone1/public_html/Project/milestone1.md)
+        - [https://mt85-prod.herokuapp.com/Project/profile.php](https://mt85-prod.herokuapp.com/Project/profile.php)
+    - [ ] \(mm/dd/yyyy of completion) User will be able to edit their profile
+        - [Milestone 1](https://github.com/MattToegel/IT202/blob/Milestone1/public_html/Project/milestone1.md)
+        - [https://mt85-prod.herokuapp.com/Project/profile.php](https://mt85-prod.herokuapp.com/Project/profile.php)
 - Milestone 2
   - (duplicate template here for Milestone 1 features)
 - Milestone 3
