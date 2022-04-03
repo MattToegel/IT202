@@ -17,13 +17,13 @@
 ### Proposal Checklist and Evidence
 
 - Milestone 1
-    - [ ] \(mm/dd/yyyy of completion) User will be able to register a new account
+    - [x] \(03/05/2022) User will be able to register a new account
         - [Milestone 1](https://github.com/MattToegel/IT202/blob/Milestone1/public_html/Project/milestone1.md)
         - [https://mt85-prod.herokuapp.com/Project/register.php](https://mt85-prod.herokuapp.com/Project/register.php)
-    - [ ] \(mm/dd/yyyy of completion) User will be able to login to their account (given they enter the correct credentials)
+    - [x] \(03/05/2022) User will be able to login to their account (given they enter the correct credentials)
         -  [Milestone 1](https://github.com/MattToegel/IT202/blob/Milestone1/public_html/Project/milestone1.md)
         - [https://mt85-prod.herokuapp.com/Project/login.php](https://mt85-prod.herokuapp.com/Project/login.php)
-    - [ ] \(mm/dd/yyyy of completion) User will be able to logout
+    - [x] \(03/05/2022) User will be able to logout
         - [Milestone 1](https://github.com/MattToegel/IT202/blob/Milestone1/public_html/Project/milestone1.md)
         - [https://mt85-prod.herokuapp.com/Project/logout.php](https://mt85-prod.herokuapp.com/Project/logout.php)
     - [ ] \(mm/dd/yyyy of completion) Basic security rules implemented
