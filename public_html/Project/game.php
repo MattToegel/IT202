@@ -1,34 +1,36 @@
-<div style="height: 70%; width: 70%;">
-    <div id="stats">
-        <span id="level">Level: 1</span><span id="score">Score: 0</span>
+<?php
+require(__DIR__ . "/../../partials/nav.php");
+?>
+<div style="height: 70%; width: 70%;" class="container-fluid">
+    <div class="h1">Rescue Mission</div>
+    <div id="stats" class="row">
+        <div class="col">
+            <span id="level" class="lead">Level: 1</span>
+        </div>
+        <div class="col"><span id="score" class="lead">Score: 0</span></div>
     </div>
     <canvas id="board" width="1024px" height="1024px">
     </canvas>
 
     <div>
-        <table>
+        <table class="table">
             <tr>
                 <td></td>
-                <td style="text-align:center"><button onClick="move(0,-1)">Up</button></td>
+                <td style="text-align:center"><button class="btn btn-secondary" onClick="move(0,-1)">Up</button></td>
                 <td></td>
             </tr>
             <tr>
-                <td><button onClick="move(-1,0)">Left</button></td>
+                <td style="text-align:right"><button class="btn btn-secondary" onClick="move(-1,0)">Left</button></td>
                 <td></td>
-                <td><button onClick="move(1,0)">Right</button></td>
+                <td style="text-align:left"><button class="btn btn-secondary" onClick="move(1,0)">Right</button></td>
             </tr>
             <tr>
                 <td></td>
-                <td style="text-align:center"><button onClick="move(0,1)">Down</button></td>
-                <td></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td></td>
+                <td style="text-align:center"><button class="btn btn-secondary" onClick="move(0,1)">Down</button></td>
                 <td></td>
             </tr>
         </table>
-        <span id="hints"></span>
+        <span id="hints" style="text-align:center"></span>
     </div>
 </div>
 <script>
