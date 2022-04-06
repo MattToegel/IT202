@@ -16,6 +16,7 @@ function get_or_create_account()
         $query = "SELECT id, account, balance from RM_Accounts where user_id = :uid LIMIT 1";
         $db = getDB();
         $stmt = $db->prepare($query);
+        $created = false;
         try {
             $stmt->execute([":uid" => get_user_id()]);
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -30,7 +31,10 @@ function get_or_create_account()
                     flash("Welcome! Your account has been created successfully", "success");
                     $account["id"] = $db->lastInsertId();
                     //this should mimic what's happening in the DB without requiring me to fetch the data
-                    $account["account_number"] = str_pad($account["id"], 12, "0");
+                    $account["account_number"] = str_pad($account["user_id"], 12, "0");
+                    flash("Welcome! Your account has been created successfully", "success");
+                    give_gems(10, "welcome", -1, $account["id"], "Welcome bonus!");
+                    $created = true;
                 } catch (PDOException $e) {
                     flash("An error occurred while creating your account", "danger");
                     error_log(var_export($e, true));
@@ -45,7 +49,10 @@ function get_or_create_account()
             flash("Technical error: " . var_export($e->errorInfo, true), "danger");
         }
         $_SESSION["user"]["account"] = $account; //storing the account info as a key under the user session
-        //Note: if there's an error it'll initialize to the "empty" definition around line 161
+        if (isset($created) && $created) {
+            refresh_account_balance();
+        }
+        //Note: if there's an error it'll initialize to the "empty" definition around line 42
 
     } else {
         flash("You're not logged in", "danger");
