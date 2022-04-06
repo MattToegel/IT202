@@ -10,5 +10,5 @@ CREATE TABLE IF NOT EXISTS RM_Gem_History(
     modified TIMESTAMP DEFAULT CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
     FOREIGN KEY (src) REFERENCES RM_Accounts(id),
     FOREIGN KEY(dest) REFERENCES RM_Accounts(id),
-    constraint ZeroTransferNotAllowed CHECK(diff != 0)
+    constraint RM_ZeroTransferNotAllowed CHECK(diff != 0)
 )
