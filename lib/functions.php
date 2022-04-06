@@ -27,3 +27,8 @@ require(__DIR__ . "/get_url.php");
 require(__DIR__ . "/get_or_create_account.php");
 
 require(__DIR__ . "/account_helpers.php");
+
+require(__DIR__ . "/get_columns.php");
+require(__DIR__ . "/input_map.php");
+require(__DIR__ . "/save_data.php");
+require(__DIR__ . "/update_data.php");
