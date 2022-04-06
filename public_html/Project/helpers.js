@@ -19,7 +19,7 @@ function isValidUsername (username) {
     return pattern.test(username);
 }
 function isValidEmail (email) {
-
+    return true;
 }
 function isValidPassword (password) {
     if (!password) {
