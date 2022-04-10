@@ -62,7 +62,18 @@ if ($user_id > 0) {
                 }
             }
             //update inventory
-            //TBD
+            if ($next_order_id > 0) {
+                $stmt = $db->prepare("INSERT INTO RM_Inventory (item_id, quantity, user_id)
+                SELECT item_id, quantity, user_id FROM RM_Cart WHERE user_id = :uid
+                ON DUPLICATE KEY UPDATE RM_Inventory.quantity = RM_Inventory.quantity + RM_Cart.quantity");
+                try {
+                    $stmt->execute([":uid" => $user_id]);
+                } catch (PDOException $e) {
+                    error_log("Error updating user's inventory: " . var_export($e, true));
+                    $db->rollback();
+                    $next_order_id = 0; // using as a controller
+                }
+            }
             //clear the user's cart now that the process is done
             if ($next_order_id > 0) {
                 $stmt =  $db->prepare("DELETE from RM_Cart where user_id = :uid");
