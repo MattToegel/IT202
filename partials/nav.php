@@ -31,14 +31,14 @@ session_start();
 <script src="<?php echo get_url('helpers.js'); ?>"></script>
 <nav class="navbar navbar-expand-lg navbar-light  bg-light">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">Rescue Mission</a>
+        <a class="navbar-brand" href="<?php echo get_url('home.php'); ?>">Rescue Mission</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navContent" aria-controls="navContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <?php if (is_logged_in()) : ?>
-
+                    <li class="nav-item"><a class="nav-link" href="<?php echo get_url('game.php'); ?>">Game</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?php echo get_url('profile.php'); ?>">Profile</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?php echo get_url('shop.php'); ?>">Shop</a></li>
                 <?php endif; ?>
