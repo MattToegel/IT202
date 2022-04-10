@@ -1,7 +1,7 @@
 <?php
 require_once(__DIR__ . "/../../../lib/functions.php");
-error_log(var_export($_REQUEST, true));
-//cell template
+error_log("game_backend received data: " . var_export($_REQUEST, true));
+//cell template for structure/defaults
 $cell_data = [
     "type" => "",
     "x" => 0,
@@ -66,10 +66,14 @@ function check_cell($x, $y)
                 error_log("cell type $type");
                 if ($type == "W") {
                     $_SESSION["game"] = null;
+                    require_once(__DIR__ . "/save_score.php");
+                    save_score($game["player"]["score"], $game["level"], $game["player"]["friends"], false);
                     unset($_SESSION["game"]);
                     return ["event" => "died", "reason" => "Eaten by wolf"];
                 } else if ($type == "P") {
                     $_SESSION["game"] = null;
+                    require_once(__DIR__ . "/save_score.php");
+                    save_score($game["player"]["score"], $game["level"], $game["player"]["friends"], false);
                     unset($_SESSION["game"]);
                     return ["event" => "died", "reason" => "Fell in a pit"];
                 } else if ($type == "L") {
@@ -86,10 +90,11 @@ function check_cell($x, $y)
                     //TODO add potential modifier
                     $cell["score"] = 500;
                     $game["player"]["score"] += $cell["score"];
+                    $game["player"]["friends"]++;
                 } else if ($type == "R") {
                     //unset($cell["score"]);
                 }
-
+                //check adjacent cells
                 $up = $y - 1;
                 $down = $y + 1;
                 $left = $x - 1;
