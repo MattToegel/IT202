@@ -15,24 +15,31 @@ require(__DIR__ . "/../../partials/nav.php");
             </canvas>
         </div>
         <div class="col-3" style="min-width: 300px">
-            <table class="table">
-                <tr>
-                    <td></td>
-                    <td style="text-align:center"><button class="btn btn-secondary" onClick="move(0,-1)">Up</button></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td style="text-align:right"><button class="btn btn-secondary" onClick="move(-1,0)">Left</button></td>
-                    <td></td>
-                    <td style="text-align:left"><button class="btn btn-secondary" onClick="move(1,0)">Right</button></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td style="text-align:center"><button class="btn btn-secondary" onClick="move(0,1)">Down</button></td>
-                    <td></td>
-                </tr>
-            </table>
-            <span id="hints" style="text-align:center"></span>
+            <div class="row">
+                <table class="table">
+                    <tr>
+                        <td></td>
+                        <td style="text-align:center"><button class="btn btn-secondary" onClick="move(0,-1)">Up</button></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:right"><button class="btn btn-secondary" onClick="move(-1,0)">Left</button></td>
+                        <td></td>
+                        <td style="text-align:left"><button class="btn btn-secondary" onClick="move(1,0)">Right</button></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td style="text-align:center"><button class="btn btn-secondary" onClick="move(0,1)">Down</button></td>
+                        <td></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="row">
+                <span id="hints" style="text-align:center"></span>
+            </div>
+            <div class="row">
+                <?php require_once(__DIR__ . "/../../partials/inventory.php"); ?>
+            </div>
         </div>
     </div>
     <div style="display:none">
