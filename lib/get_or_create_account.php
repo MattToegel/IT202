@@ -31,7 +31,7 @@ function get_or_create_account()
                     flash("Welcome! Your account has been created successfully", "success");
                     $account["id"] = $db->lastInsertId();
                     //this should mimic what's happening in the DB without requiring me to fetch the data
-                    $account["account_number"] = str_pad($account["user_id"], 12, "0");
+                    $account["account_number"] = str_pad($user_id, 12, "0");
                     flash("Welcome! Your account has been created successfully", "success");
                     give_gems(10, "welcome", -1, $account["id"], "Welcome bonus!");
                     $created = true;
