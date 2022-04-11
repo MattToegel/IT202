@@ -404,3 +404,6 @@ require(__DIR__ . "/../../partials/nav.php");
         height: 100%;
     }
 </style>
+<?php
+require(__DIR__ . "/../../partials/footer.php");
+?>
