@@ -18,12 +18,10 @@
             let body = document.createElement("tbody");
             if (data.data) {
                 let total = 0;
-
                 for (let r of data.data) {
                     //name, c.id as line_id, item_id, quantity, cost, (cost*quantity) as subtotal
                     let row = document.createElement("tr");
-
-                    total += r.subtotal;
+                    total += parseInt(r.subtotal);
                     row.innerHTML =
                         `
                         <td>
@@ -43,7 +41,6 @@
                         </td>
                         `;
                     body.appendChild(row);
-
                 }
                 let row = document.createElement("tr");
                 row.innerHTML =
@@ -96,7 +93,6 @@
             if (get_cart) {
                 get_cart();
             }
-
         });
     }
 
@@ -125,7 +121,6 @@
                 if (get_cart) {
                     get_cart();
                 }
-
             } else {
                 flash(data.message, "danger");
             }
@@ -140,7 +135,6 @@
         <div class="card-text">
             <div class="h3">Cart</div>
             <div class="cart g-4">
-
             </div>
         </div>
     </div>
