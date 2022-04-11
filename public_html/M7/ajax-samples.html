@@ -1,0 +1,58 @@
+<input />
+<div></div>
+<button onclick="getRequest()">GET</button>
+<button onclick="postRequest()">POST</button>
+<button onclick="fetchRequest()">POST with Fetch</button>
+
+<script>
+    function getRequest() {
+        let xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (xhttp.readyState === 4 && xhttp.status === 200) {
+                document.getElementsByTagName("div")[0].innerText = xhttp.responseText;
+            }
+        }
+        let val = document.getElementsByTagName("input")[0].value;
+        xhttp.open("GET", `backend.php?message=${val}`);
+        xhttp.send();//notice no parameters
+    }
+
+    function postRequest() {
+        let xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (xhttp.readyState === 4 && xhttp.status === 200) {
+                document.getElementsByTagName("div")[0].innerText = xhttp.responseText;
+            }
+        }
+        let val = document.getElementsByTagName("input")[0].value;
+        xhttp.open("POST", `backend.php`);
+        //for post we need a special header to tell it we're submitting like a form
+        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        //if testing on a different domain or local you'll have to set this header
+        //refer here: https://stackoverflow.com/a/13005183
+        xhttp.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+        xhttp.send(`message=${val}`);//notice parameters
+    }
+    function fetchRequest() {
+        let val = document.getElementsByTagName("input")[0].value;
+        fetch("backend.php", {
+            method: "POST",
+            //if testing on a different domain or local you'll have to set this header
+            //refer here: https://stackoverflow.com/a/13005183
+            headers: {
+                "Content-type": "application/x-www-form-urlencoded",
+                "X-Requested-With": "XMLHttpRequest",
+            },
+            body: `message=${val}`
+        }).then(async resp => {
+            //uses a promise so we need to await it: https://www.w3schools.com/js/js_promise.asp
+            let json = await resp.text(); //can only call this once
+
+            console.log(resp, json);
+            document.getElementsByTagName("div")[0].innerText = json;
+            // alert(json);
+        }).catch(err => {
+            alert("Error: " + err);
+        })
+    }
+</script>
