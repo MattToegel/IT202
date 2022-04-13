@@ -33,6 +33,11 @@ if (!empty($name)) {
 if (!empty($col) && !empty($order)) {
     $query .= " ORDER BY $col $order"; //be sure you trust these values, I validate via the in_array checks above
 }
+//paginate function
+$per_page = 3;
+paginate($total_query . $query, $params, $per_page);
+//get the total
+/* this comment block has been replaced by paginate()
 //get the total
 $stmt = $db->prepare($total_query . $query);
 $total = 0;
@@ -49,6 +54,7 @@ try {
 $page = se($_GET, "page", 1, false); //default to page 1 (human readable number)
 $per_page = 3; //how many items to show per page (hint, this could also be something the user can change via a dropdown or similar)
 $offset = ($page - 1) * $per_page;
+end commented out coded moved to paginate()*/
 $query .= " LIMIT :offset, :count";
 $params[":offset"] = $offset;
 $params[":count"] = $per_page;

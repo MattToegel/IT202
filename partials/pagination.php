@@ -2,9 +2,11 @@
 <?php
 if (!isset($total)) {
     flash("Note to Dev: The total variable is undefined", "danger");
+    $total = 1;
 }
 if (!isset($per_page)) {
     flash("Note to Dev: The per_page variable is undefined", "danger");
+    $page = 1;
 }
 $total_pages = ceil($total / $per_page);
 //updates or inserts page into query string while persisting anything already present
