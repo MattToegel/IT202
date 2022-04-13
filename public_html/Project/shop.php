@@ -18,8 +18,11 @@ if (!in_array($order, ["asc", "desc"])) {
 //get name partial search
 $name = se($_GET, "name", "", false);
 
+//split query into data and total
+$base_query = "SELECT id, name, description, cost, stock, image FROM RM_Items items";
+$total_query = "SELECT count(1) as total FROM RM_Items items";
 //dynamic query
-$query = "SELECT id, name, description, cost, stock, image FROM RM_Items items WHERE 1=1 and stock > 0"; //1=1 shortcut to conditionally build AND clauses
+$query = " WHERE 1=1 and stock > 0"; //1=1 shortcut to conditionally build AND clauses
 $params = []; //define default params, add keys as needed and pass to execute
 //apply name filter
 if (!empty($name)) {
@@ -30,8 +33,36 @@ if (!empty($name)) {
 if (!empty($col) && !empty($order)) {
     $query .= " ORDER BY $col $order"; //be sure you trust these values, I validate via the in_array checks above
 }
-$stmt = $db->prepare($query); //dynamically generated query
-//$stmt = $db->prepare("SELECT id, name, description, cost, stock, image FROM BGD_Items WHERE stock > 0 LIMIT 50");
+//get the total
+$stmt = $db->prepare($total_query . $query);
+$total = 0;
+try {
+    $stmt->execute($params);
+    $r = $stmt->fetch(PDO::FETCH_ASSOC);
+    if ($r) {
+        $total = (int)se($r, "total", 0, false);
+    }
+} catch (PDOException $e) {
+    flash("<pre>" . var_export($e, true) . "</pre>");
+}
+//apply the pagination (the pagination stuff will be moved to reusable pieces later)
+$page = se($_GET, "page", 1, false); //default to page 1 (human readable number)
+$per_page = 3; //how many items to show per page (hint, this could also be something the user can change via a dropdown or similar)
+$offset = ($page - 1) * $per_page;
+$query .= " LIMIT :offset, :count";
+$params[":offset"] = $offset;
+$params[":count"] = $per_page;
+//get the records
+$stmt = $db->prepare($base_query . $query); //dynamically generated query
+//we'll want to convert this to use bindValue so ensure they're integers so lets map our array
+foreach ($params as $key => $value) {
+    $type = is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR;
+    $stmt->bindValue($key, $value, $type);
+}
+$params = null; //set it to null to avoid issues
+
+
+//$stmt = $db->prepare("SELECT id, name, description, cost, stock, image FROM RM_Items WHERE stock > 0 LIMIT 50");
 try {
     $stmt->execute($params); //dynamically populated params to bind
     $r = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -125,6 +156,10 @@ try {
                         </div>
                     </div>
                 <?php endforeach; ?>
+            </div>
+            <div class="mt-3">
+                <?php /* added pagination */ ?>
+                <?php require(__DIR__ . "/../../partials/pagination.php"); ?>
             </div>
         </div>
         <div class="col-4" style="min-width:30em">
