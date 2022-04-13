@@ -3,9 +3,37 @@ require(__DIR__ . "/../../partials/nav.php");
 
 $results = [];
 $db = getDB();
-$stmt = $db->prepare("SELECT id, name, description, cost, stock, image FROM RM_Items WHERE stock > 0 LIMIT 50");
+//process filters/sorting
+//Sort and Filters
+$col = se($_GET, "col", "cost", false);
+//allowed list
+if (!in_array($col, ["cost", "stock", "name", "created"])) {
+    $col = "cost"; //default value, prevent sql injection
+}
+$order = se($_GET, "order", "asc", false);
+//allowed list
+if (!in_array($order, ["asc", "desc"])) {
+    $order = "asc"; //default value, prevent sql injection
+}
+//get name partial search
+$name = se($_GET, "name", "", false);
+
+//dynamic query
+$query = "SELECT id, name, description, cost, stock, image FROM RM_Items items WHERE 1=1 and stock > 0"; //1=1 shortcut to conditionally build AND clauses
+$params = []; //define default params, add keys as needed and pass to execute
+//apply name filter
+if (!empty($name)) {
+    $query .= " AND name like :name";
+    $params[":name"] = "%$name%";
+}
+//apply column and order sort
+if (!empty($col) && !empty($order)) {
+    $query .= " ORDER BY $col $order"; //be sure you trust these values, I validate via the in_array checks above
+}
+$stmt = $db->prepare($query); //dynamically generated query
+//$stmt = $db->prepare("SELECT id, name, description, cost, stock, image FROM BGD_Items WHERE stock > 0 LIMIT 50");
 try {
-    $stmt->execute();
+    $stmt->execute($params); //dynamically populated params to bind
     $r = $stmt->fetchAll(PDO::FETCH_ASSOC);
     if ($r) {
         $results = $r;
@@ -27,6 +55,52 @@ try {
 
 <div class="container-fluid">
     <h1>Shop</h1>
+    <!-- Matt's Form-->
+    <form class="row row-cols-auto g-3 align-items-center">
+        <div class="col">
+            <div class="input-group" data="i">
+                <div class="input-group-text">Name</div>
+                <input class="form-control" name="name" value="<?php se($name); ?>" />
+            </div>
+        </div>
+        <div class="col">
+            <div class="input-group">
+                <div class="input-group-text">Sort</div>
+                <!-- make sure these match the in_array filter above-->
+                <select class="form-control bg-info" name="col" value="<?php se($col); ?>" data="took">
+                    <option value="cost">Cost</option>
+                    <option value="stock">Stock</option>
+                    <option value="name">Name</option>
+                    <option value="created">Created</option>
+                </select>
+                <script>
+                    //quick fix to ensure proper value is selected since
+                    //value setting only works after the options are defined and php has the value set prior
+                    document.forms[0].col.value = "<?php se($col); ?>";
+                </script>
+                <select class="form-control" name="order" value="<?php se($order); ?>">
+                    <option class="bg-white" value="asc">Up</option>
+                    <option class="bg-white" value="desc">Down</option>
+                </select>
+                <script data="this">
+                    //quick fix to ensure proper value is selected since
+                    //value setting only works after the options are defined and php has the value set prior
+                    document.forms[0].order.value = "<?php se($order); ?>";
+                    if (document.forms[0].order.value === "asc") {
+                        document.forms[0].order.className = "form-control bg-success";
+                    } else {
+                        document.forms[0].order.className = "form-control bg-danger";
+                    }
+                </script>
+            </div>
+        </div>
+        <div class="col">
+            <div class="input-group">
+                <input type="submit" class="btn btn-primary" value="Apply" />
+            </div>
+        </div>
+    </form>
+    <!-- end form -->
     <div class="row">
         <div class="col">
             <div class="row row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-3 g-4">
