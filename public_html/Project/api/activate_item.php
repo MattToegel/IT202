@@ -40,7 +40,12 @@ if (isset($item_id) && $quantity > 0) {
             }
         } catch (PDOException $e) {
             error_log("Activate item error: " . var_export($e, true));
-            $response["message"] = "Error activating item";
+            if ($e->errorInfo[1] === 3819) {
+                $response["message"] = "Only one instance of this item may be active at a time";
+            } else {
+                $response["message"] = "Error activating item";
+            }
+            
             $db->rollback();
         }
     } else {

@@ -37,6 +37,10 @@ if (isset($_POST["type"])) {
         error_log(var_export($cell, true));
         echo json_encode($cell);
         die();
+    } else if ($type === "active_items") {
+        $resp = ["items" => get_active_items()];
+        echo json_encode($resp);
+        die();
     }
 }
 function check_cell($x, $y)
@@ -69,13 +73,19 @@ function check_cell($x, $y)
                     require_once(__DIR__ . "/save_score.php");
                     save_score($game["player"]["score"], $game["level"], $game["player"]["friends"], false);
                     unset($_SESSION["game"]);
+                    clear_deterent();
                     return ["event" => "died", "reason" => "Eaten by wolf"];
                 } else if ($type == "P") {
-                    $_SESSION["game"] = null;
-                    require_once(__DIR__ . "/save_score.php");
-                    save_score($game["player"]["score"], $game["level"], $game["player"]["friends"], false);
-                    unset($_SESSION["game"]);
-                    return ["event" => "died", "reason" => "Fell in a pit"];
+                    if (!has_rope()) {
+                        $_SESSION["game"] = null;
+                        require_once(__DIR__ . "/save_score.php");
+                        save_score($game["player"]["score"], $game["level"], $game["player"]["friends"], false);
+                        unset($_SESSION["game"]);
+                        clear_deterent();
+                        return ["event" => "died", "reason" => "Fell in a pit"];
+                    } else {
+                        $cell["extra"] = "A rope saved you from falling";
+                    }
                 } else if ($type == "L") {
                     $game["player"]["score"] += 1000;
                     $game["player"]["x"] = 0;
@@ -87,8 +97,11 @@ function check_cell($x, $y)
                     $cell["type"] = "R";
 
                     $cell["friend"] = rand(0, 2); //update if friend count changes
+
+
                     //TODO add potential modifier
-                    $cell["score"] = 500;
+                    $cell["score"] = get_friend_value(500);
+                    error_log("Friend Score: " . $cell["score"]);
                     $game["player"]["score"] += $cell["score"];
                     $game["player"]["friends"]++;
                 } else if ($type == "R") {
@@ -209,7 +222,11 @@ function generate_level($level = 1)
     }
     //add wolf
     for ($i = 0; $i < $wolf; $i++) {
-        array_push($cells, "W");
+        if (!deter_wolf()) {
+            array_push($cells, "W");
+        } else {
+            error_log("Wolf detered");
+        }
     }
     //add ladder
     for ($i = 0; $i < $ladder; $i++) {
@@ -315,6 +332,7 @@ function load_game()
         }
     } else {
         error_log("generating new game");
+        load_active_items();
         //generate
         $level = 1;
         //level % 5 == 0 (+1)

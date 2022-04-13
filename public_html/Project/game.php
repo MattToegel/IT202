@@ -3,14 +3,16 @@ require(__DIR__ . "/../../partials/nav.php");
 ?>
 <div style="height: 70%; width: 85%;" class="container-fluid">
     <div class="h1">Rescue Mission</div>
-    <div id="stats" class="row">
-        <div class="col">
-            <span id="level" class="lead">Level: 1</span>
-        </div>
-        <div class="col"><span id="score" class="lead">Score: 0</span></div>
-    </div>
+
     <div class="row g-4 h-100">
         <div class="col">
+            <div id="stats" class="row">
+                <div class="col">
+                    <span id="level" class="lead">Level: 1</span>
+                </div>
+                <div class="col"><span id="active_items"></span></div>
+                <div class="col"><span id="score" class="lead">Score: 0</span></div>
+            </div>
             <canvas id="board" width="1024px" height="1024px" style="aspect-ratio:1; width:auto; height:100%;">
             </canvas>
         </div>
@@ -569,10 +571,15 @@ require(__DIR__ . "/../../partials/nav.php");
                                     //let cur_cell = grid.cells[self.y][self.x];
 
                                 }
+                                if (data.extra) {
+                                    flash(data.extra, "info");
+                                }
                                 //console.log("adjacents", adj, hints);
                             }
                             game.Update();
-                        })
+                        }).finally(() => {
+                            game.UpdateActiveItems();
+                        });
                 } else {
                     this.x += x;
                     this.y += y;
@@ -599,7 +606,7 @@ require(__DIR__ . "/../../partials/nav.php");
             gameOver: false,
             Start: function() {
                 grid.BuildGrid();
-
+                game.UpdateActiveItems();
                 //move(0, 0);
                 //this.Update();
             },
@@ -613,7 +620,15 @@ require(__DIR__ . "/../../partials/nav.php");
                 grid.Draw(gridRows, gridColumns);
                 player.Draw();
             },
-
+            UpdateActiveItems: function() {
+                postData({
+                    type: "active_items"
+                }).then(data => {
+                    console.log(data);
+                    document.getElementById("active_items").innerText = "Active: " +
+                        data.items.join(",");
+                })
+            },
             GameOver: function(reason = "") {
                 this.Erase();
                 this.gameOver = true;

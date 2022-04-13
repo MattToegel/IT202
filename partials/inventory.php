@@ -22,6 +22,20 @@
                     `;
                     inv.appendChild(cell);
                 }
+                if (data.items.length === 0) {
+                    let cell = document.createElement("div");
+                    cell.className = "col";
+                    cell.innerHTML =
+                        `
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <div class="card-body">No Inventory</div>
+                            <div class="card-body"><a href="<?php echo get_url("shop.php"); ?>">Click to Purchase Items</a></div>
+                        </div>
+                    </div>
+                    `;
+                    inv.appendChild(cell);
+                }
             } else {
                 flash(data.message, "warning");
             }
