@@ -18,10 +18,16 @@ function get_top_10($duration = "day")
         $query .= " WHERE RM_Scores.created >= addtime(CURDATE(), '00:00:00') AND RM_Scores.created <= addtime(CURDATE(), '23:59:59')";
     } else if ($d === "week") {
         //https://stackoverflow.com/a/42540446
-        $query .= " WHERE RM_Scores.created >= addtime((curdate() - INTERVAL((WEEKDAY(curdate()))+1) DAY), '23:59:59')";
+        $query .= " WHERE 
+        RM_Scores.created >= addtime(date_add(curdate(), interval  -WEEKDAY(curdate()) day), '00:00:00')
+        AND
+        RM_Scores.created <= addtime(date_add(date_add(curdate(), interval  -WEEKDAY(curdate())-1 day), interval 7 day), '23:59:59')";
     } else if ($d === "month") {
         //https://www.mysqltutorial.org/mysql-last_day/
-        $query .= " WHERE RM_Scores.created >= addtime(LAST_DAY(CURDATE()), '23:59:59')";
+        $query .= " WHERE 
+        RM_Scores.created >=  addtime(dATE_SUB(curdate(),INTERVAL DAYOFMONTH(curdate())-1 DAY), '00:00:00')
+        AND
+        RM_Scores.created <= addtime(LAST_DAY(CURDATE()), '23:59:59')";
     }
     //remember to prefix any ambiguous columns (Users and Scores both have created, modified, and id columns)
     $query .= " ORDER BY score Desc, RM_Scores.created desc LIMIT 10"; //newest of the same score is ranked higher
