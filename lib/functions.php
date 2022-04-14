@@ -36,4 +36,8 @@ require(__DIR__ . "/update_data.php");
 
 require(__DIR__ . "/score_helpers.php");
 
+
 require(__DIR__ . "/item_map.php");
+
+require(__DIR__ . "/paginate.php");
+

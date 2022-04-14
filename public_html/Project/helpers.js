@@ -13,7 +13,25 @@ function flash (message = "", color = "info") {
     outerDiv.appendChild(innerDiv);
     //add the element to the DOM (if we don't it merely exists in memory)
     flash.appendChild(outerDiv);
+    clear_flashes();
 }
+let flash_timeout = null;
+function clear_flashes () {
+    let flash = document.getElementById("flash");
+    if (!flash_timeout) {
+        flash_timeout = setTimeout(() => {
+            console.log("removing");
+            if (flash.children.length > 0) {
+                flash.children[0].remove();
+            }
+            flash_timeout = null;
+            if (flash.children.length > 0) {
+                clear_flashes();
+            }
+        }, 3000);
+    }
+}
+window.addEventListener("load", () => setTimeout(clear_flashes, 100));
 function isValidUsername (username) {
     const pattern = /^[a-z0-9_-]{3,16}$/;
     return pattern.test(username);
