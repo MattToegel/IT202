@@ -1,7 +1,7 @@
 <h1>Standard File Upload</h1>
 <h3><a href="index.php">Back</a></h3>
 Example from <a href="https://www.w3schools.com/php/php_file_upload.asp">https://www.w3schools.com/php/php_file_upload.asp</a>
-<img src="images/php_file_upload.png" alt="Enable file_upload in php.ini if not enabled" />
+<img src="https://raw.githubusercontent.com/MattToegel/IT202/Fall2021/public_html/M9/images/php_file_upload.png" alt="Enable file_upload in php.ini if not enabled" />
 <form method="post" enctype="multipart/form-data">
     Select image to upload:
     <input type="file" name="fileToUpload" id="fileToUpload">

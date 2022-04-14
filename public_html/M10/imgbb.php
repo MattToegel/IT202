@@ -6,12 +6,12 @@
 <h5>Pre-setup Steps for Local <b>Only</b></h5>
 <ul>
     <li>
-        <img src="images/enable_curl.png" alt="Enable curl in php.ini if not enabled" /> <br> Enable curl
+        <img src="https://raw.githubusercontent.com/MattToegel/IT202/Fall2021/public_html/M9/images/enable_curl.png" alt="Enable curl in php.ini if not enabled" /> <br> Enable curl
     </li>
     <li><a href="https://curl.se/docs/caextract.html">Get the latest cacert.pem file</a></li>
     <li>Create a new folder in your php directory (mine is D:\php\cert)</li>
     <li>Put the downloaded cacert.pem file into that directory</li>
-    <li><img src="images/cacert_php_ini.png" alt="Set path to cert" /> <br> Set the absolute path to the cacert file</li>
+    <li><img src="https://raw.githubusercontent.com/MattToegel/IT202/Fall2021/public_html/M9/images/cacert_php_ini.png" alt="Set path to cert" /> <br> Set the absolute path to the cacert file</li>
     <li>Any time you edit your ini file, make sure you reload the dev server</li>
 </ul>
 <form method="post" enctype="multipart/form-data">
