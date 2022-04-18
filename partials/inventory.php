@@ -61,8 +61,10 @@
     get_inventory();
 </script>
 <div class="container-fluid">
+
     <div class="h6">Inventory</div>
     <div class="lead fs-6">*Items must be activated before effects can trigger</div>
+
     <div id="inventory" class="row row-cols-1">
 
     </div>

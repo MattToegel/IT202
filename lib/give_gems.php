@@ -32,9 +32,11 @@ function give_gems($gems, $reason, $losing = -1, $gaining = -1, $details = "")
             if ($losing == get_user_account_id() || $gaining == get_user_account_id()) {
                 refresh_account_balance();
             }
+            return true;
         } catch (PDOException $e) {
             error_log(var_export($e->errorInfo, true));
             flash("There was an error transfering gems", "danger");
         }
     }
+    return false;
 }

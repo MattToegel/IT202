@@ -15,6 +15,7 @@ require(__DIR__ . "/../../partials/nav.php");
         <br><br>
         References: <a href="https://en.wikipedia.org/wiki/Hunt_the_Wumpus">Hunt the Wumpus</a>
     </div>
+
     <?php
 
     /*if (is_logged_in(true)) {
