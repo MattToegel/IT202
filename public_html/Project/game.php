@@ -648,6 +648,7 @@ require(__DIR__ . "/../../partials/nav.php");
                     })
                     document.getElementById("active_items").innerHTML = "Active: " +
                         icons.join("");
+
                 })
             },
             GameOver: function(reason = "") {
