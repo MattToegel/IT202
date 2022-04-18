@@ -118,7 +118,7 @@ function deter_wolf()
     $chance = round((float)se($_SESSION, "deterent", 1, false) * 100);
     return random_int(0, 100) < $chance;
 }
-function clear_deterent()
+function clear_deterrent()
 {
     if (session_status() != PHP_SESSION_ACTIVE) {
         session_start();

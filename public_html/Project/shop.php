@@ -34,7 +34,7 @@ if (!empty($col) && !empty($order)) {
     $query .= " ORDER BY $col $order"; //be sure you trust these values, I validate via the in_array checks above
 }
 //paginate function
-$per_page = 3;
+$per_page = 10;
 paginate($total_query . $query, $params, $per_page);
 //get the total
 /* this comment block has been replaced by paginate()
@@ -148,12 +148,14 @@ try {
                                 RM Placeholder
                             </div>
                             <?php if (se($item, "image", "", false)) : ?>
-                                <img src="<?php se($item, "image"); ?>" class="card-img-top" alt="...">
+                                <div class="text-center mt-3">
+                                    <img src="<?php se($item, "image"); ?>" style="height:128px; width:128px; aspect-ratio:1" class="card-img-top" alt="...">
+                                </div>
                             <?php endif; ?>
 
                             <div class="card-body">
-                                <h5 class="card-title">Name: <?php se($item, "name"); ?></h5>
-                                <p class="card-text">Description: <?php se($item, "description"); ?></p>
+                                <h5 class="card-title"><?php se($item, "name"); ?></h5>
+                                <p class="card-text"><em><?php se($item, "description"); ?></em></p>
                             </div>
                             <div class="card-footer">
                                 Cost: <?php se($item, "cost"); ?>

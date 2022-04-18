@@ -73,7 +73,7 @@ function check_cell($x, $y)
                     require_once(__DIR__ . "/save_score.php");
                     save_score($game["player"]["score"], $game["level"], $game["player"]["friends"], false);
                     unset($_SESSION["game"]);
-                    clear_deterent();
+                    clear_deterrent();
                     return ["event" => "died", "reason" => "Eaten by wolf"];
                 } else if ($type == "P") {
                     if (!has_rope()) {
@@ -81,7 +81,7 @@ function check_cell($x, $y)
                         require_once(__DIR__ . "/save_score.php");
                         save_score($game["player"]["score"], $game["level"], $game["player"]["friends"], false);
                         unset($_SESSION["game"]);
-                        clear_deterent();
+                        clear_deterrent();
                         return ["event" => "died", "reason" => "Fell in a pit"];
                     } else {
                         $cell["extra"] = "A rope saved you from falling";

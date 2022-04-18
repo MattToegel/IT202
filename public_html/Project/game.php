@@ -6,15 +6,16 @@ require(__DIR__ . "/../../partials/nav.php");
 
     <div class="row g-4 h-100">
         <div class="col">
-            <div id="stats" class="row">
-                <div class="col">
+            <div id="stats" class="row row-cols-3">
+                <div class="col-2">
                     <span id="level" class="lead">Level: 1</span>
                 </div>
-                <div class="col"><span id="active_items"></span></div>
-                <div class="col"><span id="score" class="lead">Score: 0</span></div>
+                <div class="col-auto mb-3"><span id="active_items"></span></div>
+                <div class="col-2"><span id="score" class="lead">Score: 0</span></div>
             </div>
             <canvas id="board" width="1024px" height="1024px" style="aspect-ratio:1; width:auto; height:100%;">
             </canvas>
+
         </div>
         <div class="col-3" style="min-width: 300px">
             <div class="row">
@@ -50,6 +51,9 @@ require(__DIR__ . "/../../partials/nav.php");
         <img src="<?php echo get_url("static/images/chicken.png") ?>" id="f1" />
         <img src="<?php echo get_url("static/images/duck.png") ?>" id="f2" />
         <img src="<?php echo get_url("static/images/owl.png") ?>" id="f3" />
+        <img width="32px" height="32px" src="<?php echo get_url("static/images/first_aid.png") ?>" id="fa" />
+        <img width="32px" height="32px" src="<?php echo get_url("static/images/rope.png") ?>" id="rope" />
+        <img width="32px" height="32px" src="<?php echo get_url("static/images/spray.png") ?>" id="spray" />
     </div>
 </div>
 <script>
@@ -74,7 +78,10 @@ require(__DIR__ . "/../../partials/nav.php");
         Wolf: null,
         Pit: null,
         Friends: [],
-        Ladder: null
+        Ladder: null,
+        Spray: null,
+        Rope: null,
+        FirstAid: null
     }
     window.addEventListener("load", () => {
         //https://www.w3schools.com/tags/canvas_drawimage.asp
@@ -88,6 +95,9 @@ require(__DIR__ . "/../../partials/nav.php");
         Graphics.Friends.push(f1);
         Graphics.Friends.push(f2);
         Graphics.Friends.push(f3);
+        Graphics.Spray = document.getElementById("spray");
+        Graphics.Rope = document.getElementById("rope");
+        Graphics.FirstAid = document.getElementById("fa");
         game.Start();
     });
 
@@ -625,8 +635,20 @@ require(__DIR__ . "/../../partials/nav.php");
                     type: "active_items"
                 }).then(data => {
                     console.log(data);
-                    document.getElementById("active_items").innerText = "Active: " +
-                        data.items.join(",");
+                    let icons = [];
+                    let items = data.items.map(item => {
+                        if (item === "F") {
+                            icons.push(Graphics.FirstAid.outerHTML);
+                        } else if (item === "D") {
+                            icons.push(Graphics.Spray.outerHTML);
+                        } else if (item === "R") {
+                            icons.push(Graphics.Rope.outerHTML);
+                        }
+
+                    })
+                    document.getElementById("active_items").innerHTML = "Active: " +
+                        icons.join("");
+
                 })
             },
             GameOver: function(reason = "") {
