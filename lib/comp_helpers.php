@@ -77,7 +77,8 @@ function get_top_scores_for_comp($comp_id, $limit = 10)
     BETWEEN uc.created AND c.expires ORDER BY s.score desc LIMIT :limit"
     );*/
     //Below if a user can't win more than one place
-    $stmt = $db->prepare("SELECT * FROM (SELECT s.user_id, s.score,s.created, a.id as account_id, DENSE_RANK() OVER (PARTITION BY s.user_id ORDER BY s.score desc) as `rank` FROM RM_Scores s
+    $stmt = $db->prepare("SELECT * FROM 
+    (SELECT s.user_id, s.score,s.created, a.id as account_id, DENSE_RANK() OVER (PARTITION BY s.user_id ORDER BY s.score desc) as `rank` FROM RM_Scores s
     JOIN RM_UserComps uc on uc.user_id = s.user_id
     JOIN RM_Competitions c on uc.competition_id = c.id
     JOIN RM_Accounts a on a.user_id = s.user_id

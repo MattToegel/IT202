@@ -25,7 +25,7 @@ if (isset($_POST["title"]) && !empty($_POST["title"])) {
         $db->beginTransaction();
         if (give_gems($cost, "create_comp", get_user_account_id(), -1, "Create Competition $title")) {
             $_POST["creator_id"] = get_user_id();
-            $comp_id = save_data("BGD_Competitions", $_POST);
+            $comp_id = save_data("RM_Competitions", $_POST);
             if ($comp_id > 0) {
                 if (add_to_competition($comp_id, get_user_id())) {
                     flash("Successfully created competition", "success");

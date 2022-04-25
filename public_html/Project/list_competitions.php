@@ -16,7 +16,7 @@ paginate("SELECT count(1) as total FROM RM_Competitions WHERE expires > current_
 //TODO fix join
 $stmt = $db->prepare("SELECT RM_Competitions.id, title, min_participants, current_participants, current_reward, expires, creator_id, min_score, join_cost, IF(competition_id is null, 0, 1) as joined,  CONCAT(first_place,'% - ', second_place, '% - ', third_place, '%') as place FROM RM_Competitions
 JOIN RM_Payout_Options on RM_Payout_Options.id = RM_Competitions.payout_option
-LEFT JOIN (SELECT * FROM RM_UserComps WHERE user_id = :uid) as uc ON uc.competition_id = RM_Competitions.id WHERE expires > current_timestamp() AND did_payout < 1 AND did_calc < 1 ORDER BY expires desc");
+LEFT JOIN (SELECT * FROM RM_UserComps WHERE user_id = :uid) as uc ON uc.competition_id = RM_Competitions.id WHERE expires > current_timestamp() AND did_payout < 1 AND did_calc < 1 ORDER BY expires asc");
 /*$stmt = $db->prepare("SELECT BGD_Competitions.id, title, min_participants, current_participants, current_reward, expires, creator_id, min_score, join_cost, IF(competition_id is null, 0, 1) as joined,  CONCAT(first_place,'% - ', second_place, '% - ', third_place, '%') as place FROM BGD_Competitions
 JOIN BGD_Payout_Options on BGD_Payout_Options.id = BGD_Competitions.payout_option
 LEFT JOIN BGD_UserComps on BGD_UserComps.competition_id = BGD_Competitions.id WHERE user_id = :uid AND expires > current_timestamp() AND did_payout < 1 AND did_calc < 1 ORDER BY expires desc");*/
@@ -34,7 +34,7 @@ try {
 ?>
 <div class="container-fluid">
     <h1>List Competitions</h1>
-    <table class="table text-light">
+    <table class="table ">
         <thead>
             <th>Title</th>
             <th>Participants</th>

@@ -70,10 +70,11 @@ $scores = get_top_scores_for_comp($id);
         </tbody>
     </table>
     <?php
-    //$scores is defined above
-    $title = $comp . " Top Scores";
-    $comp_id = $id;
-    include(__DIR__ . "/../../partials/score_table.php");
+//$scores is defined above
+$title = $comp . " Top Scores";
+$comp_id = $id;
+$duration = "competition";
+include(__DIR__ . "/../../partials/scores_table.php");
     ?>
 </div>
 <?php

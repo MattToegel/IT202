@@ -37,6 +37,10 @@ function give_gems($gems, $reason, $losing = -1, $gaining = -1, $details = "")
             error_log(var_export($e->errorInfo, true));
             flash("There was an error transfering gems", "danger");
         }
+    } else if ($gems === 0) {
+        error_log("Freebie purchase");
+        flash("You got something for free!", "success");
+        return true;
     }
     return false;
 }
