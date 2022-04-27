@@ -62,7 +62,7 @@ $ignored = ["id"];
                             </thead>
                         <?php endif; ?>
                         <tr>
-                            <?php foreach ($record as `$column => $value`) : ?>
+                            <?php foreach ($record as $column => $value) : ?>
                                 <td>
                                     <?php if ($column === "username") : ?>
                                         <?php $user_id = se($record, "user_id", 0, false);
