@@ -15,13 +15,13 @@ function do_bank_action($account1, $account2, $amountChange, $type){
 	$stmt = $db->prepare($query);
 	$stmt->bindValue(":p1a1", $account1);
 	$stmt->bindValue(":p1a2", $account2);
-	$stmt->bindValue(":p1change", $amountChange);
+	$stmt->bindValue(":p1change", $amountChange*-1);
 	$stmt->bindValue(":type", $type);
 	$stmt->bindValue(":a1total", $a1total);
 	//flip data for other half of transaction
 	$stmt->bindValue(":p2a1", $account2);
 	$stmt->bindValue(":p2a2", $account1);
-	$stmt->bindValue(":p2change", ($amountChange*-1));
+	$stmt->bindValue(":p2change", ($amountChange));
 	$stmt->bindValue(":type", $type);
 	$stmt->bindValue(":a2total", $a2total);
 	$result = $stmt->execute();
