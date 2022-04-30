@@ -140,7 +140,7 @@ try {
         <?php if ($isMe) : ?>
             <a href="?edit">Edit</a>
         <?php endif; ?>
-        <?php if ($isVisible) : ?>
+        <?php if ($isVisible || $isMe) : ?>
             TODO: Define your visible profile
 
             This is <?php se($username); ?>
