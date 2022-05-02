@@ -62,7 +62,6 @@ switch ($duration) {
                     <?php endforeach; ?>
             </table>
         <?php endif; ?>
-        </table>
         </div>
     </div>
 </div>
