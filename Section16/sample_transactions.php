@@ -3,9 +3,9 @@ ini_set('display_errors',1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 function do_bank_action($account1, $account2, $amountChange, $type){
-	require("config.php");
+	/*require("config.php");
 	$conn_string = "mysql:host=$host;dbname=$database;charset=utf8mb4";
-	$db = new PDO($conn_string, $username, $password);
+	$db = new PDO($conn_string, $username, $password);*/
 	$a1total = 0;//TODO get total of account 1
 	$a2total = 0;//TODO get total of account 2
 	$query = "INSERT INTO `Transactions` (`AccountSource`, `AccountDest`, `Amount`, `Type`, `Total`) 
