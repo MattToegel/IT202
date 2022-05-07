@@ -41,6 +41,15 @@ session_start();
                     <li class="nav-item"><a class="nav-link" href="<?php echo get_url('game.php'); ?>">Game</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?php echo get_url('profile.php'); ?>">Profile</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?php echo get_url('shop.php'); ?>">Shop</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="cDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Competitions
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="cDropdown">
+                            <li><a class="dropdown-item" href="<?php echo get_url('create_competition.php'); ?>">Create</a></li>
+                            <li><a class="dropdown-item" href="<?php echo get_url('list_competitions.php'); ?>">List</a></li>
+                        </ul>
+                    </li>
                 <?php endif; ?>
                 <?php if (!is_logged_in()) : ?>
                     <li class="nav-item"><a class="nav-link" href="<?php echo get_url('login.php'); ?>">Login</a></li>

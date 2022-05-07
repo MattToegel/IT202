@@ -7,7 +7,7 @@ if (isset($_POST["join"])) {
     $user_id = get_user_id();
     $comp_id = se($_POST, "comp_id", 0, false);
     $cost = se($_POST, "join_cost", 0, false);
-    $balance = get_account_balance();
+    //$balance = get_account_balance();
     join_competition($comp_id, $user_id, $cost);
 }
 $per_page = 5;
@@ -31,7 +31,7 @@ try {
 ?>
 <div class="container-fluid">
     <h1>List Competitions</h1>
-    <table class="table text-light">
+    <table class="table">
         <thead>
             <th>Title</th>
             <th>Participants</th>
