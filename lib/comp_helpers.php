@@ -172,7 +172,7 @@ function calc_winners()
     //closing calced comps
     if (count($calced_comps) > 0) {
         $query = "UPDATE RM_Competitions set did_calc = 1, did_payout = 1 WHERE id in ";
-        $query = "(" . str_repeat("?,", count($calced_comps) - 1) . "?)";
+        $query .= "(" . str_repeat("?,", count($calced_comps) - 1) . "?)";
         error_log("Close query: $query");
         $stmt = $db->prepare($query);
         try {
