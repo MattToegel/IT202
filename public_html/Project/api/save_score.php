@@ -29,7 +29,10 @@ function save_score($score, $level, $rescued, $echo = true)
             //give points
             if ($score >= 5000) {
                 $gems = floor($score / 5000);
-                give_gems($gems, "game-reward", -1, get_user_account_id(), "Game Stats: Score ($score) Level ($level) Rescued ($rescued)");
+                give_gems($gems, "game-reward", -1, 
+                get_user_account_id(), 
+                "Game Stats: Score ($score) 
+                Level ($level) Rescued ($rescued)");
             }
             $response["status"] = 200;
             $response["message"] = "Saved Score";

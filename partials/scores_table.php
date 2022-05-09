@@ -77,7 +77,6 @@ $ignored = ["id"];
                     <?php endforeach; ?>
             </table>
         <?php endif; ?>
-        </table>
         </div>
     </div>
 </div>
