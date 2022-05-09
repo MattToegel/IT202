@@ -14,7 +14,8 @@ if (isset($item_id) && $desired_quantity > 0) {
     if (is_logged_in()) {
         $db = getDB();
         //note adding to cart doesn't verify price or quantity
-        $stmt = $db->prepare("INSERT INTO RM_Cart (item_id, quantity, user_id) VALUES(:iid, :q, :uid) ON DUPLICATE KEY UPDATE quantity = quantity + :q");
+        $stmt = $db->prepare("INSERT INTO RM_Cart (item_id, quantity, user_id) 
+        VALUES(:iid, :q, :uid) ON DUPLICATE KEY UPDATE quantity = quantity + :q");
         $stmt->bindValue(":iid", $item_id, PDO::PARAM_INT);
         $stmt->bindValue(":q", $desired_quantity, PDO::PARAM_INT);
         $stmt->bindValue(":uid", get_user_id(), PDO::PARAM_INT);

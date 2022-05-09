@@ -42,3 +42,6 @@ require(__DIR__ . "/item_map.php");
 
 require(__DIR__ . "/paginate.php");
 
+require(__DIR__ . "/redirect.php");
+
+require(__DIR__ . "/comp_helpers.php");
