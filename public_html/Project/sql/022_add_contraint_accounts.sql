@@ -1,0 +1,1 @@
+ALTER TABLE RM_Accounts ADD CONSTRAINT check (LENGTH(account) = 12)
