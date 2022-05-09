@@ -12,6 +12,9 @@ if (in_array($duration, ["day", "week", "month", "lifetime"])) {
         $user_id = get_user_id();
     }
     $results = get_latest_scores($user_id);
+} else if ($duration === "competition") {
+    error_log("comp scores");
+    $results = get_top_scores_for_comp($comp_id);
 }
 switch ($duration) {
     case "day":
@@ -28,6 +31,9 @@ switch ($duration) {
         break;
     case "latest":
         $title = "Latest Scores";
+        break;
+    case "competition":
+        //title defined outside
         break;
     default:
         $title = "Invalid Scoreboard";
@@ -60,7 +66,7 @@ $ignored = ["id"];
                                 <td>
                                     <?php if ($column === "username") : ?>
                                         <?php $user_id = se($record, "user_id", 0, false);
-                                        $username = se($record, "username", "", false);
+                                        $username = se($value);
                                         include(__DIR__ . "/profile_link.php"); ?>
                                     <?php elseif (!in_array($column, $ignored)) : ?>
                                         <?php se($value, null, "N/A"); ?></td>
