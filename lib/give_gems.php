@@ -29,9 +29,9 @@ function give_gems($gems, $reason, $losing = -1, $gaining = -1, $details = "")
             //Only refresh the balance of the user if the logged in user's account is part of the transfer
             //this is needed so future features don't waste time/resources or potentially cause an error when a calculation
             //occurs without a logged in user
-            if ($losing == get_user_account_id() || $gaining == get_user_account_id()) {
-                refresh_account_balance();
-            }
+            refresh_account_balance($losing);
+            refresh_account_balance($gaining);
+
             return true;
         } catch (PDOException $e) {
             error_log(var_export($e->errorInfo, true));
