@@ -20,7 +20,7 @@ if (isset($_POST["title"]) && !empty($_POST["title"])) {
     $cost++;
     $cost += (int)se($_POST, "join_cost", 0, false);
     $title = se($_POST, "title", "N/A", false);
-    unset($_POST["payout_option"]);
+    
     $balance = get_account_balance();
     if ($balance >= $cost) {
         $db->beginTransaction();
