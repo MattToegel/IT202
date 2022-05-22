@@ -23,7 +23,7 @@ function getDB(){
  	    $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 	}
    	catch(Exception $e){
-            var_export($e);
+            error_log("getDB() error: " . var_export($e, true));
             $db = null;
         }
     }
