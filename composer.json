@@ -1,6 +1,9 @@
 {
   "require" : {
-    "ext-mbstring": "*"
+    "ext-mbstring": "*",
+    "php": ">=8",
+    "ext-pdo": "*",
+    "ext-pdo_mysql": "*"
   },
   "require-dev": {
     "heroku/heroku-buildpack-php": "*"
