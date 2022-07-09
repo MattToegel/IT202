@@ -41,6 +41,8 @@ session_start();
 
                     <li class="nav-item"><a class="nav-link" href="<?php echo get_url('profile.php'); ?>">Profile</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?php echo get_url('shop.php'); ?>">Shop</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?php echo get_url('shop_alt.php'); ?>">Shop Alt.</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?php echo get_url('cart_alt.php'); ?>">Cart Alt</a></li>
                 <?php endif; ?>
                 <?php if (!is_logged_in()) : ?>
                     <li class="nav-item"><a class="nav-link" href="<?php echo get_url('login.php'); ?>">Login</a></li>
