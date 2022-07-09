@@ -28,12 +28,13 @@ function get_or_create_account()
                     $user_id = get_user_id(); //caching a reference
                     $stmt = $db->prepare($query);
                     $stmt->execute([":uid" => $user_id]);
-                    flash("Welcome! Your account has been created successfully", "success");
                     $account["id"] = $db->lastInsertId();
                     //this should mimic what's happening in the DB without requiring me to fetch the data
-                    $account["account_number"] = str_pad($account["user_id"], 12, "0");
+                    $account["account_number"] = str_pad($user_id, 12, "0");
                     flash("Welcome! Your account has been created successfully", "success");
-                    give_gems(10, "welcome", -1, $account["id"], "Welcome bonus!");
+                    if (give_gems(10, "welcome", -1, $account["id"], "Welcome bonus!")) {
+                        flash("Enjoy 10 bonus gems as a welcome bonus!", "success");
+                    }
                     $created = true;
                 } catch (PDOException $e) {
                     flash("An error occurred while creating your account", "danger");

@@ -23,8 +23,9 @@ require(__DIR__ . "/duplicate_user_details.php");
 require(__DIR__ . "/reset_session.php");
 
 require(__DIR__ . "/get_url.php");
-
+require(__DIR__ . "/give_gems.php");//needs to be here
 require(__DIR__ . "/get_or_create_account.php");
+require(__DIR__ . "/refresh_account_balance.php");
 
 require(__DIR__ . "/account_helpers.php");
 
