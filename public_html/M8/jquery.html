@@ -1,0 +1,55 @@
+<!-- In this example we're going to to use a single script tag (aside from the one requiring jQuery/Bootstrap) and nothing else-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+<script>
+    $(document).ready(function () {
+        console.log("We're ready");
+        //example will use this api https://www.coingecko.com/en/api/documentation
+        //when using jQuery we usually prefix our jQuery wrapped variables with a $
+        //this is not related to php variables at all, it's just a coincidence
+        const $body = $(document.body);
+        $body.append("<div class='h1 text-center'>Coingecko Market Data via jQuery</div>");
+        $body.append("<div class='container-fluid'><table class='table'></table></div>");
+        fetchData();
+        setInterval(() => {
+            fetchData();
+        }, 1000 * 60 * 5)
+
+    });
+    const fetchData = () => {
+        $.get("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=bitcoin%2Cethereum%2Clitecoin&order=market_cap_desc&per_page=100&page=1&sparkline=false&price_change_percentage=1h%2C24h%2C7d",
+            function (data) {
+                console.log(data);
+                let $table = $("table");
+                $table.html("");
+                let $heading = $("<thead><tr><th>Coin</th><th>ATH</th><th>Current Price</th><th>24hr High</th><th>24hr Low</th><th>Price Change % 1h, 24h, 7d</th></tr>")
+                $table.append($heading);
+                $table.append("<tbody></tbody>");
+                for (let d of data) {
+                    let $row = $(`<tr><td>${d.name}</td><td>$${d.ath}</td><td>$${d.current_price}</td><td>$${d.high_24h}</td><td>$${d.low_24h}</td> 
+                    <td><span>${parseFloat(d.price_change_percentage_1h_in_currency).toFixed(2)}%</span>,
+                        <span>${parseFloat(d.price_change_percentage_24h_in_currency).toFixed(2)}%</span>,
+                        <span>${parseFloat(d.price_change_percentage_7d_in_currency).toFixed(2)}%</span></td></tr>`);
+                    $table.find("tbody").append($row);
+                }
+                $("span").each(function () {
+                    let $this = $(this);
+
+                    let v = $this.text().replace("%", "");
+                    console.log("val", v);
+                    if (!isNaN(v)) {
+                        if (v > 0) {
+                            $this.css("color", "#10ff00");
+                        }
+                        else if (v < 0) {
+                            $this.css("color", "red");
+                        }
+                    }
+                });
+                //make sure you return true from async/cross-origin functions
+                return true;
+            }
+        );
+    }
+</script>
