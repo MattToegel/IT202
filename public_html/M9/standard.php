@@ -1,7 +1,7 @@
 <h1>Standard File Upload</h1>
 <h3><a href="index.php">Back</a></h3>
 Example from <a href="https://www.w3schools.com/php/php_file_upload.asp">https://www.w3schools.com/php/php_file_upload.asp</a>
-<img src="https://raw.githubusercontent.com/MattToegel/IT202/Fall2021/public_html/M9/images/php_file_upload.png" alt="Enable file_upload in php.ini if not enabled" />
+<img src="images/lesson/php_file_upload.png" alt="Enable file_upload in php.ini if not enabled" />
 <form method="post" enctype="multipart/form-data">
     Select image to upload:
     <input type="file" name="fileToUpload" id="fileToUpload">
@@ -12,7 +12,7 @@ Example from <a href="https://www.w3schools.com/php/php_file_upload.asp">https:/
 
 // Check if image file is a actual image or fake image
 if (isset($_POST["submit"])) {
-    $target_dir = "images/"; //this will go to my images folder under M9 folder
+    $target_dir = "images/example/"; //this will go to my images folder under M9 folder
     $target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
     $uploadOk = 1;
     $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
