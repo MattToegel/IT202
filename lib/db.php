@@ -29,4 +29,3 @@ function getDB(){
     }
     return $db;
 }
-?>
