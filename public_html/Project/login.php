@@ -34,7 +34,7 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
     }
     //sanitize
     //$email = filter_var($email, FILTER_SANITIZE_EMAIL);
-    $email = sanitize_email($email);
+   
     //validate
     /*if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         flash("Please enter a valid email <br>");
