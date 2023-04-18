@@ -88,7 +88,7 @@ if (isset($_POST["username"])) {
             <tbody>
                 <tr>
                     <td>
-                        <table>
+                        <table class="table table-borderless">
                             <?php foreach ($users as $user) : ?>
                                 <tr>
                                     <td>

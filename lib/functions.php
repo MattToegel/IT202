@@ -35,3 +35,6 @@ require(__DIR__ . "/save_data.php");
 require(__DIR__ . "/update_data.php");
 
 require(__DIR__ . "/score_helpers.php");
+function makeField($label, $name, $type="text", $value="", $id = null){
+   require(__DIR__ . "/../partials/formfield.php");
+}
