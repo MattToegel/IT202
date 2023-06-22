@@ -25,6 +25,7 @@ function getDB(){
    	catch(Exception $e){
             error_log("getDB() error: " . var_export($e, true));
             $db = null;
+            throw new Exception("Error connecting to database, see logs for further information");
         }
     }
     return $db;
