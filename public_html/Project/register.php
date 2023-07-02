@@ -79,7 +79,7 @@ if (isset($_POST["email"]) && isset($_POST["password"]) && isset($_POST["confirm
         try {
             $stmt->execute([":email" => $email, ":password" => $hash, ":username" => $username]);
             flash("Successfully registered!", "success");
-        } catch (Exception $e) {
+        } catch (PDOException $e) {
             users_check_duplicate($e->errorInfo);
         }
     }
