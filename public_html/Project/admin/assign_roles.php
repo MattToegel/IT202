@@ -45,6 +45,7 @@ try {
 
 //search for user by username
 $users = [];
+$username = "";
 if (isset($_POST["username"])) {
     $username = se($_POST, "username", "", false);
     if (!empty($username)) {
@@ -70,11 +71,17 @@ if (isset($_POST["username"])) {
 ?>
 <div class="container-fluid">
     <h1>Assign Roles</h1>
+<<<<<<< HEAD
     <form method="POST" class="row row-cols-lg-auto g-3 align-items-center">
         <div class="input-group mb-3">
             <input class="form-control" type="search" name="username" placeholder="Username search" />
             <input class="btn btn-primary" type="submit" value="Search" />
         </div>
+=======
+    <form method="POST">
+        <?php render_input(["type" => "search", "name" => "username", "placeholder" => "Username Search", "value" => $username]);/*lazy value to check if form submitted, not ideal*/ ?>
+        <?php render_button(["text" => "Search", "type" => "submit"]); ?>
+>>>>>>> c5c3d056b96cda0ce65820624947abde8ead1078
     </form>
     <form method="POST">
         <?php if (isset($username) && !empty($username)) : ?>
@@ -88,7 +95,7 @@ if (isset($_POST["username"])) {
             <tbody>
                 <tr>
                     <td>
-                        <table>
+                        <table class="table">
                             <?php foreach ($users as $user) : ?>
                                 <tr>
                                     <td>
@@ -111,7 +118,7 @@ if (isset($_POST["username"])) {
                 </tr>
             </tbody>
         </table>
-        <input type="submit" class="btn btn-primary" value="Toggle Roles" />
+        <?php render_button(["text" => "Toggle Roles", "type" => "submit", "color" => "secondary"]); ?>
     </form>
 </div>
 <?php

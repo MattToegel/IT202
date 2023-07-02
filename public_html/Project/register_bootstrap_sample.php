@@ -3,13 +3,25 @@ require(__DIR__ . "/../../partials/nav.php");
 reset_session();
 ?>
 <div class="container-fluid">
-<form onsubmit="return validate(this)" method="POST">
-    <?php render_input(["type"=>"email", "id"=>"email", "name"=>"email", "label"=>"Email", "rules"=>["required"=>true]]);?>
-    <?php render_input(["type"=>"text", "id"=>"username", "name"=>"username", "label"=>"Username", "rules"=>["required"=>true, "maxlength"=>30]]);?>
-    <?php render_input(["type"=>"password", "id"=>"password", "name"=>"password", "label"=>"Password", "rules"=>["required"=>true, "minlength"=>8]]);?>
-    <?php render_input(["type"=>"password", "id"=>"confirm", "name"=>"confirm", "label"=>"Confirm Password", "rules"=>["required"=>true,"minlength"=>8]]);?>
-    <?php render_button(["text"=>"Register", "type"=>"submit"]);?>
-</form>
+    <form onsubmit="return validate(this)" method="POST">
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" name="email" required class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label for="username" class="form-label">Username</label>
+            <input type="text" name="username" required maxlength="30" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label for="pw" class="form-label">Password</label>
+            <input type="password" id="pw" name="password" required minlength="8" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label for="confirm" class="form-label">Confirm</label>
+            <input type="password" name="confirm" required minlength="8" class="form-control" />
+        </div>
+        <input type="submit" value="Register" class="btn btn-primary" />
+    </form>
 </div>
 <script>
     function validate(form) {
@@ -76,5 +88,5 @@ if (isset($_POST["email"]) && isset($_POST["password"]) && isset($_POST["confirm
 }
 ?>
 <?php
-require(__DIR__ . "/../../partials/footer.php");
+require(__DIR__ . "/../../partials/flash.php");
 ?>
