@@ -107,7 +107,7 @@ $username = get_username();
 
         //example of using flash via javascript
         //find the flash container, create a new element, appendChild
-        if (pw !== con) {
+        if (!isEqual(pw, con)) {
             flash("Password and Confrim password must match", "warning");
             isValid = false;
         }
@@ -115,5 +115,5 @@ $username = get_username();
     }
 </script>
 <?php
-require_once(__DIR__ . "/../../partials/flash.php");
+require_once(__DIR__ . "/../../partials/footer.php");
 ?>

@@ -12,8 +12,25 @@ require_once(__DIR__ . "/../../partials/nav.php");
     function validate(form) {
         //TODO 1: implement JavaScript validation
         //ensure it returns false for an error and true for success
-
-        return true;
+        let isValid = true;
+        const email = form.email.value;
+        const password = form.password.value;
+        if (email.indexOf("@") > -1) {
+            if (!isValidEmail(email)) {
+                flash("Invalid email", "danger");
+                isValid = false;
+            }
+        } else {
+            if (!isValidUsername(email)) {
+                flash("Username must be lowercase, 3-16 characters, and contain only a-z, 0-9, _ or -", "danger");
+                isValid = false;
+            }
+        }
+        if (!isValidPassword(password)) {
+            flash("Password too short", "danger");
+            isValid = false;
+        }
+        return isValid;
     }
 </script>
 <?php
@@ -107,4 +124,4 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
     }
 }
 ?>
-<?php require_once(__DIR__ . "/../../partials/flash.php");
+<?php require_once(__DIR__ . "/../../partials/footer.php");

@@ -22,8 +22,7 @@ if (isset($_POST["name"]) && isset($_POST["description"])) {
             if ($e->errorInfo[1] === 1062) {
                 flash("A role with this name already exists, please try another", "warning");
             } else {
-                flash("Unknown error occurred, please try again", "danger");
-                error_log(var_export($e->errorInfo, true));
+                flash(var_export($e->errorInfo, true), "danger");
             }
         }
     }
@@ -39,5 +38,5 @@ if (isset($_POST["name"]) && isset($_POST["description"])) {
 </div>
 <?php
 //note we need to go up 1 more directory
-require_once(__DIR__ . "/../../../partials/flash.php");
+require_once(__DIR__ . "/../../../partials/footer.php");
 ?>
