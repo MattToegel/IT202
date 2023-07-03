@@ -53,7 +53,7 @@ function _sendRequest($url, $key, $data = [], $method = 'GET', $isRapidAPI = tru
         $options[CURLOPT_POST] = true;
         $options[CURLOPT_POSTFIELDS] = http_build_query($data);
     }
-
+    error_log("curl options: " . var_export($options, true));
     curl_setopt_array($curl, $options);
 
     $response = curl_exec($curl);

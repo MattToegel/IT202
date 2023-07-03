@@ -11,6 +11,7 @@ foreach($env_keys as $key){
     }
     else{
         //load from heroku env variables
+        $API_KEY = getenv($key);
         $API_KEYS[$key] = $API_KEY;
     }
     if(!isset( $API_KEYS[$key]) || ! $API_KEYS[$key]){
