@@ -7,7 +7,7 @@ if (!has_role("Admin")) {
     die(header("Location: " . get_url("home.php")));
 }
 //TODO need to update insert_breeds... to use the $mappings array and not go based on is_int for value
-function insert_breeds_into_db($db, $breeds, $columns)
+function insert_breeds_into_db($db, $breeds, $mappings)
 {
     // Prepare SQL query
     $query = "INSERT INTO `CA_Breeds` ";
@@ -45,7 +45,7 @@ function insert_breeds_into_db($db, $breeds, $columns)
                 $placeholder = ":$col$i";
                 $val = isset($breed[$col]) ? $breed[$col] : "";
                 $param = PDO::PARAM_STR;
-                if (is_int($val)) {
+                if (str_contains($mappings[$col], "int")) {
                     $param = PDO::PARAM_INT;
                 }
                 $stmt->bindValue($placeholder, $val, $param);
@@ -80,9 +80,19 @@ function process_single_breed($breed, $columns, $mappings)
 
     // Map breed data to columns
     foreach ($columns as $column) {
-        $record[$column] = array_key_exists($column, $breed) ? $breed[$column] : "";
+        if(in_array($columns, ["id", "api_id", "urls"])){
+            continue;
+        }
+        if(array_key_exists($column, $breed)){
+            $record[$column] = $breed[$column];
+            if(empty($record[$column])){
+                if(str_contains($mappings[$column], "int")){
+                    $record[$column] = "0";
+                }
+            }
+        }
     }
-
+    error_log("Record: " . var_export($record, true));
     return $record;
 }
 
@@ -101,7 +111,7 @@ function process_breeds($result)
         return;
     }
     $data = $data["data"];
-
+    error_log("data: " . var_export($data, true));
     // Get columns from CA_Breeds table
     $db = getDB();
     $stmt = $db->prepare("SHOW COLUMNS FROM CA_Breeds");
@@ -110,7 +120,10 @@ function process_breeds($result)
 
     // Prepare columns and mappings
     $columns = array_column($columnsData, 'Field');
-    $mappings = array_column($columnsData, 'Type', 'Field');
+    $mappings = [];
+    foreach ($columnsData as $column) {
+        $mappings[$column['Field']] = $column['Type'];
+    }
     $ignored = ["id", "created", "modified"];
     $columns = array_diff($columns, $ignored);
 
@@ -122,7 +135,7 @@ function process_breeds($result)
     }
 
     // Insert breeds into database
-    insert_breeds_into_db($db, $breeds, $columns);
+    insert_breeds_into_db($db, $breeds, $mappings);
 }
 
 $action = se($_POST, "action", "", false);
