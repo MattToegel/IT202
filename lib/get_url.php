@@ -1,5 +1,5 @@
 <?php
-function get_url($dest)
+function get_url($dest, $echo = false)
 {
     global $BASE_PATH;
     if (str_starts_with($dest, "/")) {
@@ -7,5 +7,10 @@ function get_url($dest)
         return $dest;
     }
     //handle relative path
-    return "$BASE_PATH/$dest";
+    $path = "$BASE_PATH/$dest";
+    if($echo){
+        echo $path;
+        return;
+    }
+    return $path;
 }

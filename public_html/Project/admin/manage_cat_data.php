@@ -6,7 +6,7 @@ if (!has_role("Admin")) {
     flash("You don't have permission to view this page", "warning");
     die(header("Location: " . get_url("home.php")));
 }
-//TODO need to update insert_breeds... to use the $mappings array and not go based on is_int for value
+
 function insert_breeds_into_db($db, $breeds, $mappings)
 {
     // Prepare SQL query
@@ -80,13 +80,13 @@ function process_single_breed($breed, $columns, $mappings)
 
     // Map breed data to columns
     foreach ($columns as $column) {
-        if(in_array($columns, ["id", "api_id", "urls"])){
+        if (in_array($columns, ["id", "api_id", "urls"])) {
             continue;
         }
-        if(array_key_exists($column, $breed)){
+        if (array_key_exists($column, $breed)) {
             $record[$column] = $breed[$column];
-            if(empty($record[$column])){
-                if(str_contains($mappings[$column], "int")){
+            if (empty($record[$column])) {
+                if (str_contains($mappings[$column], "int")) {
                     $record[$column] = "0";
                 }
             }
@@ -111,7 +111,7 @@ function process_breeds($result)
         return;
     }
     $data = $data["data"];
-    error_log("data: " . var_export($data, true));
+    //error_log("data: " . var_export($data, true));
     // Get columns from CA_Breeds table
     $db = getDB();
     $stmt = $db->prepare("SHOW COLUMNS FROM CA_Breeds");
@@ -138,12 +138,105 @@ function process_breeds($result)
     insert_breeds_into_db($db, $breeds, $mappings);
 }
 
+function process_temperament($result)
+{
+    $status = se($result, "status", 400, false);
+    if ($status != 200) {
+        return;
+    }
+
+    // Extract data from result
+    $data_string = html_entity_decode(se($result, "response", "{}", false));
+    $wrapper = "{\"data\":$data_string}";
+    $data = json_decode($wrapper, true);
+    if (!isset($data["data"])) {
+        return;
+    }
+    $data = $data["data"];
+    $temperament = [];
+    foreach ($data as $breed) {
+        $t = se($breed, "temperament", "", false);
+        $breed_id = se($breed, "id", "", false);
+        
+        if (!empty($t) && !empty($breed_id)) {
+            $temps = array_map('trim', explode(',', $t));
+            //error_log("temps map: " . var_export($temps,true));
+            if (count($temps) > 0) {
+                if(!isset($temperament[$breed_id])){
+                    $temperament[$breed_id] = [];
+                }
+               $temperament[$breed_id]=  array_merge($temperament[$breed_id], $temps);
+                //array_push($temperament[$breed_id], $temps);
+            }
+        }
+        
+    }
+    // Flatten the array
+    $flat_temperament = [];
+    foreach($temperament as $key=>$value){
+        $flat_temperament = array_merge($flat_temperament, $value);
+    }
+    // Get unique values
+    $unique_temperament = array_unique($flat_temperament);
+
+    // Info vs INSERT IGNORE and ON DUPLICATE KEY UPDATE: https://stackoverflow.com/a/4920619
+    $query = "INSERT IGNORE INTO CA_Temperaments (name) VALUES ";
+    $values = [];
+    $placeholders = [];
+    $i = 0;
+    foreach ($unique_temperament as $ut) {
+        $placeholders[] = "(:temperament{$i})";
+        $values["temperament{$i}"] = $ut;
+        $i++;
+    }
+    $query .= implode(',', $placeholders);
+
+    $db = getDB();
+    $stmt = $db->prepare($query);
+    foreach ($values as $key => $value) {
+        $stmt->bindValue($key, $value);
+    }
+    try {
+        $stmt->execute();
+    } catch (PDOException $e) {
+        error_log("Error inserting temperament data: " . var_export($e, true));
+    }
+
+    $query = "INSERT IGNORE INTO CA_BreedTemperaments (breed_id, temperament_id) VALUES ";
+    $values = [];
+    $placeholders = [];
+    $i = 0;
+    foreach($temperament as $breed_id => $temps){
+        foreach($temps as $temp){
+            $placeholders[] = "((SELECT id from CA_Breeds WHERE api_id = :b$i LIMIT 1), (SELECT id from CA_Temperaments WHERE name = :name$i LIMIT 1))";
+            $values[] = [":b$i"=>$breed_id, ":name$i"=>$temp];
+            $i++;
+        }
+        
+    }
+    $query .= implode(',', $placeholders);
+    error_log("query: " . $query);
+    error_log("data: " . var_export($values,true));
+    $stmt = $db->prepare($query);
+    $i = 0;
+    foreach($values as $index=>$val){
+        foreach($val as $key=>$v){
+           $stmt->bindValue("$key", $v);
+        }
+    }
+    try {
+        $stmt->execute();
+    } catch (PDOException $e) {
+        error_log("Error inserting breed-temperament data: " . var_export($e, true));
+    }
+}
 $action = se($_POST, "action", "", false);
 if ($action) {
     switch ($action) {
         case "breeds":
             $result = get("https://api.thecatapi.com/v1/breeds", "CAT_API_KEY", ["limit" => 75, "page" => 0], false);
             process_breeds($result);
+            process_temperament($result);
             break;
     }
 }
@@ -158,6 +251,9 @@ if ($action) {
                 <input type="hidden" name="action" value="breeds" />
                 <input type="submit" class="btn btn-primary" value="Refresh Breeds" />
             </form>
+        </div>
+        <div class="col">
+            <a class="btn btn-secondary" href="<?php get_url("admin/cat_profile.php", true);?>">Create Cat Profile</a>
         </div>
     </div>
 </div>

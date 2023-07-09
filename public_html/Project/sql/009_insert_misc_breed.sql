@@ -1,0 +1,1 @@
+INSERT IGNORE INTO `CA_Breeds` (id, name) VALUES (-1, "Other/Mix");

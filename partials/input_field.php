@@ -9,33 +9,55 @@
     $_value = se($data, "value", "", false);
     $_name = se($data, "name", "", false);
     $_non_stanard_types = ["select", "radio", "checkbox", "toggle", "switch", "range", "textarea"]; //add more as necessary
-    $_rules = isset($data["rules"])?$data["rules"]:[];// Can't use se() here since se() doesn't support returning complex data types (i.e., arrays);
+    $_rules = isset($data["rules"]) ? $data["rules"] : []; // Can't use se() here since se() doesn't support returning complex data types (i.e., arrays);
     //map rules to key="value"
-    $_rules = array_map(function($key, $value) {
+    $_rules = array_map(function ($key, $value) {
         //used to convert html attributes that don't require a value like required, disabled, readonly, etc
-        if($value === true){
+        if ($value === true) {
             return $key;
         }
         return $key . '="' . $value . '"';
     }, array_keys($_rules), $_rules);
     //convert array to a space separate string
     $_rules = implode(" ", $_rules);
+    //handling select
+    $_options = [];
+    if (isset($data["options"]) && is_array($data["options"])) {
+        foreach ($data["options"] as $opt) {
+            $label = se($opt, "label", "Missing Label", false);
+            $val = se($opt, "value", "Missing Value", false);
+            array_push($_options, ["label" => $label, "value" => $val]);
+        }
+    }
     ?>
     <?php /* Include margin open tag */ ?>
     <?php if ($_include_margin) : ?>
         <div class="mb-3">
         <?php endif; ?>
-        <?php if ($_label) : ?>
+        <?php /* added an in_array check to exclude a separate label for special form components that bundle the label differently (see switch)*/ ?>
+        <?php if ($_label && !in_array($_type, ["switch"])) : ?>
             <?php /* label field */ ?>
             <label class="form-label" for="<?php se($_id); ?>"><?php se($_label); ?></label>
         <?php endif; ?>
 
         <?php if (!in_array($_type, $_non_stanard_types)) : ?>
             <?php /* input field */ ?>
-            <input type="<?php se($_type); ?>" name="<?php se($_name); ?>" class="form-control" id="<?php se($_id); ?>" value="<?php se($_value); ?>" placeholder="<?php se($_placeholder); ?>" 
-            <?php echo $_rules;?> />
-        <?php elseif($_type === "textarea"):?>
-            <textarea class="form-control" name="<?php se($_name); ?>" id="<?php se($_id); ?>" placeholder="<?php se($_placeholder); ?>" <?php echo $_rules;?>><?php se($_value);?></textarea>
+            <input type="<?php se($_type); ?>" name="<?php se($_name); ?>" class="form-control" id="<?php se($_id); ?>" value="<?php se($_value); ?>" placeholder="<?php se($_placeholder); ?>" <?php echo $_rules; ?> />
+        <?php elseif ($_type === "textarea") : ?>
+            <textarea class="form-control" name="<?php se($_name); ?>" id="<?php se($_id); ?>" placeholder="<?php se($_placeholder); ?>" <?php echo $_rules; ?>><?php se($_value); ?></textarea>
+        <?php elseif ($_type === "select") : ?>
+            <select class="form-select" name="<?php se($_name); ?>" value="<?php se($_value); ?>" <?php echo $_rules; ?> id="<?php se($_id); ?>">
+                <?php foreach ($_options as $opt) : ?>
+                    <option <?php /* This echo here applies the 'selected' attribute if the $_value matches the specific option
+                    without this, since options are created after the select field's value is set, the browser won't show the correct existing value */ ?> 
+                    <?php echo (se($opt, "value", "", false) == $_value) ? "selected" : ""; ?> value="<?php se($opt, "value"); ?>"><?php se($opt, "label"); ?></option>
+                <?php endforeach; ?>
+            </select>
+        <?php elseif ($_type === "switch") : ?>
+            <div class="form-check form-switch">
+                <input class="form-check-input" name="<?php se($_name); ?>" type="checkbox" role="switch" id="<?php se($_id); ?>" <?php echo $_value?"checked":""; ?> <?php echo $_rules; ?>>
+                <label class="form-check-label" for="<?php se($_id); ?>"><?php se($_label);?></label>
+            </div>
         <?php elseif ($_type === "TBD type") : ?>
             <?php /* TODO other non-form-control elements */ ?>
         <?php endif; ?>

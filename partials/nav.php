@@ -59,7 +59,7 @@ session_start();
                             <li><a class="dropdown-item" href="<?php echo get_url('admin/assign_roles.php'); ?>">Assign</a></li>
                         </ul>
                     </li>
-                   
+                    <li class="nav-item"><a class="nav-link" href="<?php echo get_url('admin/manage_cat_data.php'); ?>">Manage Cats</a></li>
                 <?php endif; ?>
                 <?php if (is_logged_in()) : ?>
                     <li class="nav-item"><a class="nav-link" href="<?php echo get_url('logout.php'); ?>">Logout</a></li>
