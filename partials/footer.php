@@ -7,3 +7,5 @@
  * Similar concept as functions.php
  */
 require_once(__DIR__ . "/flash.php");
+
+$_SESSION["previous"] = $_SERVER['REQUEST_URI'];

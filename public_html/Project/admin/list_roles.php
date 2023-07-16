@@ -44,25 +44,25 @@ try {
     flash(var_export($e->errorInfo, true), "danger");
 }
 
-$table = ["data"=>$roles, "post_self_form"=>["name"=>"role_id", "label"=>"Toggle", "classes"=>"btn btn-secondary"]];
+$table = ["data" => $roles, "post_self_form" => ["name" => "role_id", "label" => "Toggle", "classes" => "btn btn-secondary"]];
 
 ?>
 <div class="container-fluid">
     <h1>List Roles</h1>
     <form method="POST">
-        <?php render_input(["type" => "search", "name" => "role", "placeholder" => "Role Filter", "value"=>$search]);/*lazy value to check if form submitted, not ideal*/ ?>
+        <?php render_input(["type" => "search", "name" => "role", "placeholder" => "Role Filter", "value" => $search]);/*lazy value to check if form submitted, not ideal*/ ?>
         <?php render_button(["text" => "Search", "type" => "submit"]); ?>
     </form>
-    <?php render_table($table);?>
-    
+    <?php render_table($table); ?>
+
     <script>
         //javascript magic to help fill a gap with the dynamic table since I didn't deal with persisting query parameters yet
-        let forms = [...document.forms];//skip the first form which is our search form
+        let forms = [...document.forms]; //skip the first form which is our search form
         forms.shift();
         console.log("forms", forms);
-        let search = "<?php se($search);?>"; // PHP will write here before sending to the browser so the browser will see it as a constant value
+        let search = "<?php se($search); ?>"; // PHP will write here before sending to the browser so the browser will see it as a constant value
         //use javascript to add the previous hidden field to all form tags
-        for(let form of forms){
+        for (let form of forms) {
             let ele = document.createElement("input");
             ele.type = "hidden";
             ele.name = "role";
@@ -73,5 +73,5 @@ $table = ["data"=>$roles, "post_self_form"=>["name"=>"role_id", "label"=>"Toggle
 </div>
 <?php
 //note we need to go up 1 more directory
-require_once(__DIR__ . "/../../../partials/flash.php");
+require_once(__DIR__ . "/../../../partials/footer.php");
 ?>

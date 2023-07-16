@@ -6,7 +6,12 @@
     $_id = se($data, "id", uniqid(), false);
     $_type = se($data, "type", "text", false);
     $_placeholder = se($data, "placeholder", "", false);
-    $_value = se($data, "value", "", false);
+    //$_value = se($data, "value", "", false);
+    if (isset($data["value"]) && is_array($data["value"])) {
+        $_value = $data["value"];
+    } else {
+        $_value = se($data, "value", "", false);
+    }
     $_name = se($data, "name", "", false);
     $_non_stanard_types = ["select", "radio", "checkbox", "toggle", "switch", "range", "textarea"]; //add more as necessary
     $_rules = isset($data["rules"]) ? $data["rules"] : []; // Can't use se() here since se() doesn't support returning complex data types (i.e., arrays);
@@ -29,6 +34,17 @@
             array_push($_options, ["label" => $label, "value" => $val]);
         }
     }
+    //error_log("options: " . var_export($_options, true));
+    //error_log("value: " . var_export($_value, true));
+    if (!function_exists("check_selected")) {
+        function check_selected($vals, $opt)
+        {
+            if (is_array($vals)) {
+                return in_array($opt, $vals);
+            }
+            return $opt == $vals;
+        }
+    }
     ?>
     <?php /* Include margin open tag */ ?>
     <?php if ($_include_margin) : ?>
@@ -49,14 +65,13 @@
             <select class="form-select" name="<?php se($_name); ?>" value="<?php se($_value); ?>" <?php echo $_rules; ?> id="<?php se($_id); ?>">
                 <?php foreach ($_options as $opt) : ?>
                     <option <?php /* This echo here applies the 'selected' attribute if the $_value matches the specific option
-                    without this, since options are created after the select field's value is set, the browser won't show the correct existing value */ ?> 
-                    <?php echo (se($opt, "value", "", false) == $_value) ? "selected" : ""; ?> value="<?php se($opt, "value"); ?>"><?php se($opt, "label"); ?></option>
+                    without this, since options are created after the select field's value is set, the browser won't show the correct existing value */ ?> <?php echo (check_selected($_value, se($opt, "value", "", false)) ? "selected" : ""); ?> value="<?php se($opt, "value"); ?>"><?php se($opt, "label"); ?></option>
                 <?php endforeach; ?>
             </select>
         <?php elseif ($_type === "switch") : ?>
             <div class="form-check form-switch">
-                <input class="form-check-input" name="<?php se($_name); ?>" type="checkbox" role="switch" id="<?php se($_id); ?>" <?php echo $_value?"checked":""; ?> <?php echo $_rules; ?>>
-                <label class="form-check-label" for="<?php se($_id); ?>"><?php se($_label);?></label>
+                <input class="form-check-input" name="<?php se($_name); ?>" type="checkbox" role="switch" id="<?php se($_id); ?>" <?php echo $_value ? "checked" : ""; ?> <?php echo $_rules; ?>>
+                <label class="form-check-label" for="<?php se($_id); ?>"><?php se($_label); ?></label>
             </div>
         <?php elseif ($_type === "TBD type") : ?>
             <?php /* TODO other non-form-control elements */ ?>

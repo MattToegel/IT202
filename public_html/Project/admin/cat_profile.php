@@ -11,12 +11,17 @@ if (!has_role("Admin")) {
  * This page will handle both create and edit
  */
 $breeds = [];
+$statuses = ["Adopted", "Fostered", "Unavailable", "Available"];
+$statuses = array_map(function ($v) {
+    return ["label" => $v, "value" => strtolower($v)];
+}, $statuses);
 
 $result = get_breeds();
 // convert breed data to render_input's expected "options" data
 $breeds = array_map(function ($v) {
     return ["label" => $v["name"], "value" => $v["id"]];
 }, $result);
+
 $sex = [
     ["label" => "Male", "value" => "m"],
     ["label" => "Female", "value" => "f"]
@@ -27,7 +32,7 @@ if (count($_POST) > 0) {
     $cat = $_POST;
     $images = isset($_POST["images"]) ? $_POST["images"] : [];
     //note: need to convert checkbox fields differently, unchecked ones don't get submitted
-    $_POST["fixed"] = isset($_POST["fixed"]); // convert to boolean
+    $_POST["fixed"] = isset($_POST["fixed"]) ? 1 : 0; // convert to boolean
     //remove the images key so it doesn't impact our helper save_data()/update_data()
     unset($_POST["images"]);
     $cat_id = -1;
@@ -53,10 +58,12 @@ if (count($_POST) > 0) {
         $query .= " ON DUPLICATE KEY UPDATE is_active = !is_active";
         $db = getDB();
         $stmt = $db->prepare($query);
+
         foreach ($values as $val) {
-            foreach ($val as $key => $v) {
+            /*foreach ($val as $key => $v) {
                 $stmt->bindValue($key, $v);
-            }
+            }*/
+            bind_params($stmt, $val);
         }
         try {
             $stmt->execute();
@@ -77,7 +84,7 @@ if (count($_POST) > 0) {
 if ($id > 0) {
     $db = getDB();
 
-    $query = "SELECT name, breed_id, breed_extra, born, sex, fixed, weight, description,
+    $query = "SELECT name, breed_id, breed_extra, born, sex, fixed, weight, description, status,
     (SELECT GROUP_CONCAT(url) FROM CA_CatImages as CCI JOIN CA_Images as CI on CI.id = CCI.image_id WHERE CCI.cat_id = CC.id) as images 
     FROM CA_Cats as CC WHERE id = :id";
     $stmt = $db->prepare($query);
@@ -98,12 +105,17 @@ if ($id > 0) {
         flash("An unhandled error occurred", "danger");
     }
 }
+$data = $_GET;
+unset($data["id"]);
+$back = "admin/list_cats.php?" . http_build_query($data);
 ?>
 <div class="container-fluid">
     <h1>Cat Profile</h1>
+    <a class="btn btn-secondary" href="<?php get_url($back, true); ?>">Back</a>
     <form method="POST">
         <?php render_input(["type" => "text", "id" => "name", "name" => "name", "label" => "Name", "rules" => ["minlength" => 2, "required" => true], "value" => se($cat, "name", "", false)]); ?>
-        <?php render_input(["type" => "select", "id" => "breed", "name" => "breed_id", "label" => "Breed", "options" => $breeds, "rules" => ["required" => true], "value" => se($cat, "breed", "", false)]); ?>
+        <?php render_input(["type" => "select", "id" => "status", "name" => "status", "label" => "Status", "options" => $statuses, "rules" => ["required" => true], "value" => se($cat, "status", "", false)]); ?>
+        <?php render_input(["type" => "select", "id" => "breed", "name" => "breed_id", "label" => "Breed", "options" => $breeds, "rules" => ["required" => true], "value" => se($cat, "breed_id", "", false)]); ?>
         <?php render_input(["type" => "text", "id" => "breed_extra", "name" => "breed_extra", "label" => "Extra Breed Info (optional)", "value" => se($cat, "breed_extra", "", false)]); ?>
         <div>
             <?php render_button(["text" => "Fetch Images", "type" => "button", "onclick" => "fetch_images(event)"]); ?>
@@ -183,5 +195,5 @@ if ($id > 0) {
 </style>
 <?php
 //note we need to go up 1 more directory
-require_once(__DIR__ . "/../../../partials/flash.php");
+require_once(__DIR__ . "/../../../partials/footer.php");
 ?>

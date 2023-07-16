@@ -1,3 +1,7 @@
-label{
+label {
+    text-transform: capitalize;
+}
+
+.card-header {
     text-transform: capitalize;
 }

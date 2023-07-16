@@ -157,23 +157,22 @@ function process_temperament($result)
     foreach ($data as $breed) {
         $t = se($breed, "temperament", "", false);
         $breed_id = se($breed, "id", "", false);
-        
+
         if (!empty($t) && !empty($breed_id)) {
             $temps = array_map('trim', explode(',', $t));
             //error_log("temps map: " . var_export($temps,true));
             if (count($temps) > 0) {
-                if(!isset($temperament[$breed_id])){
+                if (!isset($temperament[$breed_id])) {
                     $temperament[$breed_id] = [];
                 }
-               $temperament[$breed_id]=  array_merge($temperament[$breed_id], $temps);
+                $temperament[$breed_id] =  array_merge($temperament[$breed_id], $temps);
                 //array_push($temperament[$breed_id], $temps);
             }
         }
-        
     }
     // Flatten the array
     $flat_temperament = [];
-    foreach($temperament as $key=>$value){
+    foreach ($temperament as $key => $value) {
         $flat_temperament = array_merge($flat_temperament, $value);
     }
     // Get unique values
@@ -206,22 +205,21 @@ function process_temperament($result)
     $values = [];
     $placeholders = [];
     $i = 0;
-    foreach($temperament as $breed_id => $temps){
-        foreach($temps as $temp){
+    foreach ($temperament as $breed_id => $temps) {
+        foreach ($temps as $temp) {
             $placeholders[] = "((SELECT id from CA_Breeds WHERE api_id = :b$i LIMIT 1), (SELECT id from CA_Temperaments WHERE name = :name$i LIMIT 1))";
-            $values[] = [":b$i"=>$breed_id, ":name$i"=>$temp];
+            $values[] = [":b$i" => $breed_id, ":name$i" => $temp];
             $i++;
         }
-        
     }
     $query .= implode(',', $placeholders);
     error_log("query: " . $query);
-    error_log("data: " . var_export($values,true));
+    error_log("data: " . var_export($values, true));
     $stmt = $db->prepare($query);
     $i = 0;
-    foreach($values as $index=>$val){
-        foreach($val as $key=>$v){
-           $stmt->bindValue("$key", $v);
+    foreach ($values as $index => $val) {
+        foreach ($val as $key => $v) {
+            $stmt->bindValue("$key", $v);
         }
     }
     try {
@@ -253,7 +251,14 @@ if ($action) {
             </form>
         </div>
         <div class="col">
-            <a class="btn btn-secondary" href="<?php get_url("admin/cat_profile.php", true);?>">Create Cat Profile</a>
+            <a class="btn btn-secondary" href="<?php get_url("admin/cat_profile.php", true); ?>">Create Cat Profile</a>
+        </div>
+        <div class="col">
+            <a class="btn btn-secondary" href="<?php get_url("admin/list_cats.php", true); ?>">List Cats</a>
         </div>
     </div>
 </div>
+<?php
+//note we need to go up 1 more directory
+require_once(__DIR__ . "/../../../partials/footer.php");
+?>
