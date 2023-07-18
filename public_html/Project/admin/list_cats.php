@@ -19,6 +19,9 @@ $table = ["data" => $cats, "delete_url" => "admin/disable_cat_profile.php", "vie
     <div>
         <?php render_table($table); ?>
     </div>
+    <div class="row">
+        <?php include(__DIR__ . "/../../../partials/pagination_nav.php"); ?>
+    </div>
 </div>
 
 <?php

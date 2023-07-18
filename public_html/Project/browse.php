@@ -25,6 +25,9 @@ $cats = search_cats();
                 </div>
             <?php endif; ?>
         </div>
+        <div class="row">
+            <?php include(__DIR__ . "/../../partials/pagination_nav.php"); ?>
+        </div>
     </div>
 </div>
 <?php
