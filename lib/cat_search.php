@@ -41,16 +41,10 @@ function get_potential_total_records($query, $params)
     $db = getDB();
     $stmt = $db->prepare($query);
     //temporarily remove mappings that don't exist for the total query
+    // note this is ok as $params is passed by value in this case, not by reference
     $params = array_filter($params, function ($key) use ($query) {
         return str_contains($query, $key);
     }, ARRAY_FILTER_USE_KEY);
-    /*$params = [];
-    $keys = array_keys($_params);
-    foreach ($keys as $key) {
-        if (str_contains($query, $key)) {
-            $params[$key] = $_params[$key];
-        }
-    }*/
     bind_params($stmt, $params);
     $total = 0;
     try {
