@@ -8,6 +8,25 @@ if ($id <= 0) {
     error_log("redirecting to " . var_export($url, true));
     redirect(get_url($url));
 }
+if (count($_POST) > 0) {
+    $action = se($_POST, "action", "", false);
+    $requestor_notes = se($_POST, "details", "", false);
+    if ($action == "adopt") {
+        $intent_id = create_intent($id, get_user_id(), null, $action, $requestor_notes);
+        if ($intent_id > 0) {
+            flash("Your request has been submitted!", "success");
+        } else {
+            flash("There was a problem submitting your request", "danger");
+        }
+    } else if ($action == "foster") {
+        $intent_id = create_intent($id, get_user_id(), null, $action, $requestor_notes);
+        if ($intent_id > 0) {
+            flash("Your request has been submitted!", "success");
+        } else {
+            flash("There was a problem submitting your request", "danger");
+        }
+    }
+}
 $_GET["image_limit"] = 10;
 $cat = search_cats();
 $cat = $cat[0];
@@ -105,7 +124,68 @@ if ($breed_id != 0) {
                 </div>
             </div>
         </div>
+        <div class="card-footer">
+            <div class="row">
+                <button class="btn btn-success" type="button" data-bs-toggle="modal" data-bs-target="#actionModal" data-bs-action="adopt">Adopt</button>
+                <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#actionModal" data-bs-action="foster">Foster</button>
+            </div>
+        </div>
     </div>
+    <div class="modal fade" id="actionModal" tabindex="-1" aria-labelledby="actionModal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form method="POST">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="actionModalLabel">Action Prompt</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+
+                        <div class="mb-3">
+                            <?php
+                            render_input(["type" => "textarea", "name" => "details", "label" => "Request Details", "rules" => ["required" => true]]);
+                            ?>
+                            <?php render_input(["type" => "hidden", "id" => "action", "name" => "action", "value" => ""]); ?>
+                        </div>
+
+
+                    </div>
+                    <div class="modal-footer">
+                        <?php
+                        render_button(["type" => "button", "color" => "secondary", "extras" => ["data-bs-dismiss" => "modal"], "text" => "Close"]);
+                        render_button(["type" => "submit", "color" => "primary", "text" => "Submit Request"]);
+                        ?>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        const actionModal = document.getElementById('actionModal')
+        if (actionModal) {
+            actionModal.addEventListener('show.bs.modal', event => {
+                // Button that triggered the modal
+                const button = event.relatedTarget;
+                // Extract info from data-bs-* attributes
+                const action = button.getAttribute('data-bs-action');
+                // If necessary, you could initiate an Ajax request here
+                // and then do the updating in a callback.
+                const catName = "<?php se($cat, "name"); ?>";
+
+                // Update the modal's content.
+                const modalTitle = actionModal.querySelector('.modal-title')
+
+                modalTitle.textContent = `${action} ${catName}`
+                const actionInput = actionModal.querySelector("#action");
+                actionInput.value = action;
+            })
+        }
+    </script>
+    <style>
+        .modal-title {
+            text-transform: capitalize;
+        }
+    </style>
     <?php
     require_once(__DIR__ . "/../../partials/footer.php");
     ?>

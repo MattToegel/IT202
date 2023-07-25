@@ -81,6 +81,10 @@
                                     <!-- TODO refactor -->
                                     <form method="POST">
                                         <input type="hidden" name="<?php se($_post_self_form, "name", $_primary_key_column); ?>" value="<?php se($row, $_primary_key_column); ?>" />
+                                        <?php $action = se($_post_self_form, "action", "", false); ?>
+                                        <?php if ($action) : ?>
+                                            <input type="hidden" name="action" value="<?php se($action); ?>" />
+                                        <?php endif; ?>
                                         <input type="submit" class="<?php se($_post_self_form, "classes"); ?>" value="<?php se($_post_self_form, "label", "Submit"); ?>" />
                                     </form>
                                 <?php endif; ?>
@@ -96,3 +100,8 @@
         </tbody>
     </table>
 <?php endif; ?>
+<style>
+    .table th {
+        text-transform: capitalize;
+    }
+</style>

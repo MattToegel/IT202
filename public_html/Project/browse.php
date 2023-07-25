@@ -11,7 +11,7 @@ $cats = search_cats();
     <h4>Purfect Friends</h4>
     <div class="container mx-auto">
         <div>
-            <?php include(__DIR__ . "/../../partials/search_form.php"); ?>
+            <?php include(__DIR__ . "/../../partials/cat_search_form.php"); ?>
         </div>
         <div class="row justify-content-center">
             <?php foreach ($cats as $cat) : ?>

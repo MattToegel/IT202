@@ -1,0 +1,1 @@
+ALTER TABLE CA_Cats ADD COLUMN previous_status VARCHAR(20);

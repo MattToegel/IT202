@@ -36,3 +36,5 @@ require_once(__DIR__ . "/redirect.php");
 require_once(__DIR__ . "/cat_helpers.php");
 
 require_once(__DIR__ . "/cat_search.php");
+
+require_once(__DIR__ . "/intent_helpers.php");

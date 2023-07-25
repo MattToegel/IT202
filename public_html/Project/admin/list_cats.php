@@ -14,7 +14,7 @@ $table = ["data" => $cats, "delete_url" => "admin/disable_cat_profile.php", "vie
 <div class="container-fluid">
     <h1>List Cats</h1>
     <div>
-        <?php include(__DIR__ . "/../../../partials/search_form.php"); ?>
+        <?php include(__DIR__ . "/../../../partials/cat_search_form.php"); ?>
     </div>
     <div>
         <?php render_table($table); ?>

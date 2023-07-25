@@ -60,7 +60,7 @@ function get_potential_total_records($query, $params)
     return $total;
 }
 
-function _build_where_clause(&$query, &$params, $search)
+function _build_cats_where_clause(&$query, &$params, $search)
 {
     $params[":image_limit"] = 1;
     // Add conditions to the query based on the search parameters
@@ -173,7 +173,7 @@ function _build_search_query(&$params, $search)
             CA_Cats as c JOIN CA_Breeds as b on c.breed_id = b.id
             WHERE 1=1";
     $total_query = "SELECT count(1) as total FROM CA_Cats as c JOIN CA_Breeds as b on c.breed_id = b.id WHERE 1=1";
-    _build_where_clause($filter_query, $params, $search);
+    _build_cats_where_clause($filter_query, $params, $search);
     //added pagination (need limit and page to be in $search)
     // produces a $total value for use in UI
 

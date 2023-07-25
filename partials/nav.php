@@ -43,6 +43,7 @@ session_start();
                 <li class="nav-item"><a class="nav-link" href="<?php echo get_url('browse.php'); ?>">Browse</a></li>
                 <?php if (is_logged_in()) : ?>
                     <li class="nav-item"><a class="nav-link" href="<?php echo get_url('profile.php'); ?>">Profile</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?php echo get_url('my_requests.php'); ?>">My Requests</a></li>
                 <?php endif; ?>
                 <?php if (!is_logged_in()) : ?>
                     <li class="nav-item"><a class="nav-link" href="<?php echo get_url('login.php'); ?>">Login</a></li>
@@ -60,6 +61,7 @@ session_start();
                         </ul>
                     </li>
                     <li class="nav-item"><a class="nav-link" href="<?php echo get_url('admin/manage_cat_data.php'); ?>">Manage Cats</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?php echo get_url('admin/requests.php'); ?>">Requests</a></li>
                 <?php endif; ?>
                 <?php if (is_logged_in()) : ?>
                     <li class="nav-item"><a class="nav-link" href="<?php echo get_url('logout.php'); ?>">Logout</a></li>
