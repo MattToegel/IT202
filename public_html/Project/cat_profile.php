@@ -11,14 +11,7 @@ if ($id <= 0) {
 if (count($_POST) > 0) {
     $action = se($_POST, "action", "", false);
     $requestor_notes = se($_POST, "details", "", false);
-    if ($action == "adopt") {
-        $intent_id = create_intent($id, get_user_id(), null, $action, $requestor_notes);
-        if ($intent_id > 0) {
-            flash("Your request has been submitted!", "success");
-        } else {
-            flash("There was a problem submitting your request", "danger");
-        }
-    } else if ($action == "foster") {
+    if (in_array($action, ["adopt", "foster"])) {
         $intent_id = create_intent($id, get_user_id(), null, $action, $requestor_notes);
         if ($intent_id > 0) {
             flash("Your request has been submitted!", "success");
