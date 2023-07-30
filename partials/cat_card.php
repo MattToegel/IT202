@@ -2,6 +2,10 @@
     <div class="card" style="width:15em">
         <div class="card-header">
             <?php se($data, "status", "N/A"); ?>
+            <?php if (se($data, "username", "", false)) : ?> by
+                <a href="<?php get_url("profile.php?id=", true);
+                            se($data, "owner_id"); ?>"><?php se($data, "username"); ?></a> - <?php se($data, "last_updated"); ?>
+            <?php endif; ?>
         </div>
         <?php /* handle image*/
         $urls = isset($data["urls"]) ? $data["urls"] : "";

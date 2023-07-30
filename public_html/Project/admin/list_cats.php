@@ -16,6 +16,8 @@ $table = ["data" => $cats, "delete_url" => "admin/disable_cat_profile.php", "vie
     <div>
         <?php include(__DIR__ . "/../../../partials/cat_search_form.php"); ?>
     </div>
+    <?php $results = $cats;
+    include(__DIR__ . "/../../partials/result_metrics.php"); ?>
     <div>
         <?php render_table($table); ?>
     </div>

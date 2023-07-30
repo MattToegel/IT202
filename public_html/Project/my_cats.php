@@ -1,14 +1,14 @@
 <?php
-require(__DIR__ . "/../../partials/nav.php");
+require_once(__DIR__ . "/../../partials/nav.php");
+is_logged_in(true); //login guard 
+$user_id = get_user_id();
 
-// remove single view filter
-if (isset($_GET["id"])) {
-    unset($_GET["id"]);
-}
+$search["owner_id"] = $user_id;
 $cats = search_cats();
+
 ?>
 <div class="container-fluid">
-    <h4>Purfect Friends</h4>
+    <h4>My Cats</h4>
     <div class="container mx-auto">
         <div>
             <?php include(__DIR__ . "/../../partials/cat_search_form.php"); ?>
@@ -23,7 +23,7 @@ $cats = search_cats();
             <?php endforeach; ?>
             <?php if (count($cats) === 0) : ?>
                 <div class="col-12">
-                    No furry friends available
+                    You don't own any cats.
                 </div>
             <?php endif; ?>
         </div>

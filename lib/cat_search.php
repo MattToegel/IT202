@@ -3,7 +3,11 @@ function search_cats()
 {
     // Initialize variables
     global $search; //make search available outside of this function
-    $search = $_GET;
+    if (isset($search) && !empty($search)) {
+        $search = array_merge($search, $_GET);
+    } else {
+        $search = $_GET;
+    }
     $cats = [];
     $params = [];
 
@@ -124,6 +128,13 @@ function _build_cats_where_clause(&$query, &$params, $search)
                 case "image_limit":
                     $params[":image_limit"] = (int)$value;
                     break;
+                case "owner_id":
+                    $params[":owner_id"] = $value;
+                    $query .= " AND c.id IN (SELECT cat_id FROM CA_Cat_Owner WHERE owner_id = :owner_id)";
+                    break;
+                case "new":
+                    $query .= " AND NOT EXISTS (SELECT cat_id FROM CA_Cat_Owner where cat_id = c.id)";
+                    break;
             }
         }
     }
@@ -168,9 +179,14 @@ function _build_search_query(&$params, $search)
             TIMESTAMPDIFF(YEAR, c.born, CURDATE()) AS age, 
             c.status,
             (SELECT GROUP_CONCAT(url SEPARATOR ', ') FROM CA_CatImages as CI JOIN CA_Images I on I.id = CI.image_id WHERE CI.cat_id = c.id LIMIT :image_limit) as urls,
-            (SELECT GROUP_CONCAT(t.name SEPARATOR ', ') FROM CA_Temperaments t JOIN CA_BreedTemperaments bt on t.id = bt.temperament_id WHERE bt.breed_id = c.breed_id LIMIT 1) as temperament
+            (SELECT GROUP_CONCAT(t.name SEPARATOR ', ') FROM CA_Temperaments t JOIN CA_BreedTemperaments bt on t.id = bt.temperament_id WHERE bt.breed_id = c.breed_id LIMIT 1) as temperament,
+            co.owner_id as owner_id,
+            u.username as username,
+            c.modified as last_updated
             FROM 
             CA_Cats as c JOIN CA_Breeds as b on c.breed_id = b.id
+            LEFT JOIN CA_Cat_Owner co on co.cat_id = c.id
+            LEFT JOIN Users u on co.owner_id = u.id
             WHERE 1=1";
     $total_query = "SELECT count(1) as total FROM CA_Cats as c JOIN CA_Breeds as b on c.breed_id = b.id WHERE 1=1";
     _build_cats_where_clause($filter_query, $params, $search);

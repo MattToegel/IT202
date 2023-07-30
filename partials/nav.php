@@ -41,9 +41,19 @@ session_start();
         <div class="collapse navbar-collapse" id="navContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item"><a class="nav-link" href="<?php echo get_url('browse.php'); ?>">Browse</a></li>
+                <li class="nav-item"><a class="nav-link" href="<?php echo get_url('new.php'); ?>">New</a></li>
+                <li class="nav-item"><a class="nav-link" href="<?php echo get_url('recently_adopted.php'); ?>">Recently Adopted</a></li>
                 <?php if (is_logged_in()) : ?>
-                    <li class="nav-item"><a class="nav-link" href="<?php echo get_url('profile.php'); ?>">Profile</a></li>
-                    <li class="nav-item"><a class="nav-link" href="<?php echo get_url('my_requests.php'); ?>">My Requests</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="myDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            My Stuff
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="myDropdown">
+                            <li><a class="dropdown-item" href="<?php echo get_url('profile.php'); ?>">Profile</a></li>
+                            <li><a class="dropdown-item" href="<?php echo get_url('my_requests.php'); ?>">My Requests</a></li>
+                            <li><a class="dropdown-item" href="<?php echo get_url('my_cats.php'); ?>">My Cats</a></li>
+                        </ul>
+                    </li>
                 <?php endif; ?>
                 <?php if (!is_logged_in()) : ?>
                     <li class="nav-item"><a class="nav-link" href="<?php echo get_url('login.php'); ?>">Login</a></li>
@@ -60,8 +70,15 @@ session_start();
                             <li><a class="dropdown-item" href="<?php echo get_url('admin/assign_roles.php'); ?>">Assign</a></li>
                         </ul>
                     </li>
-                    <li class="nav-item"><a class="nav-link" href="<?php echo get_url('admin/manage_cat_data.php'); ?>">Manage Cats</a></li>
-                    <li class="nav-item"><a class="nav-link" href="<?php echo get_url('admin/requests.php'); ?>">Requests</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="mDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Management
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="mDropdown">
+                            <li><a class="dropdown-item" href="<?php echo get_url('admin/manage_cat_data.php'); ?>">Manage Cats</a></li>
+                            <li><a class="dropdown-item" href="<?php echo get_url('admin/requests.php'); ?>">Requests</a></li>
+                        </ul>
+                    </li>
                 <?php endif; ?>
                 <?php if (is_logged_in()) : ?>
                     <li class="nav-item"><a class="nav-link" href="<?php echo get_url('logout.php'); ?>">Logout</a></li>

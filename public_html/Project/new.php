@@ -1,20 +1,15 @@
 <?php
-require(__DIR__ . "/../../partials/nav.php");
+require_once(__DIR__ . "/../../partials/nav.php");
 
-// remove single view filter
-if (isset($_GET["id"])) {
-    unset($_GET["id"]);
-}
+$search["new"] = true;
+$search["column"] = "modified";
+$search["order"] = "desc";
 $cats = search_cats();
+
 ?>
 <div class="container-fluid">
-    <h4>Purfect Friends</h4>
+    <h4>New Cats!</h4>
     <div class="container mx-auto">
-        <div>
-            <?php include(__DIR__ . "/../../partials/cat_search_form.php"); ?>
-        </div>
-        <?php $results = $cats;
-        include(__DIR__ . "/../../partials/result_metrics.php"); ?>
         <div class="row justify-content-center">
             <?php foreach ($cats as $cat) : ?>
                 <div class="col">

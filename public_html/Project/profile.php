@@ -3,11 +3,19 @@ require_once(__DIR__ . "/../../partials/nav.php");
 is_logged_in(true);
 ?>
 <?php
-if (isset($_POST["save"])) {
+$my_user_id = get_user_id();
+$is_edit = isset($_GET["edit"]);
+$target_user_id = (int)se($_GET, "id", 0, false);
+if ($target_user_id < 1) {
+    $target_user_id = $my_user_id;
+}
+error_log("Target user id: $target_user_id");
+$is_me = $my_user_id == $target_user_id;
+if ($is_me && $is_edit && isset($_POST["save"])) {
     $email = se($_POST, "email", null, false);
     $username = se($_POST, "username", null, false);
 
-    $params = [":email" => $email, ":username" => $username, ":id" => get_user_id()];
+    $params = [":email" => $email, ":username" => $username, ":id" => $my_user_id];
     $db = getDB();
     $stmt = $db->prepare("UPDATE Users set email = :email, username = :username where id = :id");
     try {
@@ -28,23 +36,6 @@ if (isset($_POST["save"])) {
             echo "<pre>" . var_export($e->errorInfo, true) . "</pre>";
         }
     }
-    //select fresh data from table
-    $stmt = $db->prepare("SELECT id, email, username from Users where id = :id LIMIT 1");
-    try {
-        $stmt->execute([":id" => get_user_id()]);
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
-        if ($user) {
-            //$_SESSION["user"] = $user;
-            $_SESSION["user"]["email"] = $user["email"];
-            $_SESSION["user"]["username"] = $user["username"];
-        } else {
-            flash("User doesn't exist", "danger");
-        }
-    } catch (Exception $e) {
-        flash("An unexpected error occurred, please try again", "danger");
-        //echo "<pre>" . var_export($e->errorInfo, true) . "</pre>";
-    }
-
 
     //check/update password
     $current_password = se($_POST, "currentPassword", null, false);
@@ -55,14 +46,14 @@ if (isset($_POST["save"])) {
             //TODO validate current
             $stmt = $db->prepare("SELECT password from Users where id = :id");
             try {
-                $stmt->execute([":id" => get_user_id()]);
+                $stmt->execute([":id" => $my_user_id]);
                 $result = $stmt->fetch(PDO::FETCH_ASSOC);
                 if (isset($result["password"])) {
                     if (password_verify($current_password, $result["password"])) {
                         $query = "UPDATE Users set password = :password where id = :id";
                         $stmt = $db->prepare($query);
                         $stmt->execute([
-                            ":id" => get_user_id(),
+                            ":id" => $my_user_id,
                             ":password" => password_hash($new_password, PASSWORD_BCRYPT)
                         ]);
 
@@ -79,6 +70,27 @@ if (isset($_POST["save"])) {
         }
     }
 }
+$db = getDB();
+//select fresh data from table
+$stmt = $db->prepare("SELECT id, email, username, created from Users where id = :id LIMIT 1");
+try {
+    $stmt->execute([":id" => $target_user_id]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    if ($user) {
+        if ($is_me && $is_edit) {
+            $_SESSION["user"]["email"] = $user["email"];
+            $_SESSION["user"]["username"] = $user["username"];
+        }
+    } else {
+        flash("User doesn't exist", "danger");
+    }
+} catch (PDOException $e) {
+    flash("An unexpected error occurred, please try again", "danger");
+    error_log("Error getting profile: " . var_export($e, true));
+}
+$search["owner_id"] = $target_user_id;
+error_log("Owner id: $target_user_id");
+$cats = search_cats();
 ?>
 
 <?php
@@ -86,17 +98,48 @@ $email = get_user_email();
 $username = get_username();
 ?>
 <div class="container-fluid">
-    <form method="POST" onsubmit="return validate(this);">
-        <?php render_input(["type" => "email", "id" => "email", "name" => "email", "label" => "Email", "value" => $email, "rules" => ["required" => true]]); ?>
-        <?php render_input(["type" => "text", "id" => "username", "name" => "username", "label" => "Username", "value" => $username, "rules" => ["required" => true, "maxlength" => 30]]); ?>
-        <!-- DO NOT PRELOAD PASSWORD -->
-        <div class="lead">Password Reset</div>
-        <?php render_input(["type" => "password", "id" => "cp", "name" => "currentPassword", "label" => "Current Password", "rules" => ["minlength" => 8]]); ?>
-        <?php render_input(["type" => "password", "id" => "np", "name" => "newPassword", "label" => "New Password", "rules" => ["minlength" => 8]]); ?>
-        <?php render_input(["type" => "password", "id" => "conp", "name" => "confirmPassword", "label" => "Confirm Password", "rules" => ["minlength" => 8]]); ?>
-        <?php render_input(["type" => "hidden", "name" => "save"]);/*lazy value to check if form submitted, not ideal*/ ?>
-        <?php render_button(["text" => "Update Profile", "type" => "submit"]); ?>
-    </form>
+    <h3>Profile</h3>
+    <?php if ($is_me) : ?>
+        <?php if (!$is_edit) : ?>
+            <a href="?edit">Edit</a>
+        <?php else : ?>
+            <a href="?">View</a>
+        <?php endif; ?>
+    <?php endif; ?>
+    <?php if ($is_me && $is_edit) : ?>
+        <form method="POST" onsubmit="return validate(this);">
+            <?php render_input(["type" => "email", "id" => "email", "name" => "email", "label" => "Email", "value" => $email, "rules" => ["required" => true]]); ?>
+            <?php render_input(["type" => "text", "id" => "username", "name" => "username", "label" => "Username", "value" => $username, "rules" => ["required" => true, "maxlength" => 30]]); ?>
+            <!-- DO NOT PRELOAD PASSWORD -->
+            <div class="lead">Password Reset</div>
+            <?php render_input(["type" => "password", "id" => "cp", "name" => "currentPassword", "label" => "Current Password", "rules" => ["minlength" => 8]]); ?>
+            <?php render_input(["type" => "password", "id" => "np", "name" => "newPassword", "label" => "New Password", "rules" => ["minlength" => 8]]); ?>
+            <?php render_input(["type" => "password", "id" => "conp", "name" => "confirmPassword", "label" => "Confirm Password", "rules" => ["minlength" => 8]]); ?>
+            <?php render_input(["type" => "hidden", "name" => "save"]);/*lazy value to check if form submitted, not ideal*/ ?>
+            <?php render_button(["text" => "Update Profile", "type" => "submit"]); ?>
+        </form>
+    <?php else : ?>
+        <div class="card">
+            <div class="card-body">
+                <div class="card-title"><?php se($user, "username"); ?></div>
+                <div class="card-text">Joined: <?php se($user, "created"); ?></div>
+            </div>
+            <div class="card-body">
+                <div class="row justify-content-center">
+                    <?php foreach ($cats as $cat) : ?>
+                        <div class="col">
+                            <?php render_cat_list_item($cat); ?>
+                        </div>
+                    <?php endforeach; ?>
+                    <?php if (count($cats) === 0) : ?>
+                        <div class="col-12">
+                            No owned cats
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
 </div>
 <script>
     function validate(form) {
