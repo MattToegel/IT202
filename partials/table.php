@@ -49,7 +49,9 @@
         <?php if ($_header_override) : ?>
             <thead>
                 <?php foreach ($_header_override as $h) : ?>
-                    <th><?php se($h); ?></th>
+                    <?php if (!in_array($h, $_ignored_columns)) : ?>
+                        <th><?php se($h); ?></th>
+                    <?php endif; ?>
                 <?php endforeach; ?>
                 <?php if ($_has_atleast_one_url) : ?>
                     <th>Actions</th>
@@ -60,8 +62,8 @@
             <?php if (is_array($_data) && count($_data) > 0) : ?>
                 <?php foreach ($_data as $row) : ?>
                     <tr>
-                        <?php foreach (array_values($row) as $v) : ?>
-                            <?php if (!in_array($v, $_ignored_columns)) : ?>
+                        <?php foreach ($row as $k => $v) : ?>
+                            <?php if (!in_array($k, $_ignored_columns)) : ?>
                                 <td><?php se($v); ?></td>
                             <?php endif; ?>
                         <?php endforeach; ?>

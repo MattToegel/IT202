@@ -14,7 +14,9 @@ if (count($intents) > 0) {
     }, $headers);
     $headers = join(",", $headers);
 }
+
 $table = ["data" => $intents, "header_override" => $headers, "view_url" => "admin/request.php"];
+$table["ignored_columns"] = ["id", "cat id", "requestor id"];
 
 ?>
 <div class="container-fluid">
