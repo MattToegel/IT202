@@ -195,6 +195,9 @@ function _build_search_query(&$params, $search)
 
     global $total;
     $total = (int)get_potential_total_records($total_query . $filter_query, $params);
+    //This is a rough sample for proper total records, my over-reuse requires me to take a closer look
+    global $total_records;
+    $total_records = (int)get_potential_total_records($total_query, []);
     $limit = (int)se($search, "limit", 10, false);
     error_log("total records: $total");
     $page = (int)se($search, "page", "1", false);
