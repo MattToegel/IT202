@@ -8,7 +8,7 @@ if (!has_role("Admin")) {
 }
 
 $cats = search_cats();
-$table = ["data" => $cats, "delete_url" => "admin/disable_cat_profile.php", "view_url" => "admin/cat_profile.php", "edit_url" => "admin/cat_profile.php"];
+$table = ["data" => $cats,"primary_key"=>"cookie", "delete_url" => "admin/disable_cat_profile.php", "view_url" => "admin/cat_profile.php", "edit_url" => "admin/cat_profile.php"];
 
 ?>
 <div class="container-fluid">
