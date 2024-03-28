@@ -50,7 +50,7 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
         flash("Password must be provided <br>");
         $hasError = true;
     }
-    if (strlen($password) < 8) {
+    if (is_valid_password($password)) {
         flash("Password must be at least 8 characters long <br>");
         $hasError = true;
     }
