@@ -9,7 +9,7 @@ if (isset($_GET["symbol"])) {
     $isRapidAPI = true;
     $rapidAPIHost = "alpha-vantage.p.rapidapi.com";
     $result = get($endpoint, "STOCK_API_KEY", $data, $isRapidAPI, $rapidAPIHost);
-    //example of cached data to save the quotas
+    //example of cached data to save the quotas, don't forget to comment out the get() if using the cached data for testing
     /* $result = ["status" => 200, "response" => '{
     "Global Quote": {
         "01. symbol": "MSFT",
@@ -30,41 +30,6 @@ if (isset($_GET["symbol"])) {
     } else {
         $result = [];
     }
-    if (isset($result["Global Quote"])) {
-        $quote = $result["Global Quote"];
-        $quote = array_reduce(
-            array_keys($quote),
-            function ($temp, $key) use ($quote) {
-                $k = explode(" ", $key)[1];
-                if ($k === "change") {
-                    $k = "per_change";
-                }
-                $temp[$k] = str_replace('%', '', $quote[$key]);
-                return $temp;
-            }
-        );
-        $result = [$quote];
-        $db = getDB();
-        $query = "INSERT INTO `IT202-S24-Stocks` ";
-        $columns = [];
-        $params = [];
-        //per record
-        foreach ($quote as $k => $v) {
-            array_push($columns, "`$k`");
-            $params[":$k"] = $v;
-        }
-        $query .= "(" . join(",", $columns) . ")";
-        $query .= "VALUES (" . join(",", array_keys($params)) . ")";
-        var_export($query);
-        try {
-            $stmt = $db->prepare($query);
-            $stmt->execute($params);
-            flash("Inserted record", "success");
-        } catch (PDOException $e) {
-            error_log("Something broke with the query" . var_export($e, true));
-            flash("An error occurred", "danger");
-        }
-    }
 }
 ?>
 <div class="container-fluid">
@@ -81,23 +46,8 @@ if (isset($_GET["symbol"])) {
         <?php if (isset($result)) : ?>
             <?php foreach ($result as $stock) : ?>
                 <pre>
-            <?php var_export($stock);
-            ?>
-            </pre>
-                <table style="display: none">
-                    <thead>
-                        <?php foreach ($stock as $k => $v) : ?>
-                            <td><?php se($k); ?></td>
-                        <?php endforeach; ?>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <?php foreach ($stock as $k => $v) : ?>
-                                <td><?php se($v); ?></td>
-                            <?php endforeach; ?>
-                        </tr>
-                    </tbody>
-                </table>
+                    <?php var_export($stock);?>
+                </pre>
             <?php endforeach; ?>
         <?php endif; ?>
     </div>
