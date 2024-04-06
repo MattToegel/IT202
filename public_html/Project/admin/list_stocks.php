@@ -32,7 +32,7 @@ error_log("Form data: " . var_export($form, true));
 
 
 
-$query = "SELECT id, symbol, open, low, high, price, per_change, latest, volume FROM `IT202-S24-Stocks` WHERE 1=1";
+$query = "SELECT id, symbol, open, low, high, price, per_change, latest, volume, is_api FROM `IT202-S24-Stocks` WHERE 1=1";
 $params = [];
 $session_key = $_SERVER["SCRIPT_NAME"];
 $is_clear = isset($_GET["clear"]);
