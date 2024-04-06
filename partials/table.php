@@ -43,7 +43,7 @@
 
     ?>
     <?php if ($_title) : ?>
-        <h3><?php se($title); ?></h3>
+        <h3><?php se($_title); ?></h3>
     <?php endif; ?>
     <table class="table <?php se($_extra_classes); ?>">
         <?php if ($_header_override) : ?>
@@ -60,8 +60,8 @@
             <?php if (is_array($_data) && count($_data) > 0) : ?>
                 <?php foreach ($_data as $row) : ?>
                     <tr>
-                        <?php foreach (array_values($row) as $v) : ?>
-                            <?php if (!in_array($v, $_ignored_columns)) : ?>
+                        <?php foreach ($row as $k => $v) : ?>
+                            <?php if (!in_array($k, $_ignored_columns)) : ?>
                                 <td><?php se($v); ?></td>
                             <?php endif; ?>
                         <?php endforeach; ?>
