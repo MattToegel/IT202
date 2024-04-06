@@ -21,6 +21,7 @@ if (isset($_POST["action"])) {
             error_log("Data from API" . var_export($result, true));
             if ($result) {
                 $quote = $result;
+                $quote["is_api"] = 1;
             }
         } else if ($action === "create") {
             foreach ($_POST as $k => $v) {
@@ -53,8 +54,12 @@ if (isset($_POST["action"])) {
         $stmt->execute($params);
         flash("Inserted record " . $db->lastInsertId(), "success");
     } catch (PDOException $e) {
-        error_log("Something broke with the query" . var_export($e, true));
-        flash("An error occurred", "danger");
+        if ($e->errorInfo[1] == 1062) {
+            flash("A quote for the symbol and this date already exists, please try another or edit it", "warning");
+        } else {
+            error_log("Something broke with the query" . var_export($e, true));
+            flash("An error occurred", "danger");
+        }
     }
 }
 

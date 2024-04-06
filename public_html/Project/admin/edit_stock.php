@@ -78,7 +78,6 @@ if ($stock) {
         ["type" => "number", "name" => "price", "placeholder" => "Stock Current Price", "label" => "Stock Current Price", "rules" => ["required" => "required"]],
         ["type" => "number", "name" => "previous", "placeholder" => "Stock Previous", "label" => "Stock Previous", "rules" => ["required" => "required"]],
         ["type" => "number", "name" => "per_change", "placeholder" => "Stock % change", "label" => "Stock % change", "rules" => ["required" => "required"]],
-        ["type" => "number", "name" => "per_change", "placeholder" => "Stock % change", "label" => "Stock % change", "rules" => ["required" => "required"]],
         ["type" => "number", "name" => "volume", "placeholder" => "Stock Volume", "label" => "Stock Volume", "rules" => ["required" => "required"]],
         ["type" => "date", "name" => "latest", "placeholder" => "Stock Date", "label" => "Stock Date", "rules" => ["required" => "required"]],
 
@@ -95,6 +94,9 @@ if ($stock) {
 ?>
 <div class="container-fluid">
     <h3>Edit Stock</h3>
+    <div>
+        <a href="<?php echo get_url("admin/list_stocks.php"); ?>" class="btn btn-secondary">Back</a>
+    </div>
     <form method="POST">
         <?php foreach ($form as $k => $v) {
 
