@@ -31,3 +31,5 @@ require(__DIR__ . "/api_helper.php");
 require(__DIR__ . "/stock_api.php");
 
 require(__DIR__ . "/session_store.php");
+
+require(__DIR__ . "/name_api.php");
