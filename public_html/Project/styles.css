@@ -20,3 +20,6 @@ body {
 .nav-link {
     color: azure !important;
 }
+th {
+    text-transform: capitalize;
+}
