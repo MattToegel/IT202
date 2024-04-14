@@ -36,7 +36,31 @@ if (isset($_POST["action"])) {
         flash("You must provide a symbol", "warning");
     }
     //insert data
-    $db = getDB();
+    try {
+        //optional options for debugging and duplicate handling
+        $opts =
+            ["debug" => true, "update_duplicate" => false, "columns_to_update" => []];
+        $result = insert("IT202-S24-Stocks", $quote, $opts);
+        if (!$result) {
+            flash("Unhandled error", "warning");
+        } else {
+            flash("Created record with id " . var_export($result, true), "success");
+        }
+    } catch (InvalidArgumentException $e1) {
+        error_log("Invalid arg" . var_export($e1, true));
+        flash("Invalid data passed", "danger");
+    } catch (PDOException $e2) {
+        if ($e2->errorInfo[1] == 1062) {
+            flash("An entry for this symbol already exists for today", "warning");
+        } else {
+            error_log("Database error" . var_export($e2, true));
+            flash("Database error", "danger");
+        }
+    } catch (Exception $e3) {
+        error_log("Invalid data records" . var_export($e3, true));
+        flash("Invalid data records", "danger");
+    }
+    /*$db = getDB();
     $query = "INSERT INTO `IT202-S24-Stocks` ";
     $columns = [];
     $params = [];
@@ -60,7 +84,7 @@ if (isset($_POST["action"])) {
             error_log("Something broke with the query" . var_export($e, true));
             flash("An error occurred", "danger");
         }
-    }
+    }*/
 }
 
 //TODO handle manual create stock

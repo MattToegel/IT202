@@ -15,7 +15,7 @@
  * @author Matt Toegel
  * @version 0.1 04/11/2024
  */
-function insert($table_name, $data, $opts = ["debug" => false, "ignore_duplicate" => false, "columns_to_update" => []])
+function insert($table_name, $data, $opts = ["debug" => false, "update_duplicate" => false, "columns_to_update" => []])
 {
     if (!is_array($data)) {
         throw new InvalidArgumentException("Data must be an array");
@@ -29,7 +29,9 @@ function insert($table_name, $data, $opts = ["debug" => false, "ignore_duplicate
     if (!is_string($table_name)) {
         throw new InvalidArgumentException("Table name must be a string");
     }
-
+    $is_debug = isset($opts["debug"]) && $opts["debug"];
+    $update_duplicate = isset($opts["update_duplicate"]) && $opts["update_duplicate"];
+    $columns_to_update = isset($opts["columns_to_update"]) ? $opts["columns_to_update"] : [];
     $sanitized_table_name = preg_replace('/[^a-zA-Z0-9_-]/', '', $table_name);
     $is_indexed = array_keys($data) === range(0, count($data) - 1);
 
@@ -71,11 +73,11 @@ function insert($table_name, $data, $opts = ["debug" => false, "ignore_duplicate
 
     $query = "INSERT INTO `$sanitized_table_name` ($columns) VALUES " . join(", ", $valuesClause);
 
-    if (!$opts['ignore_duplicate']) {
-        if (empty($opts['columns_to_update'])) {
-            $opts['columns_to_update'] = array_keys($data[0] ?? $data);
+    if ($update_duplicate) {
+        if (empty($columns_to_update)) {
+            $columns_to_update = array_keys($data[0] ?? $data);
         }
-        foreach ($opts['columns_to_update'] as $column) {
+        foreach ($columns_to_update as $column) {
             $column = preg_replace('/[^a-zA-Z0-9_]/', '', $column);
             $updateClause[] = "`$column`=VALUES(`$column`)";
         }
@@ -84,13 +86,16 @@ function insert($table_name, $data, $opts = ["debug" => false, "ignore_duplicate
 
     $db = getDB();
     $stmt = $db->prepare($query);
+    if ($is_debug) {
+        error_log("Query: " . $query);
+    }
 
     try {
         if ($is_indexed) {
             foreach ($data as $index => $entity) {
                 foreach ($entity as $key => $value) {
                     $stmt->bindValue(":{$key}_{$index}", $value);
-                    if ($opts['debug']) {
+                    if ($is_debug) {
                         error_log("Binding value for :{$key}_{$index}: $value");
                     }
                 }
@@ -98,14 +103,17 @@ function insert($table_name, $data, $opts = ["debug" => false, "ignore_duplicate
         } else {
             foreach ($data as $key => $value) {
                 $stmt->bindValue(":$key", $value);
-                if ($opts['debug']) {
+                if ($is_debug) {
                     error_log("Binding value for :$key: $value");
                 }
             }
         }
         $stmt->execute();
-        return $is_indexed ? $stmt->rowCount() : $db->lastInsertId();
+        //note: this will likely return 0 for both values if it performs an "on duplicate key update"
+        return ["rowCount" => $stmt->rowCount(), "lastInsertId" => $db->lastInsertId()];
     } catch (PDOException $e) {
+        throw $e;
+    } catch (Exception $e) {
         throw $e;
     }
 }

@@ -22,8 +22,38 @@ if (isset($_POST["action"])) {
         }
     }
     if (count($names) > 0) {
+        $data = [];
+        foreach ($names as $name) {
+            array_push($data, ["name" => $name]);
+        }
         //insert data
-        $db = getDB();
+        try {
+            //optional options for debugging and duplicate handling
+            $opts =
+                ["debug" => true, "update_duplicate" => true, "columns_to_update" => []];
+            $result = insert("IT202-S24-Names", $data, $opts);
+            if (!$result) {
+                flash("Unhandled error", "warning");
+            } else {
+                flash("Created record(s)" . var_export($result, true), "success");
+            }
+        } catch (InvalidArgumentException $e1) {
+            error_log("Invalid arg" . var_export($e1, true));
+            flash("Invalid data passed", "danger");
+        } catch (PDOException $e2) {
+            if (
+                $e2->errorInfo[1] == 1062
+            ) {
+                flash("An entry for this name already exists", "warning");
+            } else {
+                error_log("Database error" . var_export($e2, true));
+                flash("Database error", "danger");
+            }
+        } catch (Exception $e3) {
+            error_log("Invalid data records" . var_export($e3, true));
+            flash("Invalid data records", "danger");
+        }
+       /* $db = getDB();
         $query = "INSERT INTO `IT202-S24-Names` ";
         $query .= "(name) VALUES";
         $params = [];
@@ -52,7 +82,7 @@ if (isset($_POST["action"])) {
                 error_log("Something broke with the query" . var_export($e, true));
                 flash("An error occurred", "danger");
             }
-        }
+        }*/
     } else {
         flash("No names fetched", "warning");
     }
