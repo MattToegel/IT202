@@ -7,5 +7,5 @@ CREATE TABLE `IT202-S24-Portfolios`(
     `modified` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     UNIQUE KEY `unique_sym` (`broker_id`, `symbol`),
     FOREIGN KEY (`broker_id`) REFERENCES `IT202-S24-Brokers` (`id`),
-    CONSTRAINT `shares_min` CHECK ((`shares` > 0))
+    CONSTRAINT `shares_min` CHECK (`shares` > 0)
 )

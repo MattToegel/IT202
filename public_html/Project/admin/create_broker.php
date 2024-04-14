@@ -22,12 +22,13 @@ if (isset($_POST["action"])) {
             error_log("Cleaned up POST: " . var_export($quote, true));
         }
     }
+    //Step 1: begin broker data generation
     $broker = [
         "name" => "",
         "rarity" => rand(1, 10),
     ];
     $db = getDB();
-    //fetch a name
+    //Step 2: fetch a random name
     $query = "SELECT name FROM `IT202-S24-Names` ORDER BY RAND() LIMIT 1";
     try {
         $stmt = $db->prepare($query);
@@ -43,7 +44,7 @@ if (isset($_POST["action"])) {
         error_log("Something broke with the select query" . var_export($e, true));
         flash("An error occurred", "danger");
     }
-    //insert data
+    //Step 3: insert base broker data
     try {
         $result = insert("IT202-S24-Brokers", $broker);
         if (!$result) {
@@ -67,27 +68,103 @@ if (isset($_POST["action"])) {
         error_log("Invalid data records" . var_export($e3, true));
         flash("Invalid data records", "danger");
     }
-    /*$query = "INSERT INTO `IT202-S24-Brokers` ";
-    $columns = [];
-    $params = [];
-    //per record
-    foreach ($broker as $k => $v) {
-        array_push($columns, "`$k`");
-        $params[":$k"] = $v;
-    }
-    $query .= "(" . join(",", $columns) . ")";
-    $query .= "VALUES (" . join(",", array_keys($params)) . ")";
-    error_log("Query: " . $query);
-    error_log("Params: " . var_export($params, true));
-    try {
-        $stmt = $db->prepare($query);
-        $stmt->execute($params);
-        flash("Inserted record " . $db->lastInsertId(), "success");
-    } catch (PDOException $e) {
+    if (isset($result) && isset($result["lastInsertId"])) {
+        //Step 4: fetch random unique symbols from stocks based on rarity
+        $stocks = [];
+        $limit = $broker["rarity"];
+        $query = "SELECT DISTINCT symbol FROM `IT202-S24-Stocks` ORDER BY RAND() LIMIT $limit";
+        try {
+            $stmt = $db->prepare($query);
+            $stmt->execute();
+            $r = $stmt->fetchAll();
+            if ($r) {
+                error_log("Fetched stocks " . var_export($r, true));
+                $stocks = $r;
+            } else {
+                flash("Didn't find any saved names", "danger");
+            }
+        } catch (PDOException $e) {
+            error_log("Something broke with the select query" . var_export($e, true));
+            flash("An error occurred", "danger");
+        }
+        if ($stocks) {
+            //Step 5: insert fetched stock symbols into portfolio for broker
+            $broker_id = $result["lastInsertId"];
+            foreach ($stocks as $index => $stock) {
+                $stocks[$index]["broker_id"] = $broker_id;
+            }
+            error_log("Stock data: " . var_export($stocks, true));
+            try {
+                $result = insert("IT202-S24-Portfolios", $stocks);
+                if ($result) {
+                    flash("Associated stocks to broker $broker_id " . var_export($result, true), "success");
+                }
+            } catch (Exception $e) {
+                error_log("Error associating stocks" . var_export($e, true));
+                flash("Error adding stocks to generated broker", "danger");
+            }
+            //Step 6: fetch stock data (details)
+            $query = "SELECT 
+                    s.symbol, 
+                    s.per_change AS `change`, 
+                    s.volume, 
+                    b.shares,
+                    (SELECT AVG(per_change) FROM `IT202-S24-Stocks` AS hist WHERE hist.symbol = s.symbol) AS `historical_change`
+                    FROM 
+                        `IT202-S24-Stocks` s
+                    INNER JOIN 
+                        (
+                            SELECT symbol, MAX(latest) AS MaxDate
+                            FROM `IT202-S24-Stocks`
+                            GROUP BY symbol
+                        ) AS latest
+                    
+                    ON s.symbol = latest.symbol AND s.latest = latest.MaxDate
+                    JOIN `IT202-S24-Portfolios` b on b.symbol = s.symbol
+                  WHERE b.broker_id = $broker_id AND s.symbol IN ";
+            $placeholders = str_repeat(",?", count($stocks));
+            $placeholders = substr($placeholders, 1);
+            $query .= "($placeholders)";
+            $query .= "   ORDER BY s.latest DESC";
+            $stockData = [];
+            try {
+                $symbols = [];
+                foreach ($stocks as $index => $stock) {
+                    array_push($symbols, $stock["symbol"]);
+                }
+                $stmt = $db->prepare($query);
+                $stmt->execute($symbols);
+                $stockData = $stmt->fetchAll();
+                flash("Fetched stocks", "success");
+                error_log("stocks: " . var_export($stockData, true));
+            } catch (PDOException $e) {
+                flash("Error fetching stocks", "danger");
+                error_log("Error fetching stocks" . var_export($e, true));
+            }
 
-        error_log("Something broke with the query" . var_export($e, true));
-        flash("An error occurred during insert", "danger");
-    }*/
+            if ($stockData) {
+                //Step 7: calculate broker stats from stocks
+                $broker["stocks"] = $stockData;
+                $br = calculate_broker_stats($broker);
+                error_log("br: " . var_export($br, true));
+                //Step 8: update broker with calculated stats (Note: This will be recalculated on another page in the future)
+                $query = "UPDATE `IT202-S24-Brokers` set life = :life, defense = :defense, power = :power, stonks = :stonks WHERE id = :id";
+                try {
+                    $stmt = $db->prepare($query);
+                    $params = [];
+                    foreach ($br["stats"] as $k => $v) {
+                        $params[":$k"] = $v;
+                    }
+                    $params[":id"] = $broker_id;
+                    $stmt->execute($params);
+                    flash("Updated broker: " . var_export($br["stats"], true));
+                    //finally done
+                } catch (PDOException $e) {
+                    error_log("Error updating broker " . var_export($e, true));
+                }
+            }
+        }
+    }
 }
 
 //TODO handle manual create stock
