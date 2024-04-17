@@ -14,3 +14,8 @@ function render_table($data = array())
 {
     include(__DIR__ . "/../partials/table.php");
 }
+
+function render_broker_card($broker = array())
+{
+    include(__DIR__ . "/../partials/broker_card.php");
+}

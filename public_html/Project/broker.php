@@ -1,11 +1,6 @@
 <?php
-//note we need to go up 1 more directory
-require(__DIR__ . "/../../../partials/nav.php");
+require(__DIR__ . "/../../partials/nav.php");
 
-if (!has_role("Admin")) {
-    flash("You don't have permission to view this page", "warning");
-    redirect("home.php");
-}
 ?>
 
 <?php
@@ -30,7 +25,7 @@ if ($id > -1) {
     }
 } else {
     flash("Invalid id passed", "danger");
-    redirect("admin/list_brokers.php");
+    redirect("brokers.php");
 }
 foreach ($broker as $key => $value) {
     if (is_null($value)) {
@@ -42,7 +37,7 @@ foreach ($broker as $key => $value) {
 <div class="container-fluid">
     <h3>Broker: <?php se($broker, "name", "Unknown"); ?></h3>
     <div>
-        <a href="<?php echo get_url("admin/list_brokers.php"); ?>" class="btn btn-secondary">Back</a>
+        <a href="<?php echo get_url("brokers.php"); ?>" class="btn btn-secondary">Back</a>
     </div>
 
     <?php render_broker_card($broker); ?>
@@ -51,6 +46,5 @@ foreach ($broker as $key => $value) {
 
 
 <?php
-//note we need to go up 1 more directory
-require_once(__DIR__ . "/../../../partials/flash.php");
+require_once(__DIR__ . "/../../partials/flash.php");
 ?>
