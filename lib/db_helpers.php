@@ -7,13 +7,13 @@
  *
  * @param string $table_name The sanitized name of the database table.
  * @param array $data An associative array for a single record or an array of associative arrays for multiple records.
- * @param array $opts Options including 'debug' flag, 'ignore_duplicate', and 'columns_to_update'.
- * @return mixed The last insert ID for single insert or number of rows affected for bulk insert.
+ * @param array $opts Options including 'debug' flag, 'update_duplicate', and 'columns_to_update'.
+ * @return array The last insert ID and number of rows affected for insert.
  * @throws InvalidArgumentException If input data is not valid.
  * @throws Exception For database-related errors.
  * 
  * @author Matt Toegel
- * @version 0.1 04/11/2024
+ * @version 0.2 04/17/2024
  */
 function insert($table_name, $data, $opts = ["debug" => false, "update_duplicate" => false, "columns_to_update" => []])
 {
@@ -29,6 +29,7 @@ function insert($table_name, $data, $opts = ["debug" => false, "update_duplicate
     if (!is_string($table_name)) {
         throw new InvalidArgumentException("Table name must be a string");
     }
+
     $is_debug = isset($opts["debug"]) && $opts["debug"];
     $update_duplicate = isset($opts["update_duplicate"]) && $opts["update_duplicate"];
     $columns_to_update = isset($opts["columns_to_update"]) ? $opts["columns_to_update"] : [];
@@ -56,17 +57,22 @@ function insert($table_name, $data, $opts = ["debug" => false, "update_duplicate
         }
     }
 
-    // Columns and placeholder setup
-    $columns = join(", ", array_keys($is_indexed ? $data[0] : $data));
+    // Sort keys and prepare columns and values clause
+    $firstItem = $is_indexed ? $data[0] : $data;
+    $sortedKeys = array_keys($firstItem);
+    sort($sortedKeys); // Sort keys to ensure consistency
+    $columns = join(", ", $sortedKeys);
     $valuesClause = [];
     $updateClause = [];
 
     if ($is_indexed) {
         foreach ($data as $index => $entity) {
+            ksort($entity); // Sort array by key to match column order
             $placeholders = join(", ", array_map(fn ($key) => ":{$key}_{$index}", array_keys($entity)));
             $valuesClause[] = "($placeholders)";
         }
     } else {
+        ksort($data); // Sort array by key to ensure correct order
         $placeholders = join(", ", array_map(fn ($key) => ":$key", array_keys($data)));
         $valuesClause[] = "($placeholders)";
     }
@@ -75,7 +81,7 @@ function insert($table_name, $data, $opts = ["debug" => false, "update_duplicate
 
     if ($update_duplicate) {
         if (empty($columns_to_update)) {
-            $columns_to_update = array_keys($data[0] ?? $data);
+            $columns_to_update = $sortedKeys; // Use sorted keys if no specific columns provided
         }
         foreach ($columns_to_update as $column) {
             $column = preg_replace('/[^a-zA-Z0-9_]/', '', $column);
@@ -84,7 +90,7 @@ function insert($table_name, $data, $opts = ["debug" => false, "update_duplicate
         $query .= " ON DUPLICATE KEY UPDATE " . join(", ", $updateClause);
     }
 
-    $db = getDB();
+    $db = getDB(); // Assume getDB is a function that returns your PDO instance
     $stmt = $db->prepare($query);
     if ($is_debug) {
         error_log("Query: " . $query);
@@ -109,7 +115,6 @@ function insert($table_name, $data, $opts = ["debug" => false, "update_duplicate
             }
         }
         $stmt->execute();
-        //note: this will likely return 0 for both values if it performs an "on duplicate key update"
         return ["rowCount" => $stmt->rowCount(), "lastInsertId" => $db->lastInsertId()];
     } catch (PDOException $e) {
         throw $e;
@@ -117,6 +122,7 @@ function insert($table_name, $data, $opts = ["debug" => false, "update_duplicate
         throw $e;
     }
 }
+
 
 // used for testing via the cli (note: normally you'd used something like PHPUnit for proper test cases)
 if (php_sapi_name() == "cli") {
