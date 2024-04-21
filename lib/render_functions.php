@@ -19,3 +19,8 @@ function render_broker_card($broker = array())
 {
     include(__DIR__ . "/../partials/broker_card.php");
 }
+
+function render_result_counts($result_count, $total_count)
+{
+    include(__DIR__ . "/../partials/result_counts.php");
+}

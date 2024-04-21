@@ -1,7 +1,5 @@
 <?php
-//note we need to go up 1 more directory
-require(__DIR__ . "/../../../partials/nav.php");
-
+require(__DIR__ . "/../../partials/nav.php");
 if (!has_role("Admin")) {
     flash("You don't have permission to view this page", "warning");
     redirect("home.php");
@@ -24,8 +22,10 @@ $form = [
 ];
 error_log("Form data: " . var_export($form, true));
 
-$total_records = get_total_count("`IT202-S24-Brokers`");
-$query = "SELECT id, name, rarity, life, power, defense, stonks FROM `IT202-S24-Brokers` WHERE 1=1";
+$total_records = get_total_count("`IT202-S24-Brokers` b WHERE b.id NOT IN (SELECT broker_id FROM `IT202-S24-UserBrokers`)");
+
+$query = "SELECT b.id, name, rarity, life, power, defense, stonks FROM `IT202-S24-Brokers` b
+WHERE b.id NOT IN (SELECT broker_id FROM `IT202-S24-UserBrokers`) ";
 $params = [];
 $session_key = $_SERVER["SCRIPT_NAME"];
 $is_clear = isset($_GET["clear"]);
@@ -85,6 +85,10 @@ if (count($_GET) > 0) {
     if (!in_array($sort, ["name", "rarity", "life", "power", "defense", "stonks", "created", "modified"])) {
         $sort = "created";
     }
+    //tell mysql I care about the data from table "b"
+    if ($sort === "created" || $sort === "modified") {
+        $sort = "b." . $sort;
+    }
     $order = se($_GET, "order", "desc", false);
     if (!in_array($order, ["asc", "desc"])) {
         $order = "desc";
@@ -131,12 +135,11 @@ foreach ($results as $index => $broker) {
 
 $table = [
     "data" => $results, "title" => "Brokers", "ignored_columns" => ["id"],
-    "view_url" => get_url("admin/view_broker.php"),
-    //"delete_url" => get_url("admin/delete_stock.php")
+    "view_url" => get_url("broker.php"),
 ];
 ?>
 <div class="container-fluid">
-    <h3>List Brokers</h3>
+    <h3>Available Brokers</h3>
     <form method="GET">
         <div class="row mb-3" style="align-items: flex-end;">
 
@@ -151,11 +154,21 @@ $table = [
         <a href="?clear" class="btn btn-secondary">Clear</a>
     </form>
     <?php render_result_counts(count($results), $total_records); ?>
-    <?php render_table($table); ?>
+    <div class="row w-100 row-cols-auto row-cols-sm-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 row-cols-xxl-5 g-4">
+        <?php foreach ($results as $broker) : ?>
+            <div class="col">
+                <?php render_broker_card($broker); ?>
+            </div>
+        <?php endforeach; ?>
+        <?php if (count($results) === 0) : ?>
+            <div class="col">
+                No results to show
+            </div>
+        <?php endif; ?>
+    </div>
 </div>
 
 
 <?php
-//note we need to go up 1 more directory
-require_once(__DIR__ . "/../../../partials/flash.php");
+require_once(__DIR__ . "/../../partials/flash.php");
 ?>

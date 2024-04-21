@@ -135,8 +135,8 @@ if (count($_GET) > 0) {
 
 
 
-
-$query = "SELECT id, symbol, open, low, high, price, per_change, latest, volume, api_id FROM `IT202-S24-Stocks` ORDER BY created DESC LIMIT 25";
+//likely had from a brief demo
+//$query = "SELECT id, symbol, open, low, high, price, per_change, latest, volume, api_id FROM `IT202-S24-Stocks` ORDER BY created DESC LIMIT 25";
 $db = getDB();
 $stmt = $db->prepare($query);
 $results = [];

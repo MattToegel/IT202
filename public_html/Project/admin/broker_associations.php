@@ -1,14 +1,10 @@
 <?php
-//note we need to go up 1 more directory
 require(__DIR__ . "/../../../partials/nav.php");
 
-if (!has_role("Admin")) {
-    flash("You don't have permission to view this page", "warning");
-    redirect("home.php");
-}
 
 //build search form
 $form = [
+    ["type" => "text", "name" => "username", "placeholder" => "Username", "label" => "Username", "include_margin" => false],
     ["type" => "text", "name" => "name", "placeholder" => "Broker Name", "label" => "Broker Name", "include_margin" => false],
 
     ["type" => "number", "name" => "rarity_min", "placeholder" => "Min Rarity", "label" => "Min Rarity", "include_margin" => false],
@@ -22,10 +18,14 @@ $form = [
 
     ["type" => "number", "name" => "limit", "label" => "Limit", "value" => "10", "include_margin" => false],
 ];
-error_log("Form data: " . var_export($form, true));
+//error_log("Form data: " . var_export($form, true));
 
-$total_records = get_total_count("`IT202-S24-Brokers`");
-$query = "SELECT id, name, rarity, life, power, defense, stonks FROM `IT202-S24-Brokers` WHERE 1=1";
+$total_records = get_total_count("`IT202-S24-Brokers` b
+JOIN `IT202-S24-UserBrokers` ub ON b.id = ub.broker_id");
+
+
+$query = "SELECT u.username, b.id, name, rarity, life, power, defense, stonks, user_id FROM `IT202-S24-Brokers` b
+JOIN `IT202-S24-UserBrokers` ub ON b.id = ub.broker_id JOIN Users u on u.id = ub.user_id";
 $params = [];
 $session_key = $_SERVER["SCRIPT_NAME"];
 $is_clear = isset($_GET["clear"]);
@@ -50,6 +50,12 @@ if (count($_GET) > 0) {
         if (in_array($v["name"], $keys)) {
             $form[$k]["value"] = $_GET[$v["name"]];
         }
+    }
+    //username
+    $username = se($_GET, "username", "", false);
+    if (!empty($username)) {
+        $query .= " AND u.username like :username";
+        $params[":username"] = "%$username%";
     }
     //name
     $name = se($_GET, "name", "", false);
@@ -84,6 +90,10 @@ if (count($_GET) > 0) {
     $sort = se($_GET, "sort", "created", false);
     if (!in_array($sort, ["name", "rarity", "life", "power", "defense", "stonks", "created", "modified"])) {
         $sort = "created";
+    }
+    //tell mysql I care about the data from table "b"
+    if ($sort === "created" || $sort === "modified") {
+        $sort = "b." . $sort;
     }
     $order = se($_GET, "order", "desc", false);
     if (!in_array($order, ["asc", "desc"])) {
@@ -131,12 +141,11 @@ foreach ($results as $index => $broker) {
 
 $table = [
     "data" => $results, "title" => "Brokers", "ignored_columns" => ["id"],
-    "view_url" => get_url("admin/view_broker.php"),
-    //"delete_url" => get_url("admin/delete_stock.php")
+    "view_url" => get_url("broker.php"),
 ];
 ?>
 <div class="container-fluid">
-    <h3>List Brokers</h3>
+    <h3>Associated Brokers</h3>
     <form method="GET">
         <div class="row mb-3" style="align-items: flex-end;">
 
@@ -151,11 +160,21 @@ $table = [
         <a href="?clear" class="btn btn-secondary">Clear</a>
     </form>
     <?php render_result_counts(count($results), $total_records); ?>
-    <?php render_table($table); ?>
+    <div class="row w-100 row-cols-auto row-cols-sm-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 row-cols-xxl-5 g-4">
+        <?php foreach ($results as $broker) : ?>
+            <div class="col">
+                <?php render_broker_card($broker); ?>
+            </div>
+        <?php endforeach; ?>
+        <?php if (count($results) === 0) : ?>
+            <div class="col">
+                No results to show
+            </div>
+        <?php endif; ?>
+    </div>
 </div>
 
 
 <?php
-//note we need to go up 1 more directory
 require_once(__DIR__ . "/../../../partials/flash.php");
 ?>

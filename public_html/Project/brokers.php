@@ -19,10 +19,10 @@ $form = [
 ];
 error_log("Form data: " . var_export($form, true));
 
+$total_records = get_total_count("`IT202-S24-Brokers` b LEFT JOIN `IT202-S24-UserBrokers` ub on b.id = ub.broker_id");
 
-
-$query = "SELECT b.id, name, rarity, life, power, defense, stonks, ub.user_id FROM `IT202-S24-Brokers` b
-LEFT JOIN `IT202-S24-UserBrokers` ub on b.id = ub.broker_id WHERE 1=1";
+$query = "SELECT u.username, b.id, name, rarity, life, power, defense, stonks, ub.user_id FROM `IT202-S24-Brokers` b
+LEFT JOIN `IT202-S24-UserBrokers` ub on b.id = ub.broker_id LEFT JOIN Users u on u.id = ub.user_id WHERE 1=1";
 $params = [];
 $session_key = $_SERVER["SCRIPT_NAME"];
 $is_clear = isset($_GET["clear"]);
@@ -150,12 +150,18 @@ $table = [
         <?php render_button(["text" => "Search", "type" => "submit", "text" => "Filter"]); ?>
         <a href="?clear" class="btn btn-secondary">Clear</a>
     </form>
+    <?php render_result_counts(count($results), $total_records); ?>
     <div class="row w-100 row-cols-auto row-cols-sm-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 row-cols-xxl-5 g-4">
         <?php foreach ($results as $broker) : ?>
             <div class="col">
                 <?php render_broker_card($broker); ?>
             </div>
         <?php endforeach; ?>
+        <?php if (count($results) === 0) : ?>
+            <div class="col">
+                No results to show
+            </div>
+        <?php endif; ?>
     </div>
 </div>
 

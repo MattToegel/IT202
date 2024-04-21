@@ -1,6 +1,20 @@
 <?php
 require(__DIR__ . "/../../partials/nav.php");
+$db = getDB();
+//remove all associations
+if (isset($_GET["remove"])) {
+    $query = "DELETE FROM `IT202-S24-UserBrokers` WHERE user_id = :user_id";
+    try {
+        $stmt = $db->prepare($query);
+        $stmt->execute([":user_id" => get_user_id()]);
+        flash("Successfully removed all brokers", "success");
+    } catch (PDOException $e) {
+        error_log("Error removing broker associations: " . var_export($e, true));
+        flash("Error removing broker associations", "danger");
+    }
 
+    redirect("my_brokers.php");
+}
 
 //build search form
 $form = [
@@ -19,6 +33,9 @@ $form = [
 ];
 //error_log("Form data: " . var_export($form, true));
 
+$total_records = get_total_count("`IT202-S24-Brokers` b
+JOIN `IT202-S24-UserBrokers` ub ON b.id = ub.broker_id
+WHERE user_id = :user_id", [":user_id" => get_user_id()]);
 
 
 $query = "SELECT b.id, name, rarity, life, power, defense, stonks, user_id FROM `IT202-S24-Brokers` b
@@ -110,7 +127,7 @@ if (count($_GET) > 0) {
 
 
 
-$db = getDB();
+
 $stmt = $db->prepare($query);
 $results = [];
 try {
@@ -138,6 +155,9 @@ $table = [
 ?>
 <div class="container-fluid">
     <h3>My Brokers</h3>
+    <div>
+        <a href="?remove" onclick="confirm('Are you sure')?'':event.preventDefault()" class="btn btn-danger">Remove All Brokers</a>
+    </div>
     <form method="GET">
         <div class="row mb-3" style="align-items: flex-end;">
 
@@ -151,12 +171,18 @@ $table = [
         <?php render_button(["text" => "Search", "type" => "submit", "text" => "Filter"]); ?>
         <a href="?clear" class="btn btn-secondary">Clear</a>
     </form>
+    <?php render_result_counts(count($results), $total_records); ?>
     <div class="row w-100 row-cols-auto row-cols-sm-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 row-cols-xxl-5 g-4">
         <?php foreach ($results as $broker) : ?>
             <div class="col">
                 <?php render_broker_card($broker); ?>
             </div>
         <?php endforeach; ?>
+        <?php if (count($results) === 0) : ?>
+            <div class="col">
+                No results to show
+            </div>
+        <?php endif; ?>
     </div>
 </div>
 

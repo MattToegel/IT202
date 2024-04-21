@@ -42,6 +42,7 @@ session_start();
                     <li class="nav-item"><a class="nav-link" href="<?php echo get_url('home.php'); ?>">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?php echo get_url('profile.php'); ?>">Profile</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?php echo get_url('brokers.php'); ?>">Brokers</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?php echo get_url('available_brokers.php'); ?>">Available</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?php echo get_url('my_brokers.php'); ?>">My Brokers</a></li>
                 <?php endif; ?>
                 <?php if (!is_logged_in()) : ?>
@@ -51,7 +52,7 @@ session_start();
                 <?php if (has_role("Admin")) : ?>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Admin
+                            Roles
                         </a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="<?php echo get_url('admin/create_role.php'); ?>">Create Role</a></li>
@@ -80,6 +81,7 @@ session_start();
                             <li><a class="dropdown-item" href="<?php echo get_url('admin/fetch_names.php'); ?>">Fetch Names</a></li>
                             <li><a class="dropdown-item" href="<?php echo get_url('admin/create_broker.php'); ?>">Create Broker</a></li>
                             <li><a class="dropdown-item" href="<?php echo get_url('admin/list_brokers.php'); ?>">List Brokers</a></li>
+                            <li><a class="dropdown-item" href="<?php echo get_url('admin/broker_associations.php'); ?>">Broker Associations</a></li>
                         </ul>
                     </li>
                 <?php endif; ?>

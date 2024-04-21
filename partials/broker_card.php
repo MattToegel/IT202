@@ -7,6 +7,11 @@ if (!isset($broker)) {
 <?php if (isset($broker)) : ?>
     <!-- https://i.kym-cdn.com/entries/icons/original/000/029/959/Screen_Shot_2019-06-05_at_1.26.32_PM.jpg -->
     <div class="card mx-auto" style="width: 18rem;">
+        <?php if (isset($broker["username"])) : ?>
+            <div class="card-header">
+                Owned By: <?php se($broker, "username", "N/A"); ?>
+            </div>
+        <?php endif; ?>
         <img src="https://i.kym-cdn.com/entries/icons/original/000/029/959/Screen_Shot_2019-06-05_at_1.26.32_PM.jpg" class="card-img-top" alt="...">
         <div class="card-body">
             <h5 class="card-title"><?php se($broker, "name", "Unknown"); ?> (<?php se($broker, "rarity"); ?>)</h5>
@@ -20,15 +25,23 @@ if (!isset($broker)) {
 
             </div>
 
-            <?php if (!isset($broker["user_id"]) || $broker["user_id"] === "N/A") : ?>
-                <div class="card-body">
-                    <a href="<?php echo get_url('api/purchase_broker.php?broker_id=' . $broker["id"]); ?>" class="card-link">Purchase Broker</a>
-                </div>
-            <?php else : ?>
-                <div class="card-body">
+            <div class="card-body">
+                <?php if (isset($broker["id"])) : ?>
+                    <a class="btn btn-secondary" href="<?php echo get_url("broker.php?id=" . $broker["id"]); ?>">View</a>
+                <?php endif; ?>
+                <?php if (!isset($broker["user_id"]) || $broker["user_id"] === "N/A") : ?>
+                    <?php
+                    $id = isset($broker["id"]) ? $broker["id"] : (isset($_GET["id"]) ? $_GET["id"] : -1);
+                    ?>
+                    <a href="<?php echo get_url('api/purchase_broker.php?broker_id=' . $id); ?>" class="card-link">Purchase Broker</a>
+
+                <?php else : ?>
+
                     <div class="bg-warning text-dark text-center">Broker not available</div>
-                </div>
-            <?php endif; ?>
+
+                <?php endif; ?>
+            </div>
+
         </div>
     </div>
 <?php endif; ?>
