@@ -1,2 +1,2 @@
 <?php echo "It works!"; ?>
-<a href="/project/register.php">Register</a>
+<a href="/Project/register.php">Register</a>
