@@ -36,7 +36,7 @@ if (!isset($broker)) {
                     <a href="<?php echo get_url('api/purchase_broker.php?broker_id=' . $id); ?>" class="card-link">Purchase Broker</a>
 
                 <?php else : ?>
-
+                    <a href="<?php echo get_url("profile.php?id=" . $broker["user_id"]); ?>"><?php se($broker, "username", "N/A"); ?>'s Profile</a>
                     <div class="bg-warning text-dark text-center">Broker not available</div>
 
                 <?php endif; ?>
