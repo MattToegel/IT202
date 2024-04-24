@@ -1,0 +1,9 @@
+CREATE TABLE IF NOT EXISTS `IT202-S24-Points` (
+    `id` INT NOT NULL AUTO_INCREMENT,
+    `point_change` int NOT NULL,
+    `user_id` int not null,
+    `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `modified` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    FOREIGN KEY (`user_id`) REFERENCES `Users` (`id`)
+)

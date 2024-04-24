@@ -46,3 +46,23 @@ function get_user_id()
     }
     return false;
 }
+
+function get_points()
+{
+    if (is_logged_in()) {
+        $db = getDB();
+        $query = "SELECT SUM(point_change) as points FROM `IT202-S24-Points` WHERE user_id = :user_id";
+        try {
+            $stmt = $db->prepare($query);
+            $stmt->execute([":user_id" => get_user_id()]);
+            $r = $stmt->fetch();
+            if ($r) {
+                return (int)$r["points"];
+            }
+        } catch (Exception $e) {
+            error_log("Error fetching points: " . var_export($e, true));
+            flash("Error fetching points", "danger");
+        }
+        return 0;
+    }
+}

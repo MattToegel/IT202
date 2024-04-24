@@ -61,6 +61,26 @@ foreach ($results as $index => $broker) {
 $battle_uuid = uniqid();
 $events = battle($attacker, $defender, $battle_uuid);
 $result = insert("`IT202-S24-BattleEvents`", $events);
+$end = $events[count($events) - 1];
+$entry = ["user_id" => get_user_id()];
+if ($end) {
+    $points = 0;
+    if ($end["broker1_life"] <= 0) {
+        //lost
+        $points = -5;
+        $entry["point_change"] = $points;
+    } else if ($end["broker2_life"] <= 0) {
+        //won
+        $points = 10;
+        $entry["point_change"] = $points;
+    }
+    $result = insert("`IT202-S24-Points`", $entry);
+    if ($result["lastInsertId"] > 0) {
+        $msg = "You " . ($points > 0 ? "won" : "lost") . " $points points";
+        flash($msg, "info");
+    }
+}
+
 $results = [];
 
 $query = "SELECT be.id, action, b1.name as attacker, b2.name as defender, broker1_life as attacker_life, broker2_life as defender_life, broker1_dmg as attacker_damage, broker2_dmg as defender_damage, round

@@ -156,3 +156,72 @@ function battle($broker1, $broker2, $battle_uuid)
     //var_export($events);
     return $events;
 }
+
+function recaculate_broker($broker_id)
+{
+    $query = "SELECT 
+                    s.symbol, 
+                    s.per_change AS `change`, 
+                    s.volume, 
+                    b.shares,
+                    (SELECT AVG(per_change) FROM `IT202-S24-Stocks` AS hist WHERE hist.symbol = s.symbol) AS `historical_change`
+                    FROM 
+                        `IT202-S24-Stocks` s
+                    INNER JOIN 
+                        (
+                            SELECT symbol, MAX(latest) AS MaxDate
+                            FROM `IT202-S24-Stocks`
+                            GROUP BY symbol
+                        ) AS latest
+                    
+                    ON s.symbol = latest.symbol AND s.latest = latest.MaxDate
+                    JOIN `IT202-S24-Portfolios` b on b.symbol = s.symbol
+                  WHERE b.broker_id = :broker_id AND s.symbol IN  (SELECT b2.symbol FROM `IT202-S24-Portfolios` b2 WHERE b2.broker_id = :broker_id)";
+    $db = getDB();
+    $stocks = [];
+    try {
+        $stmt = $db->prepare($query);
+        $stmt->execute([":broker_id" => $broker_id]);
+        $r = $stmt->fetchAll();
+        if ($r) {
+            $stocks = $r;
+        }
+    } catch (PDOException $e) {
+        error_log("Error fetching stocks of broker: " . var_export($e, true));
+        flash("Error fetching stock data", "danger");
+    }
+    if ($stocks) {
+        error_log("Processing Stocks");
+        $query = "SELECT name, rarity, life, power, defense, stonks, created, modified FROM `IT202-S24-Brokers` WHERE id = :id";
+        $broker["name"] = "temp";
+        try {
+            $stmt = $db->prepare($query);
+            $stmt->execute([":id" => $broker_id]);
+            $r = $stmt->fetch();
+            if ($r) {
+                $broker = $r;
+            }
+        } catch (PDOException $e) {
+            error_log("Error fetching record: " . var_export($e, true));
+            flash("Error fetching record", "danger");
+        }
+
+        $broker["stocks"] = $stocks;
+        $br = calculate_broker_stats($broker);
+        error_log("br: " . var_export($br, true));
+        $query = "UPDATE `IT202-S24-Brokers` set life = :life, defense = :defense, power = :power, stonks = :stonks WHERE id = :id";
+        try {
+            $stmt = $db->prepare($query);
+            $params = [];
+            foreach ($br["stats"] as $k => $v) {
+                $params[":$k"] = $v;
+            }
+            $params[":id"] = $broker_id;
+            $stmt->execute($params);
+            flash("Updated broker: " . var_export($br["stats"], true));
+            //finally done
+        } catch (PDOException $e) {
+            error_log("Error updating broker " . var_export($e, true));
+        }
+    }
+}

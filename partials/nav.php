@@ -90,6 +90,11 @@ session_start();
                     <li class="nav-item"><a class="nav-link" href="<?php echo get_url('logout.php'); ?>">Logout</a></li>
                 <?php endif; ?>
             </ul>
+            <?php if (is_logged_in()) : ?>
+                <span class="navbar-text">
+                    Points: <?php echo get_points(); ?>
+                </span>
+            <?php endif; ?>
         </div>
     </div>
 </nav>
