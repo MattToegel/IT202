@@ -1,24 +1,25 @@
 
-    .alert-success {
-        background-color: green
-    }
+nav li {
+    display: inline;
+    background-color: darkgreen;
+}
 
-    .alert-warning {
-        background-color: yellow;
-    }
+nav li a {
+    color: azure
+}
 
-    .alert-danger {
-        background-color: red;
-    }
+input {
+    border-radius: 50%;
+}
 
-    .alert-info {
-        background-color: teal;
-    }
-    nav li{display: inline; background-color: rebeccapurple;}
-    nav li a{color: hotpink}
-    input{border-radius: 50%;}
-    body{
-    background-color: hotpink;
-    color: rgb(153, 0, 153);
+body {
+    background-color: darkolivegreen;
+    color: azure;
 
+}
+.nav-link {
+    color: azure !important;
+}
+th {
+    text-transform: capitalize;
 }
