@@ -38,8 +38,8 @@ JOIN `IT202-S24-UserBrokers` ub ON b.id = ub.broker_id
 WHERE user_id = :user_id", [":user_id" => get_user_id()]);
 
 
-$query = "SELECT b.id, name, rarity, life, power, defense, stonks, user_id FROM `IT202-S24-Brokers` b
-JOIN `IT202-S24-UserBrokers` ub ON b.id = ub.broker_id
+$query = "SELECT username, b.id, name, rarity, life, power, defense, stonks, user_id FROM `IT202-S24-Brokers` b
+JOIN `IT202-S24-UserBrokers` ub ON b.id = ub.broker_id LEFT JOIN Users u ON u.id = ub.user_id
 WHERE user_id = :user_id";
 $params = [":user_id" => get_user_id()];
 $session_key = $_SERVER["SCRIPT_NAME"];
