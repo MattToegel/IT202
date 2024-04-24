@@ -1,6 +1,9 @@
 <?php
 require(__DIR__ . "/../../../partials/nav.php");
-
+if (!has_role("Admin")) {
+    flash("You don't have permission to view this page", "warning");
+    redirect("home.php");
+}
 
 //build search form
 $form = [

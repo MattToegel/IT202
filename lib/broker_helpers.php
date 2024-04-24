@@ -69,9 +69,10 @@ function calculate_broker_stats($broker)
     return $broker;
 }
 
-function battle($broker1, $broker2)
+function battle($broker1, $broker2, $battle_uuid)
 {
-
+    error_log("broker 1: " . var_export($broker1, true));
+    error_log("broker 2: " . var_export($broker2, true));
     $required_properties = ["id", "power", "defense", "life"];
 
 
@@ -98,6 +99,7 @@ function battle($broker1, $broker2)
         "broker2_life" => $broker2_life,
         "broker1_dmg" => 0,
         "broker2_dmg" => 0,
+        "battle_uuid" => $battle_uuid,
         "round" => $currentRound
     ]);
     while ($currentRound < $rounds && $broker1_life > 0 && $broker2_life > 0) {
@@ -124,6 +126,7 @@ function battle($broker1, $broker2)
             "broker2_life" => $broker2_life,
             "broker1_dmg" => $damage_to_b2,
             "broker2_dmg" => $damage_to_b1,
+            "battle_uuid" => $battle_uuid,
             "round" => $currentRound + 1
         ]);
         $currentRound++;
@@ -150,5 +153,6 @@ function battle($broker1, $broker2)
 
         echo $broker2["name"] . " wins the battle by default on a tie.\n";
     }
-    var_export($events);
+    //var_export($events);
+    return $events;
 }

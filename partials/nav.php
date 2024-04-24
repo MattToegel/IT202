@@ -44,6 +44,7 @@ session_start();
                     <li class="nav-item"><a class="nav-link" href="<?php echo get_url('brokers.php'); ?>">Brokers</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?php echo get_url('available_brokers.php'); ?>">Available</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?php echo get_url('my_brokers.php'); ?>">My Brokers</a></li>
+                    <li class="nav-item"><a class="nav-link" href="<?php echo get_url('battle_list.php'); ?>">Battle</a></li>
                 <?php endif; ?>
                 <?php if (!is_logged_in()) : ?>
                     <li class="nav-item"><a class="nav-link" href="<?php echo get_url('login.php'); ?>">Login</a></li>
