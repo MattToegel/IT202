@@ -1,29 +1,27 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "94e6acf7b6f45b2d3d0d53ff184a6193",
+    "content-hash": "079c921e1d6d363f1adb215a992b7f90",
     "packages": [],
     "packages-dev": [
         {
             "name": "heroku/heroku-buildpack-php",
-            "version": "v122",
+            "version": "v220",
             "source": {
                 "type": "git",
                 "url": "https://github.com/heroku/heroku-buildpack-php.git",
-                "reference": "82b6fbf8d6a9693ec2f01ccf993202bfc1bc528a"
+                "reference": "af0935921c10dc7d2d2f41b06c0a66c89102d8dd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/heroku/heroku-buildpack-php/zipball/82b6fbf8d6a9693ec2f01ccf993202bfc1bc528a",
-                "reference": "82b6fbf8d6a9693ec2f01ccf993202bfc1bc528a",
+                "url": "https://api.github.com/repos/heroku/heroku-buildpack-php/zipball/af0935921c10dc7d2d2f41b06c0a66c89102d8dd",
+                "reference": "af0935921c10dc7d2d2f41b06c0a66c89102d8dd",
                 "shasum": ""
             },
             "bin": [
-                "bin/heroku-hhvm-apache2",
-                "bin/heroku-hhvm-nginx",
                 "bin/heroku-php-apache2",
                 "bin/heroku-php-nginx"
             ],
@@ -38,18 +36,21 @@
                     "email": "dz@heroku.com"
                 }
             ],
-            "description": "Toolkit for starting a PHP application locally, with or without foreman, using the same config for PHP/HHVM and Apache2/Nginx as on Heroku",
+            "description": "Toolkit for starting a PHP application locally, with or without foreman, using the same config for PHP and Apache2/Nginx as on Heroku",
             "homepage": "https://github.com/heroku/heroku-buildpack-php",
             "keywords": [
                 "apache",
                 "apache2",
                 "foreman",
                 "heroku",
-                "hhvm",
                 "nginx",
                 "php"
             ],
-            "time": "2017-08-03T22:13:11+00:00"
+            "support": {
+                "issues": "https://github.com/heroku/heroku-buildpack-php/issues",
+                "source": "https://github.com/heroku/heroku-buildpack-php/tree/v220"
+            },
+            "time": "2022-06-15T15:34:32+00:00"
         }
     ],
     "aliases": [],
@@ -58,7 +59,11 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "ext-mbstring": "*"
+        "ext-mbstring": "*",
+        "php": ">=8",
+        "ext-pdo": "*",
+        "ext-pdo_mysql": "*"
     },
-    "platform-dev": []
+    "platform-dev": [],
+    "plugin-api-version": "2.3.0"
 }
