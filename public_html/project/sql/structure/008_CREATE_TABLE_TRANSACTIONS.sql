@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS  `Transactions`
+CREATE TABLE IF NOT EXISTS  `TFP-Transactions`
 (
     `id`         int auto_increment not null,
     `user_id_src` int,

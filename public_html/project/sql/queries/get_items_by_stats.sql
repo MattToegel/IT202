@@ -1,1 +1,1 @@
-SELECT * FROM Items where stat in
+SELECT * FROM `TFP-Items` where stat in

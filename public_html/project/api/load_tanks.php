@@ -36,18 +36,18 @@ if(Common::is_logged_in(false)) {
         //07-14-2020 added logic to take the max value between playerTank health and playerLevel
         //this is to mitigate any strategy where a player keeps their tank health low and attempts to win with 1 shots
         $enemyTank = array(
-            "speed"=>mt_rand($speed*.5, $speed*1.5),
-            "range"=>mt_rand($range*.5, $range*1.5),
-            "turnSpeed"=>mt_rand($turnSpeed*.5, $turnSpeed*1.5),
-            "fireRate"=>mt_rand($fireRate*.5, $fireRate*1.5),
-            "health"=>max(mt_rand($health*.5, $health*1.5), $playerLevel * 3),
+            "speed" => mt_rand(floor($speed * .5), ceil($speed * 1.5)),
+            "range" => mt_rand(floor($range * .5), ceil($range * 1.5)),
+            "turnSpeed" => mt_rand(floor($turnSpeed * .5), ceil($turnSpeed * 1.5)),
+            "fireRate" => mt_rand(floor($fireRate * .5), ceil($fireRate * 1.5)),
+            "health" => max(mt_rand(floor($health * .5), ceil($health * 1.5)), $playerLevel * 3),
             "tankColor"=>"#" . dechex(rand(0x000000, 0xFFFFFF)),
             "barrelColor" =>"#" . dechex(rand(0x000000, 0xFFFFFF)),
             "barrelTipColor" => "#" . dechex(rand(0x000000, 0xFFFFFF)),
             "treadColor" => "#" . dechex(rand(0x000000, 0xFFFFFF)),
             "hitColor" => '#A2082B',
             "gunType" => mt_rand(1,3),
-            "damage"=>max(mt_rand($damage*.5, $damage*1.5),1)
+            "damage" => max(mt_rand(floor($damage * .5), ceil($damage * 1.5)), 1)
         );
         array_push($tanks, $enemyTank);
         $response["status"] = 200;

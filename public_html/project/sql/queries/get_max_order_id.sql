@@ -1,1 +1,1 @@
-SELECT MAX(order_id) as max from Orders
+SELECT MAX(order_id) as max from `TFP-Orders`

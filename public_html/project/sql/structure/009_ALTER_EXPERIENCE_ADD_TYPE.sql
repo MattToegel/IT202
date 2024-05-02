@@ -1,1 +1,1 @@
-ALTER TABLE Experience ADD COLUMN `type` varchar(15) default 'system';
+ALTER TABLE `TFP-Experience` ADD COLUMN `type` varchar(15) default 'system';

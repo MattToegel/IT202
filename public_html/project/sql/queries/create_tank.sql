@@ -1,1 +1,1 @@
-INSERT INTO Tanks (name, user_id) VALUES(:name, :user_id)
+INSERT INTO `TFP-Tanks` (name, user_id) VALUES(:name, :user_id)

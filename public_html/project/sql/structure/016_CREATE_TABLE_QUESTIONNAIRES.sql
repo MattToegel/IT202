@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS  `Questionnaires`
+CREATE TABLE IF NOT EXISTS  `TFP-Questionnaires`
 (
     `id`         int auto_increment not null,
     `name` varchar(120),

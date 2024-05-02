@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS  `Items`
+CREATE TABLE IF NOT EXISTS  `TFP-Items`
 (
     `id`         int auto_increment not null,
     `name`      varchar(100)       not null,

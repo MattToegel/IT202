@@ -1,1 +1,1 @@
-INSERT INTO Transactions (user_id_src, user_id_dest, amount, type, memo) VALUES(:src, :dest, :change, :type, :memo)
+INSERT INTO `TFP-Transactions` (user_id_src, user_id_dest, amount, type, memo) VALUES(:src, :dest, :change, :type, :memo)

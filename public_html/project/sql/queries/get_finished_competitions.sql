@@ -1,1 +1,5 @@
-SELECT * FROM Competitions where date(expires) <= curdate() and calced_winner = 0
+SELECT *
+FROM `TFP-Competitions`
+where
+    date(expires) <= curdate()
+    and calced_winner = 0

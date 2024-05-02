@@ -174,15 +174,17 @@ class DBH{
                 ":change"=>$change, ":type"=>$type, ":memo"=>$memo]);
             DBH::verify_sql($stmt);
             if($result && $result2){
+                error_log("change points success");
                 return DBH::response(NULL,200, "success");
             }
             else{
+                error_log("change points error");
                 return DBH::response(NULL, 400, "error");
             }
         }
         catch(Exception $e){
 
-            error_log($e->getMessage());
+            error_log("Change points error: " . var_export($e, true));
             return DBH::response(NULL, 400, "DB Error: " . $e->getMessage());
         }
     }
@@ -531,7 +533,7 @@ class DBH{
             //need to use a workaround for PDO
             $query = file_get_contents(__DIR__ . "/../sql/queries/get_available_questionnaires.sql");
             $stmt = DBH::getDB()->prepare($query);
-            $result = $stmt->execute([":uid"=>Common::get_user_id()]);//not using associative array here
+            $result = $stmt->execute(/*[":uid"=>Common::get_user_id()]*/);//not using associative array here
             DBH::verify_sql($stmt);
             if ($result) {
                 $result = $stmt->fetchAll(PDO::FETCH_ASSOC);

@@ -1,3 +1,3 @@
 SELECT
         *
-FROM `Questionnaires` as q where q.id = :questionnaire_id
+FROM `TFP-Questionnaires` as q where q.id = :questionnaire_id 

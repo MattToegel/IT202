@@ -112,7 +112,7 @@ if(Common::get($_POST, "submit", false)){
     if($is_valid){
         //this will erase the form since it's a page refresh, but we need it to show the session messages
         //this is a last resort as we should use JS/HTML5 for a better UX
-        die(header("Location: questionnaire.php"));
+        die(header("Location: create_questionnaire.php"));
     }
 }
 ?>

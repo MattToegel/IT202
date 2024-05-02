@@ -1,1 +1,1 @@
-UPDATE Competitions set points = :points, participants = :participants where id = :id
+UPDATE `TFP-Competitions` set points = :points, participants = :participants where id = :id

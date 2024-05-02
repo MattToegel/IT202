@@ -1,1 +1,1 @@
-UPDATE Items set quantity = quantity + :q where id = :id
+UPDATE `TFP-Items` set quantity = quantity + :q where id = :id 

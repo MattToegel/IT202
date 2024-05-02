@@ -1,1 +1,1 @@
-ALTER TABLE Experience ADD COLUMN `note` varchar(300) default '';
+ALTER TABLE `TFP-Experience` ADD COLUMN `note` varchar(300) default '';

@@ -1,1 +1,1 @@
-SELECT * FROM Items where quantity > 0
+SELECT * FROM `TFP-Items` where quantity > 0

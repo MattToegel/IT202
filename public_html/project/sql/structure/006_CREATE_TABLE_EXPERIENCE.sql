@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS  `Experience`
+CREATE TABLE IF NOT EXISTS  `TFP-Experience`
 (
     `id`         int auto_increment not null,
     `user_id` int,

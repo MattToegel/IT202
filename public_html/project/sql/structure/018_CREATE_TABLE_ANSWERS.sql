@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS  `Answers`
+CREATE TABLE IF NOT EXISTS  `TFP-Answers`
 (
     `id`         int auto_increment not null,
     `answer` varchar(240),
@@ -9,5 +9,5 @@ CREATE TABLE IF NOT EXISTS  `Answers`
     `modified`   timestamp default current_timestamp on update current_timestamp,
     PRIMARY KEY (`id`),
     FOREIGN KEY (`user_id`) REFERENCES Users(`id`),
-    FOREIGN KEY (`question_id`) REFERENCES Questions(`id`)
+    FOREIGN KEY (`question_id`) REFERENCES `TFP-Questions`(`id`)
 )

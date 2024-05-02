@@ -1,1 +1,1 @@
-UPDATE Competitions set calced_winner = 1 where id IN(?)
+UPDATE `TFP-Competitions` set calced_winner = 1 where id IN (?)
