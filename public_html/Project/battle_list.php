@@ -5,8 +5,15 @@ is_logged_in(true);
 
 $params = [":user_id" => get_user_id()];
 
-$query = "SELECT u.username, b.id, name, rarity, stonks, user_id FROM `IT202-S24-Brokers` b
-JOIN `IT202-S24-UserBrokers` ub ON b.id = ub.broker_id JOIN Users u on u.id = ub.user_id WHERE ub.user_id != :user_id AND stonks is not null ORDER BY RAND() LIMIT 10";
+$query =
+"SELECT u.username, b.id, name, rarity, stonks, user_id FROM `IT202-S24-Brokers` b
+JOIN `IT202-S24-UserBrokers` ub ON b.id = ub.broker_id JOIN Users u on u.id = ub.user_id 
+WHERE ub.user_id != :user_id AND 
+b.id not in 
+(SELECT distinct broker2_id FROM `IT202-S24-BattleEvents` be 
+WHERE be.broker1_id in (SELECT broker_id FROM `IT202-S24-UserBrokers` ub2 where ub2.user_id = :user_id) 
+AND DATE(be.created) = CURDATE()) 
+and stonks is not null ORDER BY RAND() LIMIT 10";
 
 $db = getDB();
 $stmt = $db->prepare($query);

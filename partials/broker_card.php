@@ -33,8 +33,9 @@ if (!isset($broker)) {
                     <?php
                     $id = isset($broker["id"]) ? $broker["id"] : (isset($_GET["id"]) ? $_GET["id"] : -1);
                     ?>
-                    <a href="<?php echo get_url('api/purchase_broker.php?broker_id=' . $id); ?>" class="card-link">Purchase Broker</a>
-
+                    <div>
+                        <a href="<?php echo get_url('api/purchase_broker.php?broker_id=' . $id); ?>" class="card-link">Purchase Broker (Cost: <?php echo se($broker, "rarity", 1, false) * 10; ?> )</a>
+                    </div>
                 <?php else : ?>
                     <a href="<?php echo get_url("profile.php?id=" . $broker["user_id"]); ?>"><?php se($broker, "username", "N/A"); ?>'s Profile</a>
                     <div class="bg-warning text-dark text-center">Broker not available</div>

@@ -159,7 +159,8 @@ function battle($broker1, $broker2, $battle_uuid)
 
 function recaculate_broker($broker_id)
 {
-    $query = "SELECT 
+    $query =
+        "SELECT 
                     s.symbol, 
                     s.per_change AS `change`, 
                     s.volume, 
@@ -176,7 +177,7 @@ function recaculate_broker($broker_id)
                     
                     ON s.symbol = latest.symbol AND s.latest = latest.MaxDate
                     JOIN `IT202-S24-Portfolios` b on b.symbol = s.symbol
-                  WHERE b.broker_id = :broker_id AND s.symbol IN  (SELECT b2.symbol FROM `IT202-S24-Portfolios` b2 WHERE b2.broker_id = :broker_id)";
+                  WHERE b.broker_id = :broker_id";
     $db = getDB();
     $stocks = [];
     try {
@@ -192,8 +193,9 @@ function recaculate_broker($broker_id)
     }
     if ($stocks) {
         error_log("Processing Stocks");
-        $query = "SELECT name, rarity, life, power, defense, stonks, created, modified FROM `IT202-S24-Brokers` WHERE id = :id";
         $broker["name"] = "temp";
+        /*$query = "SELECT name, rarity, life, power, defense, stonks, created, modified FROM `IT202-S24-Brokers` WHERE id = :id";
+        
         try {
             $stmt = $db->prepare($query);
             $stmt->execute([":id" => $broker_id]);
@@ -204,8 +206,12 @@ function recaculate_broker($broker_id)
         } catch (PDOException $e) {
             error_log("Error fetching record: " . var_export($e, true));
             flash("Error fetching record", "danger");
+        }*/
+        $brokers = fetch_broker_data($broker_id);
+        if ($brokers && count($brokers) >= 1) {
+            $broker = $brokers[0];
         }
-
+        error_log("recalculating broker: " . var_export($broker, true));
         $broker["stocks"] = $stocks;
         $br = calculate_broker_stats($broker);
         error_log("br: " . var_export($br, true));
@@ -224,4 +230,39 @@ function recaculate_broker($broker_id)
             error_log("Error updating broker " . var_export($e, true));
         }
     }
+}
+
+function fetch_broker_data($ids = [], $user_id = null)
+{
+    if (!is_array($ids)) {
+        $ids = [$ids];
+    }
+    if (is_null($user_id)) {
+        $user_id = get_user_id();
+    }
+    $brokers = [];
+    $db = getDB();
+    $query = "SELECT b.id, name, rarity, life, power, defense, stonks, b.created, b.modified, ub.user_id, u.username FROM `IT202-S24-Brokers` b
+    LEFT JOIN `IT202-S24-UserBrokers` ub ON b.id = ub.broker_id LEFT JOIN Users u on u.id = ub.user_id WHERE ub.user_id = ? and b.id in ";
+    $placeholders = str_repeat("?", count($ids)); // ??
+    $arr = str_split($placeholders); // [?,?]
+    $placeholders = join(",", $arr); //?,?
+    $query .= "($placeholders)";
+    try {
+        error_log("fetch_broker_data query: $query");
+
+        array_unshift($ids, $user_id); //prepend user_id
+        error_log("Params: " . var_export($ids, true));
+        $stmt = $db->prepare($query);
+        $stmt->execute($ids);
+        $r = $stmt->fetchAll();
+        if ($r) {
+            $brokers = $r;
+        }
+    } catch (PDOException $e) {
+        error_log("Error fetching records: " . var_export($e, true));
+        flash("Error fetching brokers", "danger");
+    }
+    error_log("broker results: " . var_export($brokers, true));
+    return $brokers;
 }
