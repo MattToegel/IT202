@@ -68,6 +68,14 @@ if (isset($_POST["email"]) && isset($_POST["password"]) && isset($_POST["confirm
         $stmt = $db->prepare("INSERT INTO Users (email, password, username) VALUES(:email, :password, :username)");
         try {
             $stmt->execute([":email" => $email, ":password" => $hash, ":username" => $username]);
+            $user_id = $db->lastInsertId();
+            if ($user_id > 0) {
+                $free = ["point_change" => 10, "user_id" => $user_id];
+                $r = insert("`IT202-S24-Points`", $free);
+                if ($r && $r["lastInsertId"] > 0) {
+                    flash("You gained 10 welcome points!", "success");
+                }
+            }
             flash("Successfully registered!", "success");
         } catch (PDOException $e) {
             users_check_duplicate($e->errorInfo);
