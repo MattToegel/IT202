@@ -23,8 +23,20 @@ if (!$db_url || count($db_url) === 0) {
     $db_url["pass"] = $matches[2];
     $db_url["path"] = "/" . $matches[5];
 }
-$dbhost   = $db_url["host"];
-$dbuser = $db_url["user"];
-$dbpass = $db_url["pass"];
-$dbdatabase       = substr($db_url["path"],1);
+if(!$db_url || count($db_url) === 0){
+    error_log("
+    Failed to load environment variables.
+    If this is localhost ensure the .env file is created, in the proper location, has content, and is saved.
+    If this is deployed ensure your platform's environment/config variables are set.
+        On Heroku that'd be under the VM/Dyno's Settings -> Reveal Config Vars
+    ");
+
+    throw new Exception("Config parsing error, check the logs for further details");
+}
+else{
+    $dbhost   = $db_url["host"];
+    $dbuser = $db_url["user"];
+    $dbpass = $db_url["pass"];
+    $dbdatabase       = substr($db_url["path"],1);
+}
 ?>
