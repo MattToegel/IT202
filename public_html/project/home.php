@@ -1,13 +1,14 @@
 <?php
-require(__DIR__."/../../partials/nav.php");
+require(__DIR__ . "/../../partials/nav.php");
 ?>
 <h1>Home</h1>
 <?php
-error_log("SESSION DATA: " . var_export($_SESSION, true));
-if(isset($_SESSION["user"]) && isset($_SESSION["user"]["email"])){
- echo "Welcome, " . $_SESSION["user"]["email"]; 
+
+if (is_logged_in(true)) {
+    //comment this out if you don't want to see the session variables
+    error_log("Session data: " . var_export($_SESSION, true));
 }
-else{
-  echo "You're not logged in";
-}
+?>
+<?php
+require(__DIR__ . "/../../partials/flash.php");
 ?>
