@@ -9,7 +9,7 @@ function is_logged_in($redirect = false, $destination = "login.php")
     if ($redirect && !$isLoggedIn) {
         //if this triggers, the calling script won't receive a reply since die()/exit() terminates it
         flash("You must be logged in to view this page", "warning");
-        redirect($destination);
+        die(header("Location: $destination"));
     }
     return $isLoggedIn;
 }
