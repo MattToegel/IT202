@@ -18,9 +18,11 @@ if (isset($_POST["action"])) {
     if ($symbol) {
         if ($action === "fetch") {
             $result = fetch_quote($symbol);
+            
             error_log("Data from API" . var_export($result, true));
             if ($result) {
                 $quote = $result;
+                $quote["is_api"] = 1;
             }
         } else if ($action === "create") {
             foreach ($_POST as $k => $v) {
