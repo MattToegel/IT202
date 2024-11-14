@@ -9,7 +9,7 @@ if (!has_role("Admin")) {
 
 
 
-$query = "SELECT id, symbol, open, low, high, price, per_change, latest, volume, api_id FROM `IT202-S24-Stocks` ORDER BY created DESC LIMIT 25";
+$query = "SELECT id, symbol, open, low, high, price, per_change, latest, volume, is_api FROM `IT202-S24-Stocks` ORDER BY created DESC LIMIT 25";
 $db = getDB();
 $stmt = $db->prepare($query);
 $results = [];
@@ -30,9 +30,3 @@ $table = ["data" => $results, "title" => "Latest Stocks", "ignored_columns" => [
     <h3>List Stocks</h3>
     <?php render_table($table); ?>
 </div>
-
-
-<?php
-//note we need to go up 1 more directory
-require_once(__DIR__ . "/../../../partials/flash.php");
-?>
