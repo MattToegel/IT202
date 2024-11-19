@@ -61,7 +61,10 @@ function insert($table_name, $data, $opts = ["debug" => false, "update_duplicate
     $firstItem = $is_indexed ? $data[0] : $data;
     $sortedKeys = array_keys($firstItem);
     sort($sortedKeys); // Sort keys to ensure consistency
+    // uncomment to fix issues when using column names that are reserved keywords
+    //$sortedKeys = array_map(fn ($key) => "`$key`", $sortedKeys);
     $columns = join(", ", $sortedKeys);
+    
     $valuesClause = [];
     $updateClause = [];
 
@@ -124,6 +127,7 @@ function insert($table_name, $data, $opts = ["debug" => false, "update_duplicate
 }
 
 
+// delete below section if you get PDO errors, Intelliphense incorrectly referse to this mock
 // used for testing via the cli (note: normally you'd used something like PHPUnit for proper test cases)
 if (php_sapi_name() == "cli") {
     // Define the cli-only here
