@@ -34,3 +34,4 @@ require(__DIR__ . "/db_helpers.php");
 require(__DIR__ . "/session_store.php");
 
 require(__DIR__ . "/name_api.php");
+require(__DIR__ ."/sc_helpers.php");

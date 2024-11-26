@@ -16,14 +16,15 @@ if (isset($_GET["page"])) {
     if (se($result, "status", 400, false) == 200 && isset($result["response"])) {
         $result = json_decode($result["response"], true);
         $result = $result["value"];
-
+        // used to get a subset for easier debugging
+        //$result = array_slice($result, 3);
         $topics = [];
         $providers = [];
         $images = [];
         $guides = [];
-        $gimages = [];
-        $gproviders = [];
-        $gtopics = [];
+        $guideImages = [];
+        $guideProviders = [];
+        $guideTopics = [];
         $desired_columns = ["path", "title", "excerpt", "sourceUrl", "webUrl", "originalUrl", "featuredContent", "publishedDateTime", "type"];
         foreach ($result as $g) {
             //error_log("Guide: " . var_export($g, true));
@@ -32,37 +33,44 @@ if (isset($_GET["page"])) {
                 foreach ($g["images"] as $image) {
                     unset($image["isCached"]);
                     array_push($images, $image);
-                    array_push($gimages, ["url" => $image["url"], "guide" => $g["title"]]);
+                    // prepare binding map
+                    array_push($guideImages, [":url" => $image["url"], ":guide" => $g["title"]]);
                 }
-                //build providers
-                if (isset($g["provider"])) {
-                    array_push($providers, $g["provider"]);
-                    array_push($gproviders, ["domain" => $g["provider"]["domain"], "guide" => $g["title"]]);
-                }
-                //build topics
-                foreach ($g["topics"] as $topic) {
-                    array_push($topics, ["name" => $topic]);
-                    array_push($gimages, ["name" => $topic, "guide" => $g["title"]]);
-                }
-                // build guides
-                $keys = array_keys($g);
-                foreach ($keys as $key) {
-                    if (!in_array($key, $desired_columns)) {
-                        unset($g[$key]);
-                    }
-                }
-
-                $g["srcUrl"] = $g["sourceUrl"];
-                unset($g["sourceUrl"]);
-
-                // add missing fields
-                foreach (array_keys($g) as $key) {
-                    if (!in_array($key, $desired_columns)) {
-                        $g[$key] = "";
-                    }
-                }
-                array_push($guides, $g);
             }
+            //build providers
+            if (isset($g["provider"])) {
+                array_push($providers, $g["provider"]);
+                // prepare binding map
+                array_push($guideProviders, [":domain" => $g["provider"]["domain"], ":guide" => $g["title"]]);
+            }
+            //build topics
+            foreach ($g["topics"] as $topic) {
+                array_push($topics, ["name" => $topic]);
+                // prepare binding map
+                array_push($guideTopics, [":name" => $topic, ":guide" => $g["title"]]);
+            }
+            // build guides
+            $keys = array_keys($g);
+            foreach ($keys as $key) {
+                if (!in_array($key, $desired_columns)) {
+                    unset($g[$key]);
+                }
+            }
+
+            $g["srcUrl"] = $g["sourceUrl"];
+            unset($g["sourceUrl"]);
+
+            
+            $g["is_api"] = 1;
+            // add missing fields
+            foreach($desired_columns as $key){
+                //patch for desired columns typo
+                $k = $key === "sourceUrl"?"srcUrl":$key;
+                if(!isset($g[$k])){
+                    $g[$k] = null;
+                }
+            }
+            array_push($guides, $g);
         }
         // $guides = [$guides[0]];
         error_log("guides: " . var_export($guides, true));
@@ -70,40 +78,56 @@ if (isset($_GET["page"])) {
         insert("SC_Images", $images, ["update_duplicate" => true]);
         insert("SC_Providers", $providers, ["update_duplicate" => true]);
         insert("SC_Topics", $topics, ["update_duplicate" => true]);
-        foreach ($guides as $g) {
+        insert("SC_Guides", $guides, ["update_duplicate"=> true, "debug"=>true]);
+        /*foreach ($guides as $g) {
             try {
                 insert("SC_Guides", $g);
             } catch (Exception $e) {
                 //ignore it, data is botched
             }
-        }
+        }*/
         // apply mappings
-        $qimage = "INSERT INTO SC_GuideImages(image_id, guide_id)
+        $qimage = "INSERT INTO SC_GuideImages(guide_id, image_id)
         VALUES (
         (SELECT id from SC_Guides where title = :guide LIMIT 1),
         (SELECT id from SC_Images where url = :url LIMIT 1)
-        )";
-        foreach ($gimages as $pair) {
-            $db = getDB();
+        ) ON DUPLICATE KEY UPDATE modified = CURRENT_TIMESTAMP";
+         $db = getDB();
+        foreach ($guideImages as $pair) {
+           
             try {
                 $stmt = $db->prepare($qimage);
                 $stmt->execute($pair);
-            } catch (Exception $e) {
-                error_log("insert failed");
+            } catch (PDOException $e) {
+                error_log("Image insert failed: " . var_export($e->errorInfo, true));
             }
         }
-        $qtopic = "INSERT INTO SC_GuideTopics(topic_id, guide_id)
+        $qtopic = "INSERT INTO SC_GuideTopics(guide_id, topic_id)
         VALUES (
         (SELECT id from SC_Guides where title = :guide LIMIT 1),
         (SELECT id from SC_Topics where name = :name LIMIT 1)
-        )";
-        foreach ($gtopics as $pair) {
-            $db = getDB();
+        ) ON DUPLICATE KEY UPDATE modified = CURRENT_TIMESTAMP";
+        foreach ($guideTopics as $pair) {
+     
             try {
                 $stmt = $db->prepare($qtopic);
                 $stmt->execute($pair);
-            } catch (Exception $e) {
-                error_log("insert failed");
+            } catch (PDOException $e) {
+                error_log("Topic insert failed: " . var_export($e->errorInfo, true));
+            }
+        }
+        $qprovider = "INSERT INTO SC_GuideProviders(guide_id,provider_id)
+        VALUES (
+        (SELECT id from SC_Guides where title = :guide LIMIT 1),
+        (SELECT id from SC_Providers where domain = :domain LIMIT 1)
+        ) ON DUPLICATE KEY UPDATE modified = CURRENT_TIMESTAMP";
+        foreach ($guideProviders as $pair) {
+     
+            try {
+                $stmt = $db->prepare($qprovider);
+                $stmt->execute($pair);
+            } catch (PDOException $e) {
+                error_log("Provider insert failed: " . var_export($e->errorInfo,true));
             }
         }
 

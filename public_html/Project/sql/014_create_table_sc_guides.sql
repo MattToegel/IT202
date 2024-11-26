@@ -1,6 +1,6 @@
 CREATE TABLE SC_Guides (
     `id` int NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `path` text NOT NULL,
+    `path` text NOT NULL unique,
     `title` varchar(300) not null UNIQUE,
     `excerpt` text,
     `srcUrl` text,

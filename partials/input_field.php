@@ -49,9 +49,11 @@
             </div>
         <?php elseif ($_type == "select") : ?>
             <select class="form-select" name="<?php se($_name); ?>" value="<?php se($_value); ?>" id="<?php se($_id); ?>">
-                <?php foreach ($_options as $k => $v) : ?>
-                    <option <?php echo (isset($_value) && $_value === $k ? "selected" : ""); ?> value="<?php se($k); ?>"><?php se($v); ?></option>
-                <?php endforeach; ?>
+                <?php foreach($_options as $option):?>
+                    <?php foreach ($option as $k => $v) : ?>
+                        <option <?php echo (isset($_value) && $_value == $k ? "selected" : ""); ?> value="<?php se($k); ?>"><?php se($v); ?></option>
+                    <?php endforeach; ?>
+                <?php endforeach;?>
             </select>
         <?php elseif ($_type === "TBD type") : ?>
             <?php /* TODO other non-form-control elements */ ?>
