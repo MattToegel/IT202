@@ -2,7 +2,6 @@
 
 function fetch_guides($page = 1)
 {
-    $page = se($_GET, "page", "1", false);
     $data = [];
     $endpoint = "https://starcraft-ii.p.rapidapi.com/learning/page/$page/";
     $isRapidAPI = true;
