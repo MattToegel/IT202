@@ -24,6 +24,7 @@ session_start();
 
 
 ?>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <!-- boostrap inclusion 5.3 -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
@@ -32,7 +33,7 @@ session_start();
 <script src="<?php echo get_url('helpers.js'); ?>"></script>
 <nav class="navbar navbar-expand-lg bg-success">
     <div class="container-fluid ">
-        <a class="navbar-brand" href="#">Broker Battles</a>
+        <a class="navbar-brand" href="#">Starcraft 2 Guides</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -46,6 +47,10 @@ session_start();
                     <li class="nav-item"><a class="nav-link" href="<?php echo get_url('login.php'); ?>">Login</a></li>
                     <li class="nav-item"><a class="nav-link" href="<?php echo get_url('register.php'); ?>">Register</a></li>
                 <?php endif; ?>
+                <li class="nav-item"><a class="nav-link" href="<?php echo get_url('search_guides.php'); ?>">Search Guides</a></li>
+                <?php if(is_logged_in()):?>
+                    <li class="nav-item"><a class="nav-link" href="<?php echo get_url('watchlist.php'); ?>">Watchlist</a></li>
+                <?php endif;?>
                 <?php if (has_role("Admin")) : ?>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -58,29 +63,7 @@ session_start();
                         </ul>
                     </li>
                 <?php endif; ?>
-                <?php if (has_role("Admin")) : ?>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Stock Management
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="<?php echo get_url('admin/create_stock.php'); ?>">Create Stock</a></li>
-                            <li><a class="dropdown-item" href="<?php echo get_url('admin/list_stocks.php'); ?>">List Stocks</a></li>
-                        </ul>
-                    </li>
-                <?php endif; ?>
-                <?php if (has_role("Admin")) : ?>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Broker Management
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="<?php echo get_url('admin/fetch_names.php'); ?>">Fetch Names</a></li>
-                            <li><a class="dropdown-item" href="<?php echo get_url('admin/create_broker.php'); ?>">Create Broker</a></li>
-                            <li><a class="dropdown-item" href="<?php echo get_url('admin/list_brokers.php'); ?>">List Brokers</a></li>
-                        </ul>
-                    </li>
-                <?php endif; ?>
+                
                 <?php if (is_logged_in()) : ?>
                     <li class="nav-item"><a class="nav-link" href="<?php echo get_url('logout.php'); ?>">Logout</a></li>
                 <?php endif; ?>

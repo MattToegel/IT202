@@ -1,6 +1,6 @@
 <?php
 require_once(__DIR__ . "/../../partials/nav.php");
-
+is_logged_in(true);
 //search before query
 $title = se($_GET, "title", "", false);
 $topic = se($_GET, "topic", "", false);
@@ -24,38 +24,43 @@ if (!in_array($order, ["asc", "desc"])) {
 $params = [];
 $assoc_check = "";
 // Append the user_id for a join if the user is logged in
-if (is_logged_in()) {
-    // return a 1 or 0 based on whether or not this guide is watched by this user
-    $assoc_check = " (SELECT IFNULL(count(1), 0) FROM SC_UserGuides WHERE user_id = :user_id and guide_id = SCG.id LIMIT 1) as is_watched,";
-    $params[":user_id"] = get_user_id();
-}
+
+// return a 1 or 0 based on whether or not this guide is watched by this user
+$assoc_check = " ";
+$params[":user_id"] = get_user_id();
 
 
-$sql = "SELECT SCG.id,title,excerpt, $assoc_check GROUP_CONCAT(DISTINCT SCT.name) AS topics, publishedDateTime, GROUP_CONCAT(DISTINCT SCP.name) AS providers, type FROM SC_Guides as SCG
+$sql = "SELECT SCG.id,title,excerpt,
+1 as is_watched,
+GROUP_CONCAT(DISTINCT SCT.name) AS topics, 
+publishedDateTime, 
+GROUP_CONCAT(DISTINCT SCP.name) AS providers, 
+type 
+FROM SC_Guides as SCG
 JOIN SC_GuideImages as SCGI on SCGI.guide_id = SCG.id
 JOIN SC_Images SCI on SCGI.image_id = SCI.id
 JOIN SC_GuideProviders as SCGP on SCGP.guide_id = SCG.id
 JOIN SC_Providers as SCP on SCGP.provider_id = SCP.id
 JOIN SC_GuideTopics as SCGT on SCGT.guide_id = SCG.id
-JOIN SC_Topics as SCT on SCGT.topic_id = SCT.id";
-
-$where = " WHERE 1=1"; //default truthy WHERE clause
+JOIN SC_Topics as SCT on SCGT.topic_id = SCT.id
+JOIN SC_UserGuides SCUG on SCUG.guide_id = SCG.id
+WHERE SCUG.user_id = :user_id"; //filter by user
 
 
 if (!empty($title)) {
-    $where .= " AND title like :title";
+    $sql .= " AND title like :title";
     $params[":title"] = "%$title%";
 }
 if (!empty($topic) && $topic != "-1") {
-    $where .= " AND SCT.id = :topic";
+    $sql .= " AND SCT.id = :topic";
     $params[":topic"] = $topic;
 }
 if (!empty($provider) && $provider != "-1") {
-    $where .= " AND SCP.id = :provider";
+    $sql .= " AND SCP.id = :provider";
     $params[":provider"] = $provider;
 }
 if (!empty($type) && $type != "-1") {
-    $where .= " AND type = :type";
+    $sql .= " AND type = :type";
     $params[":type"] = $type;
 }
 $limit = 10;
@@ -65,17 +70,10 @@ if (isset($_GET["limit"]) && !is_nan($_GET["limit"])) {
         $limit = 10;
     }
 }
-$sql .= $where;
 $sql .= " GROUP BY SCG.id";
 $sql .= " ORDER BY $column $order";
-// pagination logic
-$page = (int)se($_GET, "page", 1, false);
-if ($page < 1) {
-    $page = 1;
-}
 
-$offset = ($page - 1) * $limit;
-$sql .= " LIMIT $offset, $limit";
+$sql .= " LIMIT $limit";
 $db = getDB();
 $results = [];
 try {
@@ -89,34 +87,6 @@ try {
     error_log(var_export($e, true));
     error_log("fun happened");
     flash("Failed to fetch");
-}
-// get total possible values
-$total = 0;
-
-$sql = "SELECT COUNT(DISTINCT SCG.id) as c
-FROM SC_Guides as SCG 
-JOIN SC_GuideProviders as SCGP on SCGP.guide_id = SCG.id 
-JOIN SC_Providers as SCP on SCGP.provider_id = SCP.id 
-JOIN SC_GuideTopics as SCGT on SCGT.guide_id = SCG.id 
-JOIN SC_Topics as SCT on SCGT.topic_id = SCT.id  
-$where";
-try {
-    $db = getDB();
-    $query = $sql ;
-    //flash($query);
-    $stmt = $db->prepare($query);
-    if(isset($params["user_id"])){
-        unset($params["user_id"]);
-    }
-    $stmt->execute($params);
-    $r = $stmt->fetch();
-    if ($r) {
-        $total = (int)$r["c"];
-        //flash("Total $total");
-    }
-} catch (PDOException $e) {
-    flash("Error fetching count", "danger");
-    error_log("Error fetching count: " . var_export($e, true));
 }
 
 $topics = get_topics();
@@ -178,17 +148,15 @@ error_log("Guides: " . var_export($results, true));
                     <?php guide_card($guide); ?>
                 </div>
             <?php endforeach; ?>
-            <?php if (empty($results)): ?>
+            <?php if(empty($results)):?>
                 No records to show
-            <?php endif; ?>
+            <?php endif;?>
         </div>
     <?php else: ?>
         <?php render_table($table); ?>
     <?php endif; ?>
 </div>
-<div class="row">
-    <?php include(__DIR__ . "/../../partials/pagination_nav.php"); ?>
-</div>
+
 <?php
 //note we need to go up 1 more directory
 require_once(__DIR__ . "/../../partials/flash.php");
