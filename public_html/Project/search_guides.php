@@ -105,8 +105,8 @@ try {
     $query = $sql ;
     //flash($query);
     $stmt = $db->prepare($query);
-    if(isset($params["user_id"])){
-        unset($params["user_id"]);
+    if(isset($params[":user_id"])){
+        unset($params[":user_id"]);
     }
     $stmt->execute($params);
     $r = $stmt->fetch();
@@ -117,14 +117,16 @@ try {
 } catch (PDOException $e) {
     flash("Error fetching count", "danger");
     error_log("Error fetching count: " . var_export($e, true));
+    error_log("Query: $sql");
+    error_log("Params: " . var_export($params, true));
 }
 
 $topics = get_topics();
 $providers = get_providers();
 $types = get_types();
 
-error_log("Topics: " . var_export($topics, true));
-error_log("Types: " . var_export($types, true));
+//error_log("Topics: " . var_export($topics, true));
+//error_log("Types: " . var_export($types, true));
 $ignore_columns = ["id", "created", "modified", "guide_id", "image_id", "width", "height", "provider_id", "topic_id", "is_watched"];
 $table = [
     "data" => $results,
@@ -133,7 +135,7 @@ $table = [
     "delete_url" => get_url("delete_guide.php"),
     "view_url" => get_url("view_guide.php")
 ];
-error_log("Guides: " . var_export($results, true));
+//error_log("Guides: " . var_export($results, true));
 ?>
 
 <div class="container-fluid">
