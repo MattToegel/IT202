@@ -28,7 +28,8 @@ JOIN SC_Images SCI on SCGI.image_id = SCI.id
 JOIN SC_GuideProviders as SCGP on SCGP.guide_id = SCG.id
 JOIN SC_Providers as SCP on SCGP.provider_id = SCP.id
 JOIN SC_GuideTopics as SCGT on SCGT.guide_id = SCG.id
-JOIN SC_Topics as SCT on SCGT.topic_id = SCT.id";
+JOIN SC_Topics as SCT on SCGT.topic_id = SCT.id
+WHERE 1=1"; // used to easily append other conditions
 $params = [];
 if (!empty($title)) {
     $sql .= " AND title like :title";

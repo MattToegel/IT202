@@ -2,8 +2,13 @@
 require(__DIR__ . "/../../lib/functions.php");
 session_start();
 $id = se($_GET, "id", -1, false);
-
-if ($id > 0) {
+$is_admin = true;
+// admin only for my project
+if(!has_role("Admin")){
+    flash("You don't have permission to do this action", "danger");
+    $is_admin = false;
+}
+if ($id > 0 && $is_admin) {
     $db = getDB();
     try {
         // if there are relationships, delete from child tables first
@@ -23,6 +28,7 @@ if ($id > 0) {
         flash("There was an error deleting the record", "danger");
     }
 }
+// remove id so it doesn't carry back to redirect page
 unset($_GET["id"]);
 $loc = get_url("search_guides.php")."?" . http_build_query($_GET);
 error_log("Location: $loc");
