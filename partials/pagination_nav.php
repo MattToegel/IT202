@@ -7,7 +7,14 @@ if (!isset($total)) {
 
 $per_page = (int)se($_GET, "limit", "10", false);
 $page = (int)se($_GET, "page", 1, false);
-$total_pages = round($total / $per_page);
+$pages = $total/$per_page;
+if($pages < 1){
+    $pages = ceil($pages);
+}
+else{
+    $pages = round($pages);
+}
+$total_pages = $pages;
 //updates or inserts page into query string while persisting anything already present
 function persistQueryString($page)
 {

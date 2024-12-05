@@ -48,6 +48,7 @@ session_start();
                     <li class="nav-item"><a class="nav-link" href="<?php echo get_url('register.php'); ?>">Register</a></li>
                 <?php endif; ?>
                 <li class="nav-item"><a class="nav-link" href="<?php echo get_url('search_guides.php'); ?>">Search Guides</a></li>
+                <li class="nav-item"><a class="nav-link" href="<?php echo get_url('unwatched_guides.php'); ?>">Unwatched Guides</a></li>
                 <?php if(is_logged_in()):?>
                     <li class="nav-item"><a class="nav-link" href="<?php echo get_url('watchlist.php'); ?>">Watchlist</a></li>
                 <?php endif;?>
@@ -60,6 +61,16 @@ session_start();
                             <li><a class="dropdown-item" href="<?php echo get_url('admin/create_role.php'); ?>">Create Role</a></li>
                             <li><a class="dropdown-item" href="<?php echo get_url('admin/list_roles.php'); ?>">List Roles</a></li>
                             <li><a class="dropdown-item" href="<?php echo get_url('admin/assign_roles.php'); ?>">Assign Roles</a></li>
+                        </ul>
+                    </li>
+                <?php endif; ?>
+                <?php if (has_role("Admin")) : ?>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Manage Guides
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="<?php echo get_url('admin/create_guide.php'); ?>">Create Guide</a></li>
                         </ul>
                     </li>
                 <?php endif; ?>

@@ -41,19 +41,33 @@
                     </ul>
                 </div>
             <?php endif; ?>
-            <?php if (is_logged_in() && isset($data["is_watched"])): ?>
-                <div class="card-footer">
-                    <form method="POST" action="<?php echo get_url("api/toggle_watched.php");?>">
-                        <input type="hidden" name="guideId" value="<?php se($data, "id"); ?>" />
-                        <input type="hidden" name="toggleWatched" />
-                        <input type="hidden" name="route" value="<?php se($_SERVER, "PHP_SELF");?>"/>
-                        <button style="background-color: transparent; border: none !important;">
-                            <?php render_like(["value" => $data["is_watched"]]); ?>
-                        </button>
-                    </form>
-                    </form>
+            <?php if (is_logged_in() || isset($data["view_url"])): ?>
+                <div class="card-footer text-center">
+                    <?php if (is_logged_in() && isset($data["is_watched"])): ?>
+                        <?php /* is_watched toggle */
+                        $redirect_url = se($_SERVER, "PHP_SELF", "", false) . '?' . http_build_query($_GET);
+                        ?>
+                        <form method="POST" action="<?php echo get_url("api/toggle_watched.php"); ?>">
+                            <input type="hidden" name="guideId" value="<?php se($data, "id"); ?>" />
+                            <input type="hidden" name="toggleWatched" />
+                            <input type="hidden" name="route" value="<?php echo $redirect_url ?>" />
+                            <button style="background-color: transparent; border: none !important;">
+                                <?php render_like(["value" => $data["is_watched"]]); ?>
+                            </button>
+                        </form>
+
+                    <?php endif; ?>
+                    <?php if (has_role("Admin") && isset($data["delete_url"])): ?>
+                        <?php /* admin only delete */ ?>
+                        <a class="btn btn-danger" href="<?php se($data, "delete_url"); ?>">Delete</a>
+                    <?php endif; ?>
+                    <?php if (isset($data["view_url"])): ?>
+                        <?php /* view url */ ?>
+                        <a class="btn btn-primary" href="<?php se($data, "view_url"); ?>">View</a>
+                    <?php endif; ?>
                 </div>
             <?php endif; ?>
+
         </div>
     </div>
 <?php endif;

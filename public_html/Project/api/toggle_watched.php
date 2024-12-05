@@ -1,6 +1,7 @@
 <?php
 session_start();
 require(__DIR__ . "/../../../lib/functions.php");
+
 if (isset($_POST["toggleWatched"])) {
     $guideId = se($_POST, "guideId", -1, false);
     $userId = get_user_id();
@@ -35,6 +36,7 @@ if (isset($_POST["toggleWatched"])) {
     } else {
         flash("You must be logged in to do this action", "warning");
     }
+    // Note: chose not to use $_SERVER["HTTP_REFERER"] as it may not always be accurate
     die(header("Location: " . $_POST["route"]));
 }
 flash("Error toggling watched", "danger");

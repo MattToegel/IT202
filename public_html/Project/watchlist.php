@@ -9,7 +9,6 @@ $type = se($_GET, "type", "", false);
 
 $column = se($_GET, "column", "", false);
 $order = se($_GET, "order", "", false);
-$_GET["grid"] = "";
 $columns = ["title", "publishedDateTime", "name", "type", "provider", "topic"];
 $columnMap = array_map(function ($v) {
     return [$v => $v];
@@ -22,11 +21,7 @@ if (!in_array($order, ["asc", "desc"])) {
     $order = "asc";
 }
 $params = [];
-$assoc_check = "";
-// Append the user_id for a join if the user is logged in
 
-// return a 1 or 0 based on whether or not this guide is watched by this user
-$assoc_check = " ";
 $params[":user_id"] = get_user_id();
 
 
@@ -43,24 +38,25 @@ JOIN SC_GuideProviders as SCGP on SCGP.guide_id = SCG.id
 JOIN SC_Providers as SCP on SCGP.provider_id = SCP.id
 JOIN SC_GuideTopics as SCGT on SCGT.guide_id = SCG.id
 JOIN SC_Topics as SCT on SCGT.topic_id = SCT.id
-JOIN SC_UserGuides SCUG on SCUG.guide_id = SCG.id
-WHERE SCUG.user_id = :user_id"; //filter by user
+JOIN SC_UserGuides SCUG on SCUG.guide_id = SCG.id";
+// the first space is important
+$where = " WHERE SCUG.user_id = :user_id"; //filter by user
 
 
 if (!empty($title)) {
-    $sql .= " AND title like :title";
+    $where .= " AND title like :title";
     $params[":title"] = "%$title%";
 }
 if (!empty($topic) && $topic != "-1") {
-    $sql .= " AND SCT.id = :topic";
+    $where .= " AND SCT.id = :topic";
     $params[":topic"] = $topic;
 }
 if (!empty($provider) && $provider != "-1") {
-    $sql .= " AND SCP.id = :provider";
+    $where .= " AND SCP.id = :provider";
     $params[":provider"] = $provider;
 }
 if (!empty($type) && $type != "-1") {
-    $sql .= " AND type = :type";
+    $where .= " AND type = :type";
     $params[":type"] = $type;
 }
 $limit = 10;
@@ -70,6 +66,7 @@ if (isset($_GET["limit"]) && !is_nan($_GET["limit"])) {
         $limit = 10;
     }
 }
+$sql .= $where;
 $sql .= " GROUP BY SCG.id";
 $sql .= " ORDER BY $column $order";
 
@@ -78,7 +75,7 @@ $db = getDB();
 $results = [];
 try {
     $stmt = $db->prepare($sql);
-    $stmt->execute($params); //[":title" => "%$title%", ":type" => $type, ":domain"=>$provider, ":topic"=>$topic]);
+    $stmt->execute($params);
     $r = $stmt->fetchAll();
     if ($r) {
         $results = $r;
@@ -89,24 +86,59 @@ try {
     flash("Failed to fetch");
 }
 
-$topics = get_topics();
-$providers = get_providers();
-$types = get_types();
+$topics = get_topics(); //used for filter dropdown
+$providers = get_providers(); // used for filter dropdown
+$types = get_types(); // used for filter dropdown
 
-error_log("Topics: " . var_export($topics, true));
-error_log("Types: " . var_export($types, true));
-$ignore_columns = ["id", "created", "modified", "guide_id", "image_id", "width", "height", "provider_id", "topic_id", "is_watched"];
-$table = [
-    "data" => $results,
-    "title" => "Guides",
-    "ignored_columns" => $ignore_columns,
-    "delete_url" => get_url("delete_guide.php"),
-    "view_url" => get_url("view_guide.php")
-];
+// get total possible values based on filters
+// JOINS also filter (in addition to the WHERE clause)
+$total = 0;
+
+$sql = "SELECT COUNT(DISTINCT SCG.id) as c
+FROM SC_Guides as SCG
+JOIN SC_GuideImages as SCGI on SCGI.guide_id = SCG.id
+JOIN SC_Images SCI on SCGI.image_id = SCI.id
+JOIN SC_GuideProviders as SCGP on SCGP.guide_id = SCG.id
+JOIN SC_Providers as SCP on SCGP.provider_id = SCP.id
+JOIN SC_GuideTopics as SCGT on SCGT.guide_id = SCG.id
+JOIN SC_Topics as SCT on SCGT.topic_id = SCT.id
+JOIN SC_UserGuides SCUG on SCUG.guide_id = SCG.id
+$where";
+try {
+    $db = getDB();
+    $stmt = $db->prepare($sql);
+    $stmt->execute($params);
+    $r = $stmt->fetch();
+    if ($r) {
+        $total = (int)$r["c"]; // called my virtual/temp column "c" for count
+    }
+} catch (PDOException $e) {
+    flash("Error fetching count", "danger");
+    error_log("Error fetching count: " . var_export($e, true));
+    error_log("Query: $sql");
+    error_log("Params: " . var_export($params, true));
+}
+
+// since I'm using cards and I didn't make a flexible "manager" like render_table()
+// I need to transform my data
+$results = array_map(function ($item) {
+    if (!isset($item["id"])) {
+        error_log("Missing result item id during mapping");
+    }
+    $id = se($item, "id", -1, false);
+    $cleaned_get = $_GET;
+    if (isset($_GET["id"])) {
+        unset($_GET["id"]);
+    }
+    $item["delete_url"] = get_url("delete_guide.php?id=$id&") . http_build_query($cleaned_get);
+    $item["view_url"] = get_url("view_guide.php?id=$id&") . http_build_query($cleaned_get);
+    return $item;
+}, $results);
 error_log("Guides: " . var_export($results, true));
 ?>
 
 <div class="container-fluid">
+    <h5>Watchlist</h5>
     <div>
         <form>
             <div class="row">
@@ -140,21 +172,29 @@ error_log("Guides: " . var_export($results, true));
             </div>
         </form>
     </div>
-
-    <?php if (isset($_GET["grid"])): ?>
-        <div class="row">
-            <?php foreach ($results as $guide): ?>
-                <div class="col-3">
-                    <?php guide_card($guide); ?>
-                </div>
-            <?php endforeach; ?>
-            <?php if(empty($results)):?>
-                No records to show
-            <?php endif;?>
+    <div class="row">
+        <div class="col">
+            Results <?php echo count($results) . "/" . $total; ?>
         </div>
-    <?php else: ?>
-        <?php render_table($table); ?>
-    <?php endif; ?>
+    </div>
+    <div class="row">
+        <div class="col">
+            <a class="btn btn-warning" href="api/clear_watchlist.php">Clear List</a>
+        </div>
+    </div>
+    <div class="row">
+        <?php foreach ($results as $guide): ?>
+            <div class="col-3">
+                <?php guide_card($guide); ?>
+            </div>
+        <?php endforeach; ?>
+        <?php if (empty($results)): ?>
+            No records to show
+        <?php endif; ?>
+    </div>
+    <div class="row">
+        <?php include(__DIR__ . "/../../partials/pagination_nav.php"); ?>
+    </div>
 </div>
 
 <?php
