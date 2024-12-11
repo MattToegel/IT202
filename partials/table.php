@@ -17,11 +17,7 @@
     $_delete_label = se($data, "delete_label", "Delete", false);
     $_delete_classes = se($data, "delete_classes", "btn btn-danger", false);
     $_primary_key_column = se($data, "primary_key", "id", false); // used for the url generation
-    //TODO persist query params (future lesson)
-    $data = $_GET;
-    if (isset($data[$_primary_key_column])) {
-        unset($data[$_primary_key_column]);
-    }
+   
     $qp = http_build_query($data);
     // edge case that should consider a redesign
     $_post_self_form = isset($data["post_self_form"]) ? $data["post_self_form"] : [];
@@ -43,6 +39,11 @@
         $_header_override = array_filter(array_keys($_data[0]), function ($v) use ($_ignored_columns) {
             return !in_array($v, $_ignored_columns);
         });
+    }
+     //TODO persist query params (future lesson)
+    $data = $_GET;
+    if (isset($data[$_primary_key_column])) {
+        unset($data[$_primary_key_column]);
     }
 
     ?>
