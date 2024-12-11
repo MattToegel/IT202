@@ -17,8 +17,9 @@
     $_delete_label = se($data, "delete_label", "Delete", false);
     $_delete_classes = se($data, "delete_classes", "btn btn-danger", false);
     $_primary_key_column = se($data, "primary_key", "id", false); // used for the url generation
-   
-    $qp = http_build_query($data);
+    $_association_key = se($data, "association_key", "is_watched", false);
+    // maybe fetch the value here too and set to a variable
+    
     // edge case that should consider a redesign
     $_post_self_form = isset($data["post_self_form"]) ? $data["post_self_form"] : [];
     // end edge case
@@ -30,6 +31,7 @@
         $_header_override = explode(",", $_header_override);
     }
     $_ignored_columns = isset($data["ignored_columns"]) ? $data["ignored_columns"] : []; // note: this is as csv string or an array
+    error_log("ignored" . var_export($_ignored_columns, true));
     // assumes csv list; explodes to array
     if (is_string($_ignored_columns)) {
         $_ignored_columns = explode(",", $_ignored_columns);
@@ -40,12 +42,12 @@
             return !in_array($v, $_ignored_columns);
         });
     }
-     //TODO persist query params (future lesson)
+    //TODO persist query params (future lesson)
     $data = $_GET;
     if (isset($data[$_primary_key_column])) {
         unset($data[$_primary_key_column]);
     }
-
+    $qp = http_build_query($data);
     ?>
     <?php if ($_title) : ?>
         <h3><?php se($_title); ?></h3>
@@ -56,7 +58,7 @@
                 <?php foreach ($_header_override as $h) : ?>
                     <th><?php se($h); ?></th>
                 <?php endforeach; ?>
-                <?php if ($_has_atleast_one_url) : ?>
+                <?php if ($_has_atleast_one_url || (count($_data) >= 1 && isset($_data[0][$_association_key]))) : ?>
                     <th>Actions</th>
                 <?php endif; ?>
             </thead>
@@ -70,6 +72,7 @@
                                 <td><?php se($v); ?></td>
                             <?php endif; ?>
                         <?php endforeach; ?>
+
                         <?php if ($_has_atleast_one_url) : ?>
                             <td>
                                 <?php if ($_view_url) : ?>
@@ -89,7 +92,23 @@
                                     </form>
                                 <?php endif; ?>
                             </td>
+                        <?php endif; ?> <!-- end of if ($_has_atleast_one_url) :-->
+                        <?php if (is_logged_in() && isset($row[$_association_key])): ?>
+                            <td>
+                                <?php /* is_watched toggle */
+                                $redirect_url = se($_SERVER, "PHP_SELF", "", false) . '?' . http_build_query($_GET);
+                                ?>
+                                <form method="POST" action="<?php echo get_url("api/toggle_watched.php"); ?>">
+                                    <input type="hidden" name="guideId" value="<?php se($row, "id"); ?>" />
+                                    <input type="hidden" name="toggleWatched" />
+                                    <input type="hidden" name="route" value="<?php echo $redirect_url ?>" />
+                                    <button style="background-color: transparent; border: none !important;">
+                                        <?php render_like(["value" => $row["is_watched"]]); ?>
+                                    </button>
+                                </form>
+                            </td>
                         <?php endif; ?>
+
                     </tr>
                 <?php endforeach; ?>
             <?php else : ?>
