@@ -3,9 +3,16 @@
         <div class="card-body">
             <h5 class="card-title">
                 <?php se($data, "title"); ?>
+                <?php if(isset($data["username"])):?>
+                    Watched by: <?php se($data,"username");?>
+
+                <?php endif;?>
             </h5>
             <h6 class="card-subtitle mb-2 text-body-secondary">
                 <?php se($data, "publishedDateTime"); ?>
+                <?php if(isset($data["total_watched"])):?>
+                Num Watched: <?php se($data,"total_watched", 0);?>
+                <?php endif;?>
             </h6>
             <div class="card-text" style="height: calc(5em); overflow-y: hidden; text-overflow: ellipsis;">
                 <p style=" "><?php se($data, "excerpt"); ?></p>
@@ -43,7 +50,9 @@
             <?php endif; ?>
             <?php if (is_logged_in() || isset($data["view_url"])): ?>
                 <div class="card-footer text-center">
-                    <?php if (is_logged_in() && isset($data["is_watched"])): ?>
+                    <?php if (is_logged_in() && isset($data["is_watched"])
+                    && (!isset($data["watcher_id"]) ||
+                (isset($data["watcher_id"]) && $data["watcher_id"] == get_user_id()))): ?>
                         <?php /* is_watched toggle */
                         $redirect_url = se($_SERVER, "PHP_SELF", "", false) . '?' . http_build_query($_GET);
                         ?>
